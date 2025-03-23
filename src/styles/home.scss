@@ -1,0 +1,26 @@
+.customize-row {
+    .column {
+        width: calc(20% - 8px);
+        &:hover {
+            // box-shadow: 0 0.0625rem 20px 0 rgba(0, 0, 0, 0.05);
+            -webkit-transform: translateY(-0.0625rem);
+            transform: translateY(-0.0625rem);
+        }
+        .wrapper {
+            cursor: pointer;
+            box-shadow: 0 0.0625rem 0.125rem 0 rgba(0, 0, 0, 0.05);
+            border-radius: 0.125rem;
+            padding: 0.3rem;
+
+            .text {
+                padding: 0.5rem 0;
+                font-size: 0.75rem;
+            }
+            .rating {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+        }
+    }
+}

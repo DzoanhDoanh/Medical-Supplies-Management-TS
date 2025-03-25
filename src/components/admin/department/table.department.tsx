@@ -1,16 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { deleteUserApi, getDepartmentsApi, getUserByIdApi, getUsersApi } from '@/services/api';
+import { deleteDepartmentApi, getDepartmentsApi } from '@/services/api';
 // import { dateRangeValidate } from '@/services/helper';
 import { CloudUploadOutlined, DeleteTwoTone, EditTwoTone, ExportOutlined, PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
 import { App, Button, Popconfirm } from 'antd';
 import { useRef, useState } from 'react';
-import DetailUser from './detail.department';
-import CreateUser from './create.department';
 import ImportUser from './data/import.department';
 import { CSVLink } from 'react-csv';
-import UpdateUser from './update.department';
 import dayjs from 'dayjs';
 import DetailDepartment from './detail.department';
 import CreateDepartment from './create.department';
@@ -36,7 +33,8 @@ const TableDepartment = () => {
     const { message, notification } = App.useApp();
 
     const handleDeleteDepartment = async (id: string) => {
-        const res = await deleteUserApi(id);
+        const res = await deleteDepartmentApi(id);
+        console.log('Check ressss', res);
         setTimeout(() => {
             if (res && res.data && typeof res.data === 'string') {
                 const alertMessage = res.data + '';
@@ -47,7 +45,7 @@ const TableDepartment = () => {
                 setIsDeleteDepartment(true);
                 return;
             } else {
-                message.success('Xóa nhân viên thành công!');
+                message.success('Xóa phòng ban thành công!');
                 setIsDeleteDepartment(false);
                 refreshTable();
             }
@@ -131,8 +129,8 @@ const TableDepartment = () => {
                         />
                         <Popconfirm
                             placement="leftTop"
-                            title={'Xóa nhân viên'}
-                            description="Bạn có chắc là xóa nhân viên này"
+                            title={'Xóa phòng ban'}
+                            description="Bạn có chắc là xóa phòng ban này"
                             onConfirm={() => handleDeleteDepartment(entity.id)}
                             okText="Xác nhận"
                             cancelText="Hủy"

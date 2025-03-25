@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { App, Col, DatePicker, Divider, Form, Input, Modal, Row, Select, Upload } from 'antd';
 import type { FormProps } from 'antd';
-import { updateUserApi } from '@/services/api';
+import { getDepartmentsApi, updateUserApi } from '@/services/api';
 import { Rule } from 'antd/es/form';
 import { PlusOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
@@ -24,7 +24,7 @@ type FieldType = {
     phone: string;
     role: string;
     avatar?: string;
-    departmentId: string;
+    departIdentity: string;
     position: string;
     gender: string;
     dateOfBirth: string;
@@ -37,6 +37,7 @@ const UpdateUser = (props: IProps) => {
     const { message, notification } = App.useApp();
     const [previewOpenAvatar, setPreviewOpenAvatar] = useState(false);
     const [previewImageAvatar, setPreviewImageAvatar] = useState<string>('');
+    const [departs, setDeparts] = useState<IDepartment[]>([]);
     const [fileListAvatar, setFileListAvatar] = useState<any[]>([]);
     // Xử lý hiển thị ảnh preview
     const handlePreview = async (file: any) => {
@@ -66,13 +67,20 @@ const UpdateUser = (props: IProps) => {
                 email: dataUpdate.email,
                 phone: dataUpdate.phone,
                 role: dataUpdate.role,
-                departmentId: dataUpdate.departmentId,
+                departIdentity: dataUpdate.departIdentity,
                 position: dataUpdate.position,
                 gender: dataUpdate.gender,
                 dateOfBirth: dayjs(dataUpdate.dateOfBirth),
                 address: dataUpdate.address,
             });
         }
+        const fetchDepart = async () => {
+            const res = await getDepartmentsApi('');
+            if (res && res.data) {
+                setDeparts(res.data);
+            }
+        };
+        fetchDepart();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dataUpdate]);
     const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
@@ -97,7 +105,7 @@ const UpdateUser = (props: IProps) => {
             values.fullName,
             values.phone,
             values.role,
-            values.departmentId,
+            values.departIdentity,
             values.position,
             values.gender,
             values.dateOfBirth,
@@ -232,12 +240,18 @@ const UpdateUser = (props: IProps) => {
                             <Form.Item<FieldType>
                                 labelCol={{ span: 24 }}
                                 label="Phòng ban"
-                                name="departmentId"
+                                name="departIdentity"
                                 rules={[{ required: true, message: 'Vui lòng chọn phòng ban' }]}
                             >
                                 <Select placeholder="Hãy chọn phòng ban" allowClear>
-                                    <Option value="vattu">Phòng vật tư</Option>
-                                    <Option value="hanhchinh">Phòng hành chính</Option>
+                                    {departs &&
+                                        departs.map((item) => {
+                                            return (
+                                                <Option key={item.id} value={item.id}>
+                                                    {item.name}
+                                                </Option>
+                                            );
+                                        })}
                                 </Select>
                             </Form.Item>
                             <Form.Item<FieldType>

@@ -9,7 +9,7 @@ export const registerApi = (
     password: string,
     phone: string,
     role: string,
-    departmentId: string,
+    departIdentity: string,
     position: string,
     gender: string,
     dateOfBirth: string,
@@ -25,7 +25,7 @@ export const registerApi = (
         role: role ? role : 'user',
         avatar: avatar ? avatar : 'user.png',
         originalPass: password,
-        departmentId,
+        departIdentity,
         position: position,
         gender: gender,
         dateOfBirth,
@@ -71,7 +71,7 @@ export const updateUserApi = (
     fullName: string,
     phone: string,
     role: string,
-    departmentId: string,
+    departIdentity: string,
     position: string,
     gender: string,
     dateOfBirth: string,
@@ -87,7 +87,7 @@ export const updateUserApi = (
         role,
         avatar: avatar ? avatar : 'user.png',
         originalPass: password,
-        departmentId,
+        departIdentity,
         position: position,
         gender: gender,
         dateOfBirth,
@@ -242,4 +242,8 @@ export const updateDepartmentApi = (
         affiliatedUnit,
         createAt,
     });
+};
+export const deleteDepartmentApi = (id: string) => {
+    const urlBackend = `/660/departments/${id}`;
+    return axios.delete<IBackendRes<IDepartment>>(urlBackend);
 };

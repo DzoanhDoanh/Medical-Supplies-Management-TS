@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { registerApi } from '@/services/api';
+import { getDepartmentsApi, registerApi } from '@/services/api';
 import { App, Divider, Form, Modal, Input, Select, DatePicker, Upload, Row, Col } from 'antd';
 import type { FormProps } from 'antd';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Rule } from 'antd/es/form';
 import { PlusOutlined } from '@ant-design/icons';
 
@@ -19,7 +19,7 @@ type FieldType = {
     phone: string;
     role: string;
     avatar?: string;
-    departmentId: string;
+    departIdentity: string;
     position: string;
     gender: string;
     dateOfBirth: string;
@@ -33,7 +33,18 @@ const CreateUser = (props: IProps) => {
 
     const [previewOpenAvatar, setPreviewOpenAvatar] = useState(false);
     const [previewImageAvatar, setPreviewImageAvatar] = useState<string>('');
+    const [departs, setDeparts] = useState<IDepartment[]>([]);
     const [fileListAvatar, setFileListAvatar] = useState<any[]>([]);
+
+    useEffect(() => {
+        const fetchDepart = async () => {
+            const res = await getDepartmentsApi('');
+            if (res && res.data) {
+                setDeparts(res.data);
+            }
+        };
+        fetchDepart();
+    }, []);
     // Xử lý hiển thị ảnh preview
     const handlePreview = async (file: any) => {
         setPreviewImageAvatar(file.avatarUrl || file.url);
@@ -73,7 +84,7 @@ const CreateUser = (props: IProps) => {
             values.password,
             values.phone,
             values.role,
-            values.departmentId,
+            values.departIdentity,
             values.position,
             values.gender,
             values.dateOfBirth,
@@ -204,12 +215,18 @@ const CreateUser = (props: IProps) => {
                             <Form.Item<FieldType>
                                 labelCol={{ span: 24 }}
                                 label="Phòng ban"
-                                name="departmentId"
+                                name="departIdentity"
                                 rules={[{ required: true, message: 'Vui lòng chọn phòng ban' }]}
                             >
                                 <Select placeholder="Hãy chọn phòng ban" allowClear>
-                                    <Option value="vattu">Phòng vật tư</Option>
-                                    <Option value="hanhchinh">Phòng hành chính</Option>
+                                    {departs &&
+                                        departs.map((item) => {
+                                            return (
+                                                <Option key={item.id} value={item.id}>
+                                                    {item.name}
+                                                </Option>
+                                            );
+                                        })}
                                 </Select>
                             </Form.Item>
                             <Form.Item<FieldType>

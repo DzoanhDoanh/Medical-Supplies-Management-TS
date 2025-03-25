@@ -34,6 +34,7 @@ const TableBook = () => {
 
     const handleDeleteBook = async (id: string) => {
         const res = await deleteBookApi(id);
+        console.log(res);
         setTimeout(() => {
             if (res && res.data && typeof res.data === 'string') {
                 const alertMessage = res.data + '';

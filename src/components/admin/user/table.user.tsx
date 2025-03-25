@@ -193,7 +193,7 @@ const TableUser = () => {
                                     fullName: item.fullName,
                                     email: item.email,
                                     phone: item.phone,
-                                    departmentId: item.departmentId,
+                                    departIdentity: item.departIdentity,
                                     position: item.position,
                                     gender: item.gender,
                                     dateOfBirth: item.dateOfBirth,

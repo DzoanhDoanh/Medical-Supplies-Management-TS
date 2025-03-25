@@ -18,15 +18,7 @@ declare global {
 
     interface IAuth {
         accessToken: string;
-        user: {
-            email: string;
-            phone: string;
-            fullName: string;
-            role: string;
-            avatar: string;
-            id: string;
-            createAt: string;
-        };
+        user: IUser;
     }
 
     interface IUser {
@@ -36,7 +28,7 @@ declare global {
         role: string;
         avatar: string;
         id: string;
-        departmentId: string;
+        departIdentity: string;
         position: string;
         gender: string;
         dateOfBirth: string;

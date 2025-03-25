@@ -18,7 +18,7 @@ const Login: React.FC = () => {
             navigate('/');
             return;
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const onFinish = async (values: any) => {
@@ -57,9 +57,9 @@ const Login: React.FC = () => {
         { type: 'email', message: 'Email không hợp lệ' },
     ];
     const passwordRules: Rule[] = [{ required: true, message: 'Mật khẩu không được để trống' }];
-    const handleSwitchToRegister = () => {
-        navigate('/register');
-    };
+    // const handleSwitchToRegister = () => {
+    //     navigate('/register');
+    // };
     return (
         <div className="register-wrapper">
             <div className="register-form">
@@ -88,9 +88,10 @@ const Login: React.FC = () => {
                 <p className="text">Hoặc</p>
                 <p className="text">
                     Chưa có tài khoản?
-                    <span className="login-button" onClick={handleSwitchToRegister}>
+                    <span className="login-button">&nbsp;Liên hệ admin để được hỗ trợ</span>
+                    {/* <span className="login-button" onClick={handleSwitchToRegister}>
                         &nbsp;Đăng ký
-                    </span>
+                    </span> */}
                 </p>
             </div>
         </div>

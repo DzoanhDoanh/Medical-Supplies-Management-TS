@@ -36,6 +36,11 @@ declare global {
         role: string;
         avatar: string;
         id: string;
+        departmentId: string;
+        position: string;
+        gender: string;
+        dateOfBirth: string;
+        address: string;
         createAt: string;
         originalPass?: string;
     }
@@ -71,6 +76,14 @@ declare global {
         phone: string;
         totalPrice: number;
         type: string;
+        createAt: string;
+    }
+    interface IDepartment {
+        id: string;
+        name: string;
+        affiliatedUnit: string;
+        userId: string;
+        userName: string;
         createAt: string;
     }
 }

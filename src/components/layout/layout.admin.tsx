@@ -37,17 +37,17 @@ const LayoutAdmin = () => {
 
     const items: MenuItem[] = [
         {
-            label: <Link to="/admin">Dashboard</Link>,
+            label: <Link to="/admin">Bảng điều khiển</Link>,
             key: '/admin',
             icon: <AppstoreOutlined />,
         },
         {
-            label: <span>Manage Users</span>,
+            label: <span>Nhân viên</span>,
             key: '/admin/user',
             icon: <UserOutlined />,
             children: [
                 {
-                    label: <Link to="/admin/user">CRUD</Link>,
+                    label: <Link to="/admin/user">Quản lý NV</Link>,
                     key: '/admin/user',
                     icon: <TeamOutlined />,
                 },
@@ -59,12 +59,17 @@ const LayoutAdmin = () => {
             ],
         },
         {
-            label: <Link to="/admin/book">Manage Books</Link>,
+            label: <Link to="/admin/department">Quản lý phòng ban</Link>,
+            key: '/admin/department',
+            icon: <AppstoreOutlined />,
+        },
+        {
+            label: <Link to="/admin/book">Quản lý sách</Link>,
             key: '/admin/book',
             icon: <ExceptionOutlined />,
         },
         {
-            label: <Link to="/admin/order">Manage Orders</Link>,
+            label: <Link to="/admin/order">Quản lý đơn hàng</Link>,
             key: '/admin/order',
             icon: <DollarCircleOutlined />,
         },
@@ -139,7 +144,7 @@ const LayoutAdmin = () => {
                         <Outlet />
                     </Content>
                     <Footer style={{ padding: 0, textAlign: 'center' }}>
-                        BookStore &copy; Doanh - Made with <HeartTwoTone />
+                        Medical Supplies Management &copy; Doanh - Made with <HeartTwoTone />
                     </Footer>
                 </Layout>
             </Layout>

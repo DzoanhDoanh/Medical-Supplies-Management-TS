@@ -8,7 +8,12 @@ export const registerApi = (
     email: string,
     password: string,
     phone: string,
-    role?: string,
+    role: string,
+    departmentId: string,
+    position: string,
+    gender: string,
+    dateOfBirth: string,
+    address: string,
     avatar?: string,
 ) => {
     const urlBackend = '/register';
@@ -20,6 +25,11 @@ export const registerApi = (
         role: role ? role : 'user',
         avatar: avatar ? avatar : 'user.png',
         originalPass: password,
+        departmentId,
+        position: position,
+        gender: gender,
+        dateOfBirth,
+        address,
         createAt: new Date(),
     });
 };
@@ -32,7 +42,7 @@ export const getUsersApi = (query: string) => {
 };
 
 export const getAllUsers = () => {
-    return axios.get<IBackendRes<IUser>>('/660/users');
+    return axios.get<IBackendRes<IUser[]>>('/660/users');
 };
 export const importUserApi = (
     fullName: string,
@@ -61,10 +71,15 @@ export const updateUserApi = (
     fullName: string,
     phone: string,
     role: string,
+    departmentId: string,
+    position: string,
+    gender: string,
+    dateOfBirth: string,
+    address: string,
     avatar?: string,
 ) => {
     const urlBackend = `/660/users/${id}`;
-    return axios.put<IBackendRes<IAuth>>(urlBackend, {
+    return axios.put<IBackendRes<IUser>>(urlBackend, {
         email,
         password,
         fullName,
@@ -72,6 +87,11 @@ export const updateUserApi = (
         role,
         avatar: avatar ? avatar : 'user.png',
         originalPass: password,
+        departmentId,
+        position: position,
+        gender: gender,
+        dateOfBirth,
+        address,
         createAt: new Date(),
     });
 };
@@ -189,4 +209,37 @@ export const getOrderById = (id: string) => {
 export const getOrderByUserId = (id: string, query?: string) => {
     const urlBackend = `/660/orders?userId=${id}&${query}`;
     return axios.get<IBackendRes<IOrder[]>>(urlBackend);
+};
+export const getDepartmentsApi = (query: string) => {
+    return axios.get<IBackendRes<IDepartment[]>>(`/departments?_page=1&${query}`);
+};
+export const getDepartmentByIdApi = (id: string) => {
+    return axios.get<IBackendRes<IBook>>(`/departments/${id}`);
+};
+export const createDepartmentApi = (name: string, userId: string, userName: string, affiliatedUnit: string) => {
+    const urlBackend = `/660/departments`;
+    return axios.post<IBackendRes<IDepartment>>(urlBackend, {
+        name,
+        userId,
+        userName,
+        affiliatedUnit,
+        createAt: new Date(),
+    });
+};
+export const updateDepartmentApi = (
+    id: string,
+    name: string,
+    userId: string,
+    userName: string,
+    affiliatedUnit: string,
+    createAt: string,
+) => {
+    const urlBackend = `/660/departments/${id}`;
+    return axios.put<IBackendRes<IDepartment>>(urlBackend, {
+        name,
+        userId,
+        userName,
+        affiliatedUnit,
+        createAt,
+    });
 };

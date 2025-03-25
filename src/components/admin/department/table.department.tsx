@@ -1,41 +1,42 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { deleteUserApi, getUsersApi } from '@/services/api';
+import { deleteUserApi, getDepartmentsApi, getUserByIdApi, getUsersApi } from '@/services/api';
 // import { dateRangeValidate } from '@/services/helper';
 import { CloudUploadOutlined, DeleteTwoTone, EditTwoTone, ExportOutlined, PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
 import { App, Button, Popconfirm } from 'antd';
 import { useRef, useState } from 'react';
-import DetailUser from './detail.user';
-import CreateUser from './create.user';
-import ImportUser from './data/import.user';
+import DetailUser from './detail.department';
+import CreateUser from './create.department';
+import ImportUser from './data/import.department';
 import { CSVLink } from 'react-csv';
-import UpdateUser from './update.user';
+import UpdateUser from './update.department';
 import dayjs from 'dayjs';
+import DetailDepartment from './detail.department';
+import CreateDepartment from './create.department';
+import UpdateDepartment from './update.department';
 
 type TSearch = {
-    fullName: string;
-    email: string;
+    name: string;
+    userId: string;
     createAt: string;
     createAtRange: string;
 };
-const TableUser = () => {
+const TableDepartment = () => {
     const actionRef = useRef<ActionType>();
     const [openViewDetail, setOpenViewDetail] = useState<boolean>(false);
-    const [dataViewDetail, setDataViewDetail] = useState<IUser | null>(null);
+    const [dataViewDetail, setDataViewDetail] = useState<IDepartment | null>(null);
     const [openModalCreate, setOpenModalCreate] = useState<boolean>(false);
     const [openModalImport, setOpenModalImport] = useState<boolean>(false);
-    const [currentDataTable, setCurrentDataTable] = useState<IUser[]>([]);
+    const [currentDataTable, setCurrentDataTable] = useState<IDepartment[]>([]);
     const [excelData, setExcelData] = useState([]);
-    const [dataUpdate, setDataUpdate] = useState<IUser | null>(null);
+    const [dataUpdate, setDataUpdate] = useState<IDepartment | null>(null);
     const [openModalUpdate, setOpenModalUpdate] = useState<boolean>(false);
-    const [isDeleteUser, setIsDeleteUser] = useState<boolean>(false);
+    const [isDeleteDepartment, setIsDeleteDepartment] = useState<boolean>(false);
     const { message, notification } = App.useApp();
 
-    const handleDeleteUser = async (id: string) => {
-        // setIsDeleteUser(false);
+    const handleDeleteDepartment = async (id: string) => {
         const res = await deleteUserApi(id);
-        console.log(res);
         setTimeout(() => {
             if (res && res.data && typeof res.data === 'string') {
                 const alertMessage = res.data + '';
@@ -43,23 +44,23 @@ const TableUser = () => {
                     message: 'Has an error!',
                     description: alertMessage,
                 });
-                setIsDeleteUser(true);
+                setIsDeleteDepartment(true);
                 return;
             } else {
                 message.success('Xóa nhân viên thành công!');
-                setIsDeleteUser(false);
+                setIsDeleteDepartment(false);
                 refreshTable();
             }
         }, 500);
     };
-    const columns: ProColumns<IUser>[] = [
+    const columns: ProColumns<IDepartment>[] = [
         {
             dataIndex: 'index',
             valueType: 'indexBorder',
             width: 48,
         },
         {
-            title: 'Mã nhân viên',
+            title: 'Mã phòng ban',
             dataIndex: 'id',
             hideInSearch: true,
             sorter: true,
@@ -78,28 +79,24 @@ const TableUser = () => {
             },
         },
         {
-            title: 'Họ tên',
-            dataIndex: 'fullName',
+            title: 'Tên phòng',
+            dataIndex: 'name',
         },
         {
-            title: 'Email',
-            dataIndex: 'email',
-            copyable: true,
-        },
-        {
-            title: 'Chức vụ',
-            dataIndex: 'position',
+            title: 'Tên người phụ trách',
+            dataIndex: 'userName',
             hideInSearch: true,
+            render(dom, entity) {
+                return <span>{entity.userName}</span>;
+            },
         },
         {
-            title: 'Điện thoại',
-            dataIndex: 'phone',
+            title: 'Đơn vị trực thuộc',
+            dataIndex: 'affiliatedUnit',
             hideInSearch: true,
-        },
-        {
-            title: 'Vai trò',
-            dataIndex: 'role',
-            hideInSearch: true,
+            render(dom, entity) {
+                return <span>{entity.affiliatedUnit}</span>;
+            },
         },
         {
             title: 'Tạo ngày',
@@ -136,10 +133,10 @@ const TableUser = () => {
                             placement="leftTop"
                             title={'Xóa nhân viên'}
                             description="Bạn có chắc là xóa nhân viên này"
-                            onConfirm={() => handleDeleteUser(entity.id)}
+                            onConfirm={() => handleDeleteDepartment(entity.id)}
                             okText="Xác nhận"
                             cancelText="Hủy"
-                            okButtonProps={{ loading: isDeleteUser }}
+                            okButtonProps={{ loading: isDeleteDepartment }}
                         >
                             <span style={{ cursor: 'pointer', marginLeft: '20px' }}>
                                 <DeleteTwoTone twoToneColor={'#ff4d4f'} style={{ cursor: 'pointer' }} />
@@ -156,7 +153,7 @@ const TableUser = () => {
     };
     return (
         <>
-            <ProTable<IUser, TSearch>
+            <ProTable<IDepartment, TSearch>
                 columns={columns}
                 scroll={{ x: 1000 }}
                 actionRef={actionRef}
@@ -166,45 +163,34 @@ const TableUser = () => {
 
                     let query = '';
                     if (params) {
-                        if (params.email) {
-                            query += `&email_like=${params.email}`;
+                        if (params.name) {
+                            query += `&name_like=${params.name}`;
                         }
-                        if (params.fullName) {
-                            query += `&fullName_like=${params.fullName}`;
-                        }
-                        // const createDateRange = dateRangeValidate(params.createAtRange);
-                        // if (createDateRange) {
-                        //     query += `&createAt>=${createDateRange[0]}&createAt<=${createDateRange[1]}`;
-                        // }
                     }
 
                     if (sort && sort.id) {
                         const sortBy = sort.id === 'ascend' ? 'asc' : 'desc';
                         query += `&_sort=id&_order=${sortBy}`;
                     }
-                    const allUser = await getUsersApi(query);
-                    if (allUser && typeof allUser.data !== 'string') {
-                        setCurrentDataTable(allUser.data ?? []);
-                        if (allUser.data) {
-                            const data = allUser.data;
+                    const allDepartments = await getDepartmentsApi(query);
+                    if (allDepartments && typeof allDepartments.data !== 'string') {
+                        setCurrentDataTable(allDepartments.data ?? []);
+                        if (allDepartments.data) {
+                            const data = allDepartments.data;
                             const result = data.map((item) => {
                                 return {
                                     id: item.id,
-                                    fullName: item.fullName,
-                                    email: item.email,
-                                    phone: item.phone,
-                                    departmentId: item.departmentId,
-                                    position: item.position,
-                                    gender: item.gender,
-                                    dateOfBirth: item.dateOfBirth,
-                                    address: item.address,
+                                    name: item.name,
+                                    affiliatedUnit: item.affiliatedUnit,
+                                    userId: item.userId,
+                                    createAt: item.createAt,
                                 };
                             });
                             setExcelData(result as []);
                         }
                     }
                     return {
-                        data: allUser.data,
+                        data: allDepartments.data,
                         page: 1,
                         success: true,
                         // total: 3,
@@ -215,10 +201,10 @@ const TableUser = () => {
                     pageSize: 5,
                     onChange: (page) => console.log(page),
                 }}
-                headerTitle="Quản lý nhân viên"
+                headerTitle="Quản lý phòng ban"
                 toolBarRender={() => [
                     <Button icon={<ExportOutlined />} type="primary">
-                        <CSVLink data={excelData} filename="export-user.csv">
+                        <CSVLink data={excelData} filename="export-department.csv">
                             Tải excel
                         </CSVLink>
                     </Button>,
@@ -229,7 +215,7 @@ const TableUser = () => {
                             setOpenModalImport(true);
                         }}
                     >
-                        Import nhân viên
+                        Import Department
                     </Button>,
                     <Button
                         key="button"
@@ -243,19 +229,19 @@ const TableUser = () => {
                     </Button>,
                 ]}
             />
-            <DetailUser
+            <DetailDepartment
                 openViewDetail={openViewDetail}
                 setOpenViewDetail={setOpenViewDetail}
                 dataViewDetail={dataViewDetail}
                 setDataViewDetail={setDataViewDetail}
             />
-            <CreateUser
+            <CreateDepartment
                 openModalCreate={openModalCreate}
                 setOpenModalCreate={setOpenModalCreate}
                 refreshTable={refreshTable}
             />
             <ImportUser openModalImport={openModalImport} setOpenModalImport={setOpenModalImport} />
-            <UpdateUser
+            <UpdateDepartment
                 openModalUpdate={openModalUpdate}
                 setOpenModalUpdate={setOpenModalUpdate}
                 refreshTable={refreshTable}
@@ -266,4 +252,4 @@ const TableUser = () => {
     );
 };
 
-export default TableUser;
+export default TableDepartment;

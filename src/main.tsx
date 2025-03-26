@@ -21,6 +21,7 @@ import OrderPage from './pages/client/order';
 import UserProfile from './pages/client/user.profile';
 import History from './components/client/history/history';
 import TableDepartment from './components/admin/department/table.department';
+import TableCategory from './components/admin/category/table.category';
 // import vie from 'antd/locale/vi_VN';
 
 const router = createBrowserRouter([
@@ -107,6 +108,14 @@ const router = createBrowserRouter([
                 element: (
                     <ProtectedRoute>
                         <TableDepartment />
+                    </ProtectedRoute>
+                ),
+            },
+            {
+                path: 'category',
+                element: (
+                    <ProtectedRoute>
+                        <TableCategory />
                     </ProtectedRoute>
                 ),
             },

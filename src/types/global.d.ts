@@ -53,6 +53,7 @@ declare global {
     interface ICategory {
         id: string;
         categoryName: string;
+        createAt: string;
     }
     interface ICart {
         id: string;

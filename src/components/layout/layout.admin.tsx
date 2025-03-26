@@ -9,6 +9,7 @@ import {
     DollarCircleOutlined,
     MenuFoldOutlined,
     MenuUnfoldOutlined,
+    DatabaseOutlined,
 } from '@ant-design/icons';
 import { Layout, Menu, Dropdown, Space, Avatar } from 'antd';
 import { Outlet, useLocation } from 'react-router-dom';
@@ -61,7 +62,12 @@ const LayoutAdmin = () => {
         {
             label: <Link to="/admin/department">Quản lý phòng ban</Link>,
             key: '/admin/department',
-            icon: <AppstoreOutlined />,
+            icon: <DatabaseOutlined />,
+        },
+        {
+            label: <Link to="/admin/category">Quản lý danh mục</Link>,
+            key: '/admin/category',
+            icon: <MenuFoldOutlined />,
         },
         {
             label: <Link to="/admin/book">Quản lý sách</Link>,

@@ -109,10 +109,33 @@ export const getCategoryApi = () => {
     const urlBackend = `/category`;
     return axios.get<IBackendRes<ICategory[]>>(urlBackend);
 };
+export const getCategoryWidthQueryApi = (query: string) => {
+    const urlBackend = `/category?_page=1&${query}`;
+    return axios.get<IBackendRes<ICategory[]>>(urlBackend);
+};
 export const getCategoryByIdApi = (id: string) => {
     const urlBackend = `/category/${id}`;
     return axios.get<IBackendRes<ICategory>>(urlBackend);
 };
+export const createCategoryApi = (categoryName: string) => {
+    const urlBackend = `/660/category`;
+    return axios.post<IBackendRes<ICategory>>(urlBackend, {
+        categoryName,
+        createAt: new Date(),
+    });
+};
+export const updateCategoryApi = (id: string, categoryName: string, createAt: string) => {
+    const urlBackend = `/660/category/${id}`;
+    return axios.put<IBackendRes<ICategory>>(urlBackend, {
+        categoryName,
+        createAt,
+    });
+};
+export const deleteCategoryApi = (id: string) => {
+    const urlBackend = `/660/category/${id}`;
+    return axios.delete<IBackendRes<ICategory>>(urlBackend);
+};
+
 export const addBookApi = (
     thumbnail: string,
     slider: string[],

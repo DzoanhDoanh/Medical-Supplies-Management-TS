@@ -22,6 +22,7 @@ import UserProfile from './pages/client/user.profile';
 import History from './components/client/history/history';
 import TableDepartment from './components/admin/department/table.department';
 import TableCategory from './components/admin/category/table.category';
+import ManageSuppliesPage from './pages/admin/manage.supplies';
 // import vie from 'antd/locale/vi_VN';
 
 const router = createBrowserRouter([
@@ -92,6 +93,14 @@ const router = createBrowserRouter([
                 element: (
                     <ProtectedRoute>
                         <ManageBookPage />
+                    </ProtectedRoute>
+                ),
+            },
+            {
+                path: 'supplies',
+                element: (
+                    <ProtectedRoute>
+                        <ManageSuppliesPage />
                     </ProtectedRoute>
                 ),
             },

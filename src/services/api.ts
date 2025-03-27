@@ -106,33 +106,33 @@ export const getBookByIdApi = (id: string) => {
     return axios.get<IBackendRes<IBook>>(`/books/${id}`);
 };
 export const getCategoryApi = () => {
-    const urlBackend = `/category`;
+    const urlBackend = `/categories`;
     return axios.get<IBackendRes<ICategory[]>>(urlBackend);
 };
 export const getCategoryWidthQueryApi = (query: string) => {
-    const urlBackend = `/category?_page=1&${query}`;
+    const urlBackend = `/categories?_page=1&${query}`;
     return axios.get<IBackendRes<ICategory[]>>(urlBackend);
 };
 export const getCategoryByIdApi = (id: string) => {
-    const urlBackend = `/category/${id}`;
+    const urlBackend = `/categories/${id}`;
     return axios.get<IBackendRes<ICategory>>(urlBackend);
 };
 export const createCategoryApi = (categoryName: string) => {
-    const urlBackend = `/660/category`;
+    const urlBackend = `/660/categories`;
     return axios.post<IBackendRes<ICategory>>(urlBackend, {
         categoryName,
         createAt: new Date(),
     });
 };
 export const updateCategoryApi = (id: string, categoryName: string, createAt: string) => {
-    const urlBackend = `/660/category/${id}`;
+    const urlBackend = `/660/categories/${id}`;
     return axios.put<IBackendRes<ICategory>>(urlBackend, {
         categoryName,
         createAt,
     });
 };
 export const deleteCategoryApi = (id: string) => {
-    const urlBackend = `/660/category/${id}`;
+    const urlBackend = `/660/categories/${id}`;
     return axios.delete<IBackendRes<ICategory>>(urlBackend);
 };
 
@@ -269,4 +269,77 @@ export const updateDepartmentApi = (
 export const deleteDepartmentApi = (id: string) => {
     const urlBackend = `/660/departments/${id}`;
     return axios.delete<IBackendRes<IDepartment>>(urlBackend);
+};
+
+export const getSuppliesApi = (query: string) => {
+    return axios.get<IBackendRes<ISupplies[]>>(`/supplies?_page=1&${query}`);
+};
+export const getSupplyByIdApi = (id: string) => {
+    return axios.get<IBackendRes<IBook>>(`/supplies/${id}`);
+};
+export const createSupplyApi = (
+    name: string,
+    categoryId: string,
+    desc: string,
+    unit: string, //don vi tinh
+    manufacturer: string,
+    batchNumber: number,
+    expirationDate: string,
+    costPrice: number,
+    quantity: number,
+    status: number,
+    thumbnail?: string,
+) => {
+    const urlBackend = `/660/supplies`;
+    return axios.post<IBackendRes<ISupplies>>(urlBackend, {
+        name,
+        categoryId,
+        desc,
+        unit,
+        manufacturer,
+        batchNumber,
+        expirationDate,
+        costPrice,
+        quantity,
+        status,
+        thumbnail: thumbnail ? thumbnail : 'user.png',
+        createAt: new Date(),
+        updateAt: new Date(),
+    });
+};
+export const updateSupplyApi = (
+    id: string,
+    name: string,
+    categoryId: string,
+    desc: string,
+    unit: string, //don vi tinh
+    manufacturer: string,
+    batchNumber: number,
+    expirationDate: string,
+    costPrice: number,
+    quantity: number,
+    status: number,
+    createAt: string,
+    thumbnail?: string,
+) => {
+    const urlBackend = `/660/supplies/${id}`;
+    return axios.put<IBackendRes<ISupplies>>(urlBackend, {
+        name,
+        categoryId,
+        desc,
+        unit,
+        manufacturer,
+        batchNumber,
+        expirationDate,
+        costPrice,
+        quantity,
+        status,
+        thumbnail: thumbnail ? thumbnail : 'user.png',
+        createAt,
+        updateAt: new Date(),
+    });
+};
+export const deleteSupplyApi = (id: string) => {
+    const urlBackend = `/660/supplies/${id}`;
+    return axios.delete<IBackendRes<ISupplies>>(urlBackend);
 };

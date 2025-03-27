@@ -75,6 +75,11 @@ const LayoutAdmin = () => {
             icon: <ExceptionOutlined />,
         },
         {
+            label: <Link to="/admin/supplies">Quản lý vật tư</Link>,
+            key: '/admin/supplies',
+            icon: <ExceptionOutlined />,
+        },
+        {
             label: <Link to="/admin/order">Quản lý đơn hàng</Link>,
             key: '/admin/order',
             icon: <DollarCircleOutlined />,

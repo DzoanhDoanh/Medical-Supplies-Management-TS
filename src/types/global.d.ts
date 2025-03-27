@@ -79,4 +79,20 @@ declare global {
         userName: string;
         createAt: string;
     }
+    interface ISupplies {
+        id: string;
+        name: string;
+        categoryId: string;
+        desc: string;
+        unit: string; //don vi tinh
+        manufacturer: string;
+        batchNumber: number;
+        expirationDate: string;
+        costPrice: number;
+        quantity: number;
+        status: number;
+        createAt: string;
+        updateAt: string;
+        thumbnail?: string;
+    }
 }

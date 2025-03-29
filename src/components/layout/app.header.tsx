@@ -1,12 +1,21 @@
-import { FaReact } from 'react-icons/fa';
+import { FaPlusSquare } from 'react-icons/fa';
 import { VscSearchFuzzy } from 'react-icons/vsc';
-import { Divider, Drawer, Avatar, Popover, App } from 'antd';
+import { Divider, Drawer, Avatar, App, Menu } from 'antd';
 import { Dropdown, Space } from 'antd';
 import { useNavigate } from 'react-router';
 import './app.header.scss';
 import { Link } from 'react-router-dom';
 import { useCurrentApp } from 'components/context/app.context';
 import { useState } from 'react';
+import {
+    ApartmentOutlined,
+    AppstoreAddOutlined,
+    LoginOutlined,
+    LogoutOutlined,
+    PayCircleOutlined,
+    SnippetsOutlined,
+    UserOutlined,
+} from '@ant-design/icons';
 
 interface IProps {
     searchTerm: string;
@@ -25,6 +34,7 @@ const AppHeader = (props: IProps) => {
         setIsAuthenticated(false);
         localStorage.removeItem('accessToken');
         message.success('Đăng xuất thành công!');
+        navigate('/login');
     };
     // eslint-disable-next-line prefer-const
     let items = [
@@ -35,10 +45,6 @@ const AppHeader = (props: IProps) => {
                 </label>
             ),
             key: 'account',
-        },
-        {
-            label: <Link to="/history">Lịch sử mua hàng</Link>,
-            key: 'history',
         },
         {
             label: (
@@ -56,36 +62,6 @@ const AppHeader = (props: IProps) => {
         });
     }
 
-    const contentPopover = () => {
-        return (
-            <div className="pop-cart-body">
-                <div className="pop-cart-content">
-                    {/* {carts?.map((book, index) => {
-                        return (
-                            <div className="book" key={`book-${index}`}>
-                                <img src={`${book?.detail?.thumbnail}`} />
-                                <div>{book?.detail?.mainText}</div>
-                                <div className="price">
-                                    {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(
-                                        book?.detail?.price ?? 0,
-                                    )}
-                                </div>
-                            </div>
-                        );
-                    })} */}
-                </div>
-                {/* {carts.length > 0 ? (
-                    <div style={{ display: 'flex', gap: 12, marginTop: '20px' }}>
-                        <Button type="primary" onClick={() => navigate('/order')}>
-                            Xem giỏ hàng
-                        </Button>
-                    </div>
-                ) : (
-                    <Empty description="Không có sản phẩm trong giỏ hàng" />
-                )} */}
-            </div>
-        );
-    };
     return (
         <>
             <div className="header-container">
@@ -96,23 +72,24 @@ const AppHeader = (props: IProps) => {
                             onClick={() => {
                                 setOpenDrawer(true);
                             }}
+                            style={{ color: '#fff', marginRight: '16px', fontSize: '20px', cursor: 'pointer' }}
                         >
                             ☰
                         </div>
                         <div className="page-header__logo">
-                            <span className="logo">
+                            <span className="logo" style={{ color: '#fff' }}>
                                 <span onClick={() => navigate('/')}>
                                     {' '}
-                                    <FaReact className="rotate icon-react" />
-                                    BookStore
+                                    <FaPlusSquare className="icon-react"></FaPlusSquare>
+                                    Vật tư y tế
                                 </span>
 
-                                <VscSearchFuzzy className="icon-search" />
+                                <VscSearchFuzzy className="icon-search" style={{ color: '#000' }} />
                             </span>
                             <input
                                 className="input-search"
                                 type={'text'}
-                                placeholder="Bạn tìm gì hôm nay"
+                                placeholder="Tìm kiếm vật tư"
                                 value={props.searchTerm}
                                 onChange={(e) => props.setSearchTerm(e.target.value)}
                             />
@@ -120,29 +97,26 @@ const AppHeader = (props: IProps) => {
                     </div>
                     <nav className="page-header__bottom">
                         <ul id="navigation" className="navigation">
-                            <li className="navigation__item">
-                                <Popover
-                                    className="popover-carts"
-                                    placement="topRight"
-                                    rootClassName="popover-carts"
-                                    title={'Sản phẩm mới thêm'}
-                                    content={contentPopover}
-                                    arrow={true}
-                                >
-                                    {/* <Badge count={carts?.length ?? 0} size={'small'} showZero>
-                                        <FiShoppingCart className="icon-cart" onClick={() => navigate('/order')} />
-                                    </Badge> */}
-                                </Popover>
-                            </li>
                             <li className="navigation__item mobile">
                                 <Divider type="vertical" />
                             </li>
                             <li className="navigation__item mobile">
                                 {!isAuthenticated ? (
-                                    <span onClick={() => navigate('/login')}> Tài Khoản</span>
+                                    <span
+                                        onClick={() => navigate('/login')}
+                                        style={{
+                                            color: '#000',
+                                            backgroundColor: '#fff',
+                                            padding: '6px 12px',
+                                            borderRadius: '25px',
+                                        }}
+                                    >
+                                        {' '}
+                                        Tài Khoản
+                                    </span>
                                 ) : (
                                     <Dropdown menu={{ items }} trigger={['click']}>
-                                        <Space>
+                                        <Space style={{ color: '#fff' }}>
                                             <Avatar src={`http://localhost:5173/src/assets/images/${user?.avatar}`} />
                                             {user?.fullName}
                                         </Space>
@@ -154,11 +128,34 @@ const AppHeader = (props: IProps) => {
                 </header>
             </div>
             <Drawer title="Menu chức năng" placement="left" onClose={() => setOpenDrawer(false)} open={openDrawer}>
-                <p>Quản lý tài khoản</p>
-                <Divider />
-
-                <p onClick={() => handleLogout()}>Đăng xuất</p>
-                <Divider />
+                <Menu mode="vertical">
+                    {isAuthenticated ? (
+                        <>
+                            <Menu.Item key="1" icon={<UserOutlined />}>
+                                <Link to="/">Dashboard</Link>
+                            </Menu.Item>
+                            <Menu.Item key="2" icon={<PayCircleOutlined />}>
+                                <Link to="/required-buy-supplies">Đề nghị mua vật tư</Link>
+                            </Menu.Item>
+                            <Menu.Item key="3" icon={<AppstoreAddOutlined />}>
+                                <Link to="/required-supplies">Đề nghị cung cấp vật tư</Link>
+                            </Menu.Item>
+                            <Menu.Item key="4" icon={<ApartmentOutlined />}>
+                                <Link to="/medical-supplies-detail">Chi tiết vật tư</Link>
+                            </Menu.Item>
+                            <Menu.Item key="5" icon={<SnippetsOutlined />}>
+                                <Link to="/medical-supplies-report">Thống kê vật tư</Link>
+                            </Menu.Item>
+                            <Menu.Item key="6" icon={<LogoutOutlined />} danger onClick={handleLogout}>
+                                Đăng xuất
+                            </Menu.Item>
+                        </>
+                    ) : (
+                        <Menu.Item key="4" icon={<LoginOutlined />} danger onClick={() => navigate('/login')}>
+                            Đăng Nhập
+                        </Menu.Item>
+                    )}
+                </Menu>
             </Drawer>
         </>
     );

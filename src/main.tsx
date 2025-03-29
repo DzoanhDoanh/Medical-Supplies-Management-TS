@@ -28,11 +28,19 @@ const router = createBrowserRouter([
         children: [
             {
                 index: true,
-                element: <HomePage />,
+                element: (
+                    <ProtectedRoute>
+                        <HomePage />
+                    </ProtectedRoute>
+                ),
             },
             {
                 path: '/book/:id',
-                element: <BookPage />,
+                element: (
+                    <ProtectedRoute>
+                        <BookPage />
+                    </ProtectedRoute>
+                ),
             },
             {
                 path: '/account/:id',
@@ -47,10 +55,34 @@ const router = createBrowserRouter([
                 element: <AboutPage />,
             },
             {
-                path: '/checkout',
+                path: '/required-buy-supplies',
                 element: (
                     <ProtectedRoute>
-                        <div>checkout page</div>
+                        <div>required-buy-supplies</div>
+                    </ProtectedRoute>
+                ),
+            },
+            {
+                path: '/required-supplies',
+                element: (
+                    <ProtectedRoute>
+                        <div>required-supplies</div>
+                    </ProtectedRoute>
+                ),
+            },
+            {
+                path: '/medical-supplies-detail',
+                element: (
+                    <ProtectedRoute>
+                        <div>medical-supplies-detail</div>
+                    </ProtectedRoute>
+                ),
+            },
+            {
+                path: '/medical-supplies-report',
+                element: (
+                    <ProtectedRoute>
+                        <div>medical-supplies-report</div>
                     </ProtectedRoute>
                 ),
             },

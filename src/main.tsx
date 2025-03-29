@@ -12,14 +12,10 @@ import { AppProvider } from './components/context/app.context';
 import ProtectedRoute from './components/auth/auth';
 import LayoutAdmin from './components/layout/layout.admin';
 import DashBoardPage from './pages/admin/dashboard';
-import ManageBookPage from './pages/admin/manage.book';
-import ManageOrderPage from './pages/admin/manage.order';
 import ManageUserPage from './pages/admin/manage.user';
 import Login from './pages/client/auth/login';
 import enUS from 'antd/locale/en_US';
-import OrderPage from './pages/client/order';
 import UserProfile from './pages/client/user.profile';
-import History from './components/client/history/history';
 import TableDepartment from './components/admin/department/table.department';
 import TableCategory from './components/admin/category/table.category';
 import ManageSuppliesPage from './pages/admin/manage.supplies';
@@ -37,14 +33,6 @@ const router = createBrowserRouter([
             {
                 path: '/book/:id',
                 element: <BookPage />,
-            },
-            {
-                path: '/order',
-                element: (
-                    <ProtectedRoute>
-                        <OrderPage />
-                    </ProtectedRoute>
-                ),
             },
             {
                 path: '/account/:id',
@@ -66,14 +54,6 @@ const router = createBrowserRouter([
                     </ProtectedRoute>
                 ),
             },
-            {
-                path: '/history',
-                element: (
-                    <ProtectedRoute>
-                        <History />
-                    </ProtectedRoute>
-                ),
-            },
         ],
     },
     {
@@ -89,26 +69,10 @@ const router = createBrowserRouter([
                 ),
             },
             {
-                path: 'book',
-                element: (
-                    <ProtectedRoute>
-                        <ManageBookPage />
-                    </ProtectedRoute>
-                ),
-            },
-            {
                 path: 'supplies',
                 element: (
                     <ProtectedRoute>
                         <ManageSuppliesPage />
-                    </ProtectedRoute>
-                ),
-            },
-            {
-                path: 'order',
-                element: (
-                    <ProtectedRoute>
-                        <ManageOrderPage />
                     </ProtectedRoute>
                 ),
             },

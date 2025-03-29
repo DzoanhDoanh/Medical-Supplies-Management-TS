@@ -1,10 +1,10 @@
-import { Row, Col, Typography, Rate, Tag, Button, InputNumber, Card, Image, message, Spin } from 'antd';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Row, Col, Typography, Rate, Tag, Button, InputNumber, Card, Image, Spin } from 'antd';
 import { ArrowLeftOutlined, ShoppingCartOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import CurrencyFormatter from '@/components/currencyFormatter/currency.formatter';
 import { useState } from 'react';
-import { useCurrentApp } from '@/components/context/app.context';
-import { addToCartApi, getCartsApi } from '@/services/api';
+
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -14,39 +14,8 @@ interface IProps {
 const BookDetail = ({ currentBook }: IProps) => {
     const [currentQuantity, setCurrentQuantity] = useState<number>(1);
     const [loading, setLoading] = useState<boolean>(false);
-    const { setCarts } = useCurrentApp();
     const navigate = useNavigate();
-    const handleAddToCart = async () => {
-        try {
-            setLoading(true);
-            const fetchCarts = await getCartsApi();
-            if (fetchCarts && fetchCarts.data) {
-                const data = fetchCarts.data;
-                const isExistBook = data.findIndex((c: ICart) => c.detail.id === (currentBook ? currentBook.id : ''));
-                if (isExistBook > -1) {
-                    message.warning('Sản phẩm đã có trong giỏ hàng.');
-                    setLoading(false);
-                    return;
-                }
-            }
-            const res = await addToCartApi(currentQuantity, currentBook as IBook);
-            if (res && res.status === 201 && res.data) {
-                const fetchCarts = await getCartsApi();
-                if (fetchCarts && fetchCarts.data) {
-                    setCarts(fetchCarts.data);
-                }
-                message.success('Thêm vào giỏ hàng thành công');
-                setLoading(false);
-            } else {
-                message.error('Không thể thêm sản phẩm vào giỏ hàng');
-                setLoading(false);
-            }
-        } catch (error) {
-            console.log(error);
-            message.error('Không thể thêm sản phẩm vào giỏ hàng');
-            setLoading(false);
-        }
-    };
+
     return (
         <div style={{ maxWidth: 1400, margin: '0 auto', padding: '40px 0' }}>
             {loading ? (
@@ -130,7 +99,6 @@ const BookDetail = ({ currentBook }: IProps) => {
                                 type="primary"
                                 icon={<ShoppingCartOutlined />}
                                 style={{ marginRight: '10px' }}
-                                onClick={handleAddToCart}
                             >
                                 Thêm vào giỏ hàng
                             </Button>

@@ -139,7 +139,17 @@ const CreateSupply = (props: IProps) => {
         { required: true, message: 'Giá nhập là bắt buộc' },
         { type: 'number', min: 0, message: 'Giá nhập phải là số' },
     ];
-    const quantityRules: Rule[] = [{ required: true, message: 'Số lượng là bắt buộc' }];
+    const quantityRules: Rule[] = [
+        { required: true, message: 'Số lượng là bắt buộc' },
+        {
+            validator: (_, value) => {
+                if (value >= 0) {
+                    return Promise.resolve();
+                }
+                return Promise.reject(new Error('Số lượng không được nhỏ hơn 0!'));
+            },
+        },
+    ];
     return (
         <>
             <Modal
@@ -233,7 +243,17 @@ const CreateSupply = (props: IProps) => {
                             <Form.Item<FieldType>
                                 label="Số lô sản xuất"
                                 name="batchNumber"
-                                rules={[{ required: true, message: 'Số lô sản xuất là bắt buộc' }]}
+                                rules={[
+                                    { required: true, message: 'Số lô sản xuất là bắt buộc' },
+                                    {
+                                        validator: (_, value) => {
+                                            if (value >= 0) {
+                                                return Promise.resolve();
+                                            }
+                                            return Promise.reject(new Error('Số lô sản xuất không được nhỏ hơn 0'));
+                                        },
+                                    },
+                                ]}
                             >
                                 <Input type="number" placeholder="Vui lòng điền số lô sản xuất" />
                             </Form.Item>
@@ -264,7 +284,7 @@ const CreateSupply = (props: IProps) => {
                             </Form.Item> */}
 
                             <Form.Item<FieldType> label="Số lượng" name="quantity" rules={quantityRules}>
-                                <Input type="number" placeholder="Enter quantity" />
+                                <Input min={0} type="number" placeholder="Enter quantity" />
                             </Form.Item>
                         </Col>
                     </Row>

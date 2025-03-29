@@ -1,14 +1,12 @@
-import { useEffect, useState } from 'react';
 import { FaReact } from 'react-icons/fa';
-import { FiShoppingCart } from 'react-icons/fi';
 import { VscSearchFuzzy } from 'react-icons/vsc';
-import { Divider, Badge, Drawer, Avatar, Popover, App, Empty, Button } from 'antd';
+import { Divider, Drawer, Avatar, Popover, App } from 'antd';
 import { Dropdown, Space } from 'antd';
 import { useNavigate } from 'react-router';
 import './app.header.scss';
 import { Link } from 'react-router-dom';
 import { useCurrentApp } from 'components/context/app.context';
-import { getCartsApi } from '@/services/api';
+import { useState } from 'react';
 
 interface IProps {
     searchTerm: string;
@@ -19,25 +17,11 @@ const AppHeader = (props: IProps) => {
 
     const { message } = App.useApp();
 
-    const { isAuthenticated, user, setUser, setIsAuthenticated, carts, setCarts } = useCurrentApp();
+    const { isAuthenticated, user, setUser, setIsAuthenticated } = useCurrentApp();
 
     const navigate = useNavigate();
-    useEffect(() => {
-        const fetchCarts = async () => {
-            if (isAuthenticated === true) {
-                const res = await getCartsApi();
-                if (res && res.data) {
-                    setCarts(res.data);
-                }
-            } else {
-                setCarts([]);
-            }
-        };
-        fetchCarts();
-    }, [isAuthenticated]);
     const handleLogout = async () => {
         setUser(null);
-        setCarts([]);
         setIsAuthenticated(false);
         localStorage.removeItem('accessToken');
         message.success('Đăng xuất thành công!');
@@ -76,7 +60,7 @@ const AppHeader = (props: IProps) => {
         return (
             <div className="pop-cart-body">
                 <div className="pop-cart-content">
-                    {carts?.map((book, index) => {
+                    {/* {carts?.map((book, index) => {
                         return (
                             <div className="book" key={`book-${index}`}>
                                 <img src={`${book?.detail?.thumbnail}`} />
@@ -88,9 +72,9 @@ const AppHeader = (props: IProps) => {
                                 </div>
                             </div>
                         );
-                    })}
+                    })} */}
                 </div>
-                {carts.length > 0 ? (
+                {/* {carts.length > 0 ? (
                     <div style={{ display: 'flex', gap: 12, marginTop: '20px' }}>
                         <Button type="primary" onClick={() => navigate('/order')}>
                             Xem giỏ hàng
@@ -98,7 +82,7 @@ const AppHeader = (props: IProps) => {
                     </div>
                 ) : (
                     <Empty description="Không có sản phẩm trong giỏ hàng" />
-                )}
+                )} */}
             </div>
         );
     };
@@ -145,9 +129,9 @@ const AppHeader = (props: IProps) => {
                                     content={contentPopover}
                                     arrow={true}
                                 >
-                                    <Badge count={carts?.length ?? 0} size={'small'} showZero>
+                                    {/* <Badge count={carts?.length ?? 0} size={'small'} showZero>
                                         <FiShoppingCart className="icon-cart" onClick={() => navigate('/order')} />
-                                    </Badge>
+                                    </Badge> */}
                                 </Popover>
                             </li>
                             <li className="navigation__item mobile">

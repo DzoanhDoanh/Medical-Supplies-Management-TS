@@ -1,10 +1,10 @@
-import { deleteSupplyApi, getSuppliesApi } from '@/services/api';
+import { deleteSupplyApi, getCategoryApi, getSuppliesApi } from '@/services/api';
 // import { dateRangeValidate } from '@/services/helper';
 import { DeleteTwoTone, EditTwoTone, ExportOutlined, PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
 import { App, Button, Popconfirm } from 'antd';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 // import ImportUser from './data/import.user';
 import { CSVLink } from 'react-csv';
 import dayjs from 'dayjs';
@@ -29,9 +29,19 @@ const TableSupplies = () => {
     const [excelData, setExcelData] = useState([]);
     const [dataUpdate, setDataUpdate] = useState<ISupplies | null>(null);
     const [openModalUpdate, setOpenModalUpdate] = useState<boolean>(false);
+    const [categories, setCategories] = useState<ICategory[]>([]);
     const [isDeleteSupply, setIsDeleteSupply] = useState<boolean>(false);
     const { message, notification } = App.useApp();
 
+    useEffect(() => {
+        const fetchCategory = async () => {
+            const res = await getCategoryApi();
+            if (res && res.data) {
+                setCategories(res.data);
+            }
+        };
+        fetchCategory();
+    }, []);
     const handleDeleteSupply = async (id: string) => {
         const res = await deleteSupplyApi(id);
         setTimeout(() => {
@@ -79,11 +89,19 @@ const TableSupplies = () => {
             title: 'Tên vật tư',
             dataIndex: 'name',
         },
-        // {
-        //     title: 'Danh mục',
-        //     dataIndex: 'categoryId',
-        //     hideInSearch: true,
-        // },
+        {
+            title: 'Danh mục',
+            dataIndex: 'categoryId',
+            hideInSearch: true,
+            render(dom, entity) {
+                try {
+                    const result = categories.findIndex((e) => e.id === entity.categoryId);
+                    return <span>{categories[result].categoryName || entity.categoryId}</span>;
+                } catch (error) {
+                    console.log(error);
+                }
+            },
+        },
         // {
         //     title: 'Mô tả',
         //     dataIndex: 'desc',

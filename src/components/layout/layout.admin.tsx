@@ -6,7 +6,6 @@ import {
     HeartTwoTone,
     TeamOutlined,
     UserOutlined,
-    DollarCircleOutlined,
     MenuFoldOutlined,
     MenuUnfoldOutlined,
     DatabaseOutlined,
@@ -43,6 +42,11 @@ const LayoutAdmin = () => {
             icon: <AppstoreOutlined />,
         },
         {
+            label: <Link to="/admin/category">Quản lý danh mục</Link>,
+            key: '/admin/category',
+            icon: <MenuFoldOutlined />,
+        },
+        {
             label: <span>Nhân viên</span>,
             key: '/admin/user',
             icon: <UserOutlined />,
@@ -64,25 +68,11 @@ const LayoutAdmin = () => {
             key: '/admin/department',
             icon: <DatabaseOutlined />,
         },
-        {
-            label: <Link to="/admin/category">Quản lý danh mục</Link>,
-            key: '/admin/category',
-            icon: <MenuFoldOutlined />,
-        },
-        {
-            label: <Link to="/admin/book">Quản lý sách</Link>,
-            key: '/admin/book',
-            icon: <ExceptionOutlined />,
-        },
+
         {
             label: <Link to="/admin/supplies">Quản lý vật tư</Link>,
             key: '/admin/supplies',
             icon: <ExceptionOutlined />,
-        },
-        {
-            label: <Link to="/admin/order">Quản lý đơn hàng</Link>,
-            key: '/admin/order',
-            icon: <DollarCircleOutlined />,
         },
     ];
 

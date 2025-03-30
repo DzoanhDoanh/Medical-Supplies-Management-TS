@@ -346,12 +346,25 @@ export const deleteSupplyApi = (id: string) => {
 export const getMaterialRequestsApi = (query: string) => {
     return axios.get<IBackendRes<IMaterialRequest[]>>(`/requests?_page=1&${query}`);
 };
-export const createMaterialRequestsApi = (requesterInfo: RequesterInfo, materialRequests: MaterialRequests[]) => {
+export const createMaterialRequestsApi = (
+    requestName: string,
+    requesterInfo: RequesterInfo,
+    materialRequests: MaterialRequests[],
+) => {
     const urlBackend = `/660/requests`;
     return axios.post<IBackendRes<IMaterialRequest>>(urlBackend, {
+        requestName,
         requesterInfo,
         materialRequests,
         status: 0,
         createAt: new Date(),
+        updateAt: new Date(),
+    });
+};
+export const updateStatusMaterialRequestApi = (id: string, status: number) => {
+    const urlBackend = `/660/requests/${id}`;
+    return axios.patch<IBackendRes<IMaterialRequest>>(urlBackend, {
+        status,
+        updateAt: new Date(),
     });
 };

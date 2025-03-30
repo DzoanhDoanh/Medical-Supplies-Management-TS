@@ -21,6 +21,7 @@ import MedicalSuppliesPage from './pages/client/medical.supplies';
 import ManageCategory from './pages/admin/manage.category';
 import ManageDepartment from './pages/admin/manage.department';
 import MedicalSuppliesRequest from './pages/client/request.supplies';
+import ManageMaterialRequest from './pages/admin/manage.material.request';
 // import vie from 'antd/locale/vi_VN';
 
 const router = createBrowserRouter([
@@ -68,7 +69,7 @@ const router = createBrowserRouter([
                 path: '/medical-supplies-request',
                 element: (
                     <ProtectedRoute>
-                       <MedicalSuppliesRequest/>
+                        <MedicalSuppliesRequest />
                     </ProtectedRoute>
                 ),
             },
@@ -131,6 +132,14 @@ const router = createBrowserRouter([
                 element: (
                     <ProtectedRoute>
                         <ManageUserPage />
+                    </ProtectedRoute>
+                ),
+            },
+            {
+                path: 'material-request',
+                element: (
+                    <ProtectedRoute>
+                        <ManageMaterialRequest />
                     </ProtectedRoute>
                 ),
             },

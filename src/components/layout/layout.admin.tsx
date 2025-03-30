@@ -74,6 +74,23 @@ const LayoutAdmin = () => {
             key: '/admin/supplies',
             icon: <ExceptionOutlined />,
         },
+        {
+            label: <span>Duyệt đơn</span>,
+            key: '/admin/material-request',
+            icon: <UserOutlined />,
+            children: [
+                {
+                    label: <Link to="/admin/material-request">Duyệt đơn yêu cầu</Link>,
+                    key: '/admin/material-request',
+                    icon: <TeamOutlined />,
+                },
+                {
+                    label: <Link to="/admin/material-buy-request">Duyệt đơn mua</Link>,
+                    key: '/admin/material-buy-request',
+                    icon: <TeamOutlined />,
+                },
+            ],
+        },
     ];
 
     const itemsDropdown = [

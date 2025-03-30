@@ -97,7 +97,6 @@ declare global {
     }
     interface RequesterInfo {
         requesterName: string;
-        requestName: string;
         type: string;
     }
     interface MaterialRequests {
@@ -107,7 +106,10 @@ declare global {
     }
     interface IMaterialRequest {
         id: string;
+        status: number;
         createAt: string;
+        updateAt: string;
+        requestName: string;
         requesterInfo: RequesterInfo;
         materialRequests: MaterialRequests[];
     }

@@ -126,7 +126,6 @@ const MedicalSuppliesRequest = () => {
         const requestData = {
             requesterInfo: {
                 requesterName: values.requesterName,
-                requestName: values.requestName,
                 type: values.type,
             },
             materialRequests: selectedMaterials.map((item) => ({
@@ -136,7 +135,11 @@ const MedicalSuppliesRequest = () => {
             })),
         };
         try {
-            const res = await createMaterialRequestsApi(requestData.requesterInfo, requestData.materialRequests);
+            const res = await createMaterialRequestsApi(
+                values.requestName,
+                requestData.requesterInfo,
+                requestData.materialRequests,
+            );
             if (res && res.data) {
                 message.success('Yêu cầu cung cấp vật tư đã được gửi thành công!');
                 setLoading(false);

@@ -343,3 +343,15 @@ export const deleteSupplyApi = (id: string) => {
     const urlBackend = `/660/supplies/${id}`;
     return axios.delete<IBackendRes<ISupplies>>(urlBackend);
 };
+export const getMaterialRequestsApi = (query: string) => {
+    return axios.get<IBackendRes<IMaterialRequest[]>>(`/requests?_page=1&${query}`);
+};
+export const createMaterialRequestsApi = (requesterInfo: RequesterInfo, materialRequests: MaterialRequests[]) => {
+    const urlBackend = `/660/requests`;
+    return axios.post<IBackendRes<IMaterialRequest>>(urlBackend, {
+        requesterInfo,
+        materialRequests,
+        status: 0,
+        createAt: new Date(),
+    });
+};

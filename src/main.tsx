@@ -16,9 +16,11 @@ import ManageUserPage from './pages/admin/manage.user';
 import Login from './pages/client/auth/login';
 import enUS from 'antd/locale/en_US';
 import UserProfile from './pages/client/user.profile';
-import TableDepartment from './components/admin/department/table.department';
-import TableCategory from './components/admin/category/table.category';
 import ManageSuppliesPage from './pages/admin/manage.supplies';
+import MedicalSuppliesPage from './pages/client/medical.supplies';
+import ManageCategory from './pages/admin/manage.category';
+import ManageDepartment from './pages/admin/manage.department';
+import MedicalSuppliesRequest from './pages/client/request.supplies';
 // import vie from 'antd/locale/vi_VN';
 
 const router = createBrowserRouter([
@@ -63,10 +65,10 @@ const router = createBrowserRouter([
                 ),
             },
             {
-                path: '/required-supplies',
+                path: '/medical-supplies-request',
                 element: (
                     <ProtectedRoute>
-                        <div>required-supplies</div>
+                       <MedicalSuppliesRequest/>
                     </ProtectedRoute>
                 ),
             },
@@ -74,7 +76,7 @@ const router = createBrowserRouter([
                 path: '/medical-supplies-detail',
                 element: (
                     <ProtectedRoute>
-                        <div>medical-supplies-detail</div>
+                        <MedicalSuppliesPage />
                     </ProtectedRoute>
                 ),
             },
@@ -112,7 +114,7 @@ const router = createBrowserRouter([
                 path: 'department',
                 element: (
                     <ProtectedRoute>
-                        <TableDepartment />
+                        <ManageDepartment />
                     </ProtectedRoute>
                 ),
             },
@@ -120,7 +122,7 @@ const router = createBrowserRouter([
                 path: 'category',
                 element: (
                     <ProtectedRoute>
-                        <TableCategory />
+                        <ManageCategory />
                     </ProtectedRoute>
                 ),
             },

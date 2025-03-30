@@ -138,7 +138,7 @@ const AppHeader = (props: IProps) => {
                                 <Link to="/required-buy-supplies">Đề nghị mua vật tư</Link>
                             </Menu.Item>
                             <Menu.Item key="3" icon={<AppstoreAddOutlined />}>
-                                <Link to="/required-supplies">Đề nghị cung cấp vật tư</Link>
+                                <Link to="/medical-supplies-request">Đề nghị cung cấp vật tư</Link>
                             </Menu.Item>
                             <Menu.Item key="4" icon={<ApartmentOutlined />}>
                                 <Link to="/medical-supplies-detail">Chi tiết vật tư</Link>

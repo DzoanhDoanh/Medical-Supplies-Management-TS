@@ -95,4 +95,20 @@ declare global {
         updateAt: string;
         thumbnail?: string;
     }
+    interface RequesterInfo {
+        requesterName: string;
+        requestName: string;
+        type: string;
+    }
+    interface MaterialRequests {
+        materialId: string;
+        materialName: string;
+        quantity: number;
+    }
+    interface IMaterialRequest {
+        id: string;
+        createAt: string;
+        requesterInfo: RequesterInfo;
+        materialRequests: MaterialRequests[];
+    }
 }

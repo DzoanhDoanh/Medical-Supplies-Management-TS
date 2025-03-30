@@ -29,7 +29,7 @@ const { Content } = Layout;
 const { TabPane } = Tabs;
 const { useBreakpoint } = Grid;
 
-const SupplyDetail = () => {
+const MedicalSuppliesList = () => {
     const [searchTerm] = useOutletContext() as any;
     const [form] = Form.useForm();
     const [activeTab, setActiveTab] = useState('all');
@@ -358,4 +358,4 @@ const SupplyDetail = () => {
     );
 };
 
-export default SupplyDetail;
+export default MedicalSuppliesList;

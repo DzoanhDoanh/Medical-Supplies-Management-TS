@@ -102,7 +102,7 @@ const UpdateSupply = (props: IProps) => {
                     values.batchNumber,
                     values.expirationDate,
                     values.costPrice,
-                    values.quantity,
+                    Number(values.quantity),
                     dataUpdate?.status ?? 0,
                     dataUpdate?.createAt ?? '',
                 );
@@ -136,7 +136,7 @@ const UpdateSupply = (props: IProps) => {
                     values.batchNumber,
                     values.expirationDate,
                     values.costPrice,
-                    values.quantity,
+                    Number(values.quantity),
                     dataUpdate?.status ?? 0,
                     dataUpdate?.createAt ?? '',
                     base64,

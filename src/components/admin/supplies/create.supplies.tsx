@@ -82,7 +82,7 @@ const CreateSupply = (props: IProps) => {
                     values.batchNumber,
                     values.expirationDate,
                     values.costPrice,
-                    values.quantity,
+                    Number(values.quantity),
                     2,
                 );
                 if (res && res.data) {
@@ -114,7 +114,7 @@ const CreateSupply = (props: IProps) => {
                     values.batchNumber,
                     values.expirationDate,
                     values.costPrice,
-                    values.quantity,
+                    Number(values.quantity),
                     2,
                     base64,
                 );

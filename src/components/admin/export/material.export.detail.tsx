@@ -87,6 +87,17 @@ const MaterialTransfer = () => {
                         setLoading(false);
                         return;
                     }
+                }
+            }
+            for (const item of tableData) {
+                const material = allMaterials.find((e) => e.id === item.materialId);
+
+                if (material) {
+                    if (material.quantity < (item.deliveredQuantity ?? 0)) {
+                        message.error('Số lượng bàn giao không được nhiều hơn số lượng trong kho');
+                        setLoading(false);
+                        return;
+                    }
                     const quantity = material.quantity - (item.deliveredQuantity ?? 0);
                     await updateQuantitySupplyApi(item.materialId, quantity);
                 }

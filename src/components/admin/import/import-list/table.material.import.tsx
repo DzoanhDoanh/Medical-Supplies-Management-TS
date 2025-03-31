@@ -1,5 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { getMaterialRequestsApi, getUsersApi, updateStatusMaterialRequestApi } from '@/services/api';
+import {
+    getImportRequestsApi,
+    getMaterialRequestsApi,
+    getUsersApi,
+    updateStatusMaterialRequestApi,
+} from '@/services/api';
 // import { dateRangeValidate } from '@/services/helper';
 import { EditTwoTone, ExportOutlined, PrinterOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
@@ -8,17 +13,17 @@ import { App, Badge, Button, Divider, Popconfirm } from 'antd';
 import { useEffect, useRef, useState } from 'react';
 import { CSVLink } from 'react-csv';
 import dayjs from 'dayjs';
-import DetailDepartment from './detail.material.request';
+import DetailDepartment from './detail.material.import';
 
 type TSearch = {
     requestName: string;
     createAt: string;
     createAtRange: string;
 };
-const TableMaterialRequest = () => {
+const TableMaterialImport = () => {
     const actionRef = useRef<ActionType>();
     const [openViewDetail, setOpenViewDetail] = useState<boolean>(false);
-    const [dataViewDetail, setDataViewDetail] = useState<IMaterialRequest | null>(null);
+    const [dataViewDetail, setDataViewDetail] = useState<IImportRequest | null>(null);
     const [excelData, setExcelData] = useState([]);
     const [users, setUsers] = useState<IUser[]>([]);
     const [isDeleteMaterialRequest, setIsDeleteMaterialRequest] = useState<boolean>(false);
@@ -33,40 +38,14 @@ const TableMaterialRequest = () => {
         };
         fetchUser();
     }, []);
-    const handleApprove = async (entity: IMaterialRequest) => {
-        try {
-            const res = await updateStatusMaterialRequestApi(entity.id, 1);
-            if (res && res.data) {
-                message.success('Duyệt đơn thành công');
-                refreshTable();
-            } else {
-                message.error('Có lỗi xảy ra vui lòng thử lại');
-            }
-        } catch (error) {
-            message.error('Có lỗi xảy ra vui lòng thử lại');
-        }
-    };
-    const handleReject = async (entity: IMaterialRequest) => {
-        try {
-            const res = await updateStatusMaterialRequestApi(entity.id, 2);
-            if (res && res.data) {
-                message.success('Đã từ chối đơn yêu cầu');
-                refreshTable();
-            } else {
-                message.error('Có lỗi xảy ra vui lòng thử lại');
-            }
-        } catch (error) {
-            message.error('Có lỗi xảy ra vui lòng thử lại');
-        }
-    };
-    const columns: ProColumns<IMaterialRequest>[] = [
+    const columns: ProColumns<IImportRequest>[] = [
         {
             dataIndex: 'index',
             valueType: 'indexBorder',
             width: 48,
         },
         {
-            title: 'Mã đơn yêu cầu',
+            title: 'Mã đơn nhập',
             dataIndex: 'id',
             hideInSearch: true,
             sorter: true,
@@ -92,19 +71,19 @@ const TableMaterialRequest = () => {
             },
         },
         {
-            title: 'Tên người yêu cầu',
+            title: 'Tên người thực hiện',
             hideInSearch: true,
             render(dom, entity) {
                 try {
-                    const result = users.findIndex((e) => e.id === entity.requesterInfo.requesterName);
-                    return <span>{users[result].fullName || entity.requesterInfo.requesterName}</span>;
+                    const result = users.findIndex((e) => e.id === entity.requesterName);
+                    return <span>{users[result].fullName || entity.requesterName}</span>;
                 } catch (error) {
                     console.log(error);
                 }
             },
         },
         {
-            title: 'Vật tư yêu cầu',
+            title: 'Vật tư đã nhập',
             hideInSearch: true,
             render(dom, entity) {
                 return entity.materialRequests.map((item) => {
@@ -117,22 +96,6 @@ const TableMaterialRequest = () => {
                         </div>
                     );
                 });
-            },
-        },
-        {
-            title: 'Trạng thái',
-            dataIndex: 'status',
-            hideInSearch: true,
-            render(dom, entity) {
-                return entity.status === 0 ? (
-                    <Badge status="default" text="Đang chờ" />
-                ) : entity.status === 1 ? (
-                    <Badge status="success" text="Đã duyệt" />
-                ) : entity.status === 2 ? (
-                    <Badge status="error" text="Từ chối" />
-                ) : (
-                    <Badge status="warning" text="Đã bàn giao" />
-                );
             },
         },
         {
@@ -152,36 +115,6 @@ const TableMaterialRequest = () => {
             hideInTable: true,
             hideInSearch: true,
         },
-        {
-            title: 'Hành động',
-            hideInSearch: true,
-            render(dom, entity) {
-                return (
-                    <>
-                        {entity.status === 0 ? (
-                            <Popconfirm
-                                placement="leftTop"
-                                title={'Duyệt đơn yêu cầu'}
-                                description="Bạn có muốn duyệt đơn này?"
-                                onConfirm={() => handleApprove(entity)}
-                                onCancel={() => handleReject(entity)}
-                                okText="Duyệt"
-                                cancelText="Từ chối"
-                                okButtonProps={{ loading: isDeleteMaterialRequest }}
-                            >
-                                <EditTwoTone twoToneColor={'#f57800'} style={{ cursor: 'pointer', marginRight: 15 }} />
-                            </Popconfirm>
-                        ) : (
-                            <></>
-                        )}
-
-                        <span style={{ cursor: 'pointer', marginLeft: '20px' }}>
-                            <PrinterOutlined twoToneColor={'#ff4d4f'} style={{ cursor: 'pointer' }} />
-                        </span>
-                    </>
-                );
-            },
-        },
     ];
 
     const refreshTable = () => {
@@ -189,7 +122,7 @@ const TableMaterialRequest = () => {
     };
     return (
         <>
-            <ProTable<IMaterialRequest, TSearch>
+            <ProTable<IImportRequest, TSearch>
                 columns={columns}
                 scroll={{ x: 1000 }}
                 actionRef={actionRef}
@@ -208,7 +141,7 @@ const TableMaterialRequest = () => {
                         const sortBy = sort.id === 'ascend' ? 'asc' : 'desc';
                         query += `&_sort=id&_order=${sortBy}`;
                     }
-                    const allMaterialRequest = await getMaterialRequestsApi(query);
+                    const allMaterialRequest = await getImportRequestsApi(query);
                     if (allMaterialRequest && typeof allMaterialRequest.data !== 'string') {
                         if (allMaterialRequest.data) {
                             const data = allMaterialRequest.data;
@@ -233,7 +166,7 @@ const TableMaterialRequest = () => {
                     pageSize: 5,
                     onChange: (page) => console.log(page),
                 }}
-                headerTitle="Duyệt đơn yêu cầu vật tư"
+                headerTitle="Danh sách đơn nhập vật tư"
                 toolBarRender={() => [
                     <Button icon={<ExportOutlined />} type="primary">
                         <CSVLink data={excelData} filename="export-material-request.csv">
@@ -252,4 +185,4 @@ const TableMaterialRequest = () => {
     );
 };
 
-export default TableMaterialRequest;
+export default TableMaterialImport;

@@ -383,3 +383,22 @@ export const updateMaterialRequestApi = (id: string, status: number, materialReq
         updateAt: new Date(),
     });
 };
+//
+export const getImportRequestsApi = (query: string) => {
+    return axios.get<IBackendRes<IImportRequest[]>>(`/importRequests?_page=1&${query}`);
+};
+export const createImportRequestsApi = (
+    requestName: string,
+    requesterName: string,
+    materialRequests: MaterialRequests[],
+) => {
+    const urlBackend = `/660/importRequests`;
+    return axios.post<IBackendRes<IMaterialRequest>>(urlBackend, {
+        requestName,
+        requesterName,
+        materialRequests,
+        status: 0,
+        createAt: new Date(),
+        updateAt: new Date(),
+    });
+};

@@ -203,7 +203,7 @@ const MedicalSuppliesRequest = () => {
                     name="requestName"
                     rules={[{ required: true, message: 'Vui lòng nhập tên phiếu yêu cầu' }]}
                 >
-                    <Input />
+                    <Input placeholder="Vui lòng nhập tên phiếu yêu cầu" />
                 </Form.Item>
                 <Form.Item
                     label="Chọn mức độ ưu tiên"

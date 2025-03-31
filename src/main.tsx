@@ -23,6 +23,8 @@ import ManageDepartment from './pages/admin/manage.department';
 import MedicalSuppliesRequest from './pages/client/request.supplies';
 import ManageMaterialRequest from './pages/admin/manage.material.request';
 import ExportMaterial from './pages/admin/export.material';
+import ImportMaterial from './pages/admin/import.material';
+import ImportList from './pages/admin/material.import.list';
 // import vie from 'antd/locale/vi_VN';
 
 const router = createBrowserRouter([
@@ -157,6 +159,22 @@ const router = createBrowserRouter([
                 element: (
                     <ProtectedRoute>
                         <div>Đơn đề nghị mua thêm</div>
+                    </ProtectedRoute>
+                ),
+            },
+            {
+                path: 'material-import',
+                element: (
+                    <ProtectedRoute>
+                        <ImportMaterial />
+                    </ProtectedRoute>
+                ),
+            },
+            {
+                path: 'material-import-list',
+                element: (
+                    <ProtectedRoute>
+                        <ImportList />
                     </ProtectedRoute>
                 ),
             },

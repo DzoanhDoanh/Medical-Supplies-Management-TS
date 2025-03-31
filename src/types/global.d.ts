@@ -102,7 +102,7 @@ declare global {
     }
     interface MaterialRequests {
         materialId: string;
-        materialName: string;   
+        materialName: string;
         quantity: number;
         deliveredQuantity?: number;
     }
@@ -113,6 +113,15 @@ declare global {
         updateAt: string;
         requestName: string;
         requesterInfo: RequesterInfo;
+        materialRequests: MaterialRequests[];
+    }
+    interface IImportRequest {
+        id: string;
+        status: number;
+        createAt: string;
+        updateAt: string;
+        requestName: string;
+        requesterName: string;
         materialRequests: MaterialRequests[];
     }
 }

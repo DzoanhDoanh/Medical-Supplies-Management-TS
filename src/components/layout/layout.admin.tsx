@@ -97,6 +97,16 @@ const LayoutAdmin = () => {
             key: '/admin/material-export',
             icon: <ExceptionOutlined />,
         },
+        {
+            label: <Link to="/admin/material-import">Nhập vật tư</Link>,
+            key: '/admin/material-import',
+            icon: <ExceptionOutlined />,
+        },
+        {
+            label: <Link to="/admin/material-import-list">Phiếu nhập</Link>,
+            key: '/admin/material-import-list',
+            icon: <ExceptionOutlined />,
+        },
     ];
 
     const itemsDropdown = [

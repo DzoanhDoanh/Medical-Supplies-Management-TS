@@ -22,6 +22,7 @@ import ManageCategory from './pages/admin/manage.category';
 import ManageDepartment from './pages/admin/manage.department';
 import MedicalSuppliesRequest from './pages/client/request.supplies';
 import ManageMaterialRequest from './pages/admin/manage.material.request';
+import ExportMaterial from './pages/admin/export.material';
 // import vie from 'antd/locale/vi_VN';
 
 const router = createBrowserRouter([
@@ -140,6 +141,22 @@ const router = createBrowserRouter([
                 element: (
                     <ProtectedRoute>
                         <ManageMaterialRequest />
+                    </ProtectedRoute>
+                ),
+            },
+            {
+                path: 'material-export',
+                element: (
+                    <ProtectedRoute>
+                        <ExportMaterial />
+                    </ProtectedRoute>
+                ),
+            },
+            {
+                path: 'material-buy-request',
+                element: (
+                    <ProtectedRoute>
+                        <div>Đơn đề nghị mua thêm</div>
                     </ProtectedRoute>
                 ),
             },

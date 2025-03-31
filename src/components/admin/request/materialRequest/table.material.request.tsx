@@ -85,7 +85,7 @@ const TableMaterialRequest = () => {
             },
         },
         {
-            title: 'Tên đơn yêu cầu',
+            title: 'Tên đơn',
             dataIndex: 'requestName',
             render(dom, entity) {
                 return <span>{entity.requestName}</span>;

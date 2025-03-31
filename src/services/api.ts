@@ -237,7 +237,7 @@ export const getDepartmentsApi = (query: string) => {
     return axios.get<IBackendRes<IDepartment[]>>(`/departments?_page=1&${query}`);
 };
 export const getDepartmentByIdApi = (id: string) => {
-    return axios.get<IBackendRes<IBook>>(`/departments/${id}`);
+    return axios.get<IBackendRes<IDepartment>>(`/departments/${id}`);
 };
 export const createDepartmentApi = (name: string, userId: string, userName: string, affiliatedUnit: string) => {
     const urlBackend = `/660/departments`;
@@ -339,6 +339,13 @@ export const updateSupplyApi = (
         updateAt: new Date(),
     });
 };
+export const updateQuantitySupplyApi = (id: string, quantity: number) => {
+    const urlBackend = `/660/supplies/${id}`;
+    return axios.patch<IBackendRes<ISupplies>>(urlBackend, {
+        quantity,
+        updateAt: new Date(),
+    });
+};
 export const deleteSupplyApi = (id: string) => {
     const urlBackend = `/660/supplies/${id}`;
     return axios.delete<IBackendRes<ISupplies>>(urlBackend);
@@ -365,6 +372,14 @@ export const updateStatusMaterialRequestApi = (id: string, status: number) => {
     const urlBackend = `/660/requests/${id}`;
     return axios.patch<IBackendRes<IMaterialRequest>>(urlBackend, {
         status,
+        updateAt: new Date(),
+    });
+};
+export const updateMaterialRequestApi = (id: string, status: number, materialRequests: MaterialRequests[]) => {
+    const urlBackend = `/660/requests/${id}`;
+    return axios.patch<IBackendRes<IMaterialRequest>>(urlBackend, {
+        status,
+        materialRequests,
         updateAt: new Date(),
     });
 };

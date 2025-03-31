@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
 import { Input, message, Button, Form, Select, Table, InputNumber } from 'antd';
-import { createMaterialRequestsApi, getSuppliesApi, getUsersApi } from '@/services/api';
+import { createMaterialRequestsApi, getDepartmentsApi, getSuppliesApi, getUsersApi } from '@/services/api';
 
 interface IProps {
     searchTerm: string;
@@ -13,6 +13,7 @@ interface FieldProps {
     requestName: string;
     type: string;
     materialId: string;
+    departmentId: string;
 }
 interface Material {
     key: string;
@@ -26,6 +27,7 @@ const MedicalSuppliesRequest = () => {
     const [selectedMaterials, setSelectedMaterials] = useState<Material[]>([]);
     const [users, setUsers] = useState<IUser[]>([]);
     const [materialsList, SetMaterialsList] = useState<Material[]>([]);
+    const [departments, setDepartments] = useState<IDepartment[]>([]);
     const [loading, setLoading] = useState(false);
     const [form] = Form.useForm();
 
@@ -34,6 +36,7 @@ const MedicalSuppliesRequest = () => {
             try {
                 const userData = await getUsersApi('');
                 const materialData = await getSuppliesApi('');
+                const departmentsData = await getDepartmentsApi('');
                 if (userData && userData.data) {
                     setUsers(userData.data);
                 }
@@ -46,6 +49,9 @@ const MedicalSuppliesRequest = () => {
                         };
                     });
                     SetMaterialsList(result as []);
+                }
+                if (departmentsData && departmentsData.data) {
+                    setDepartments(departmentsData.data);
                 }
             } catch (error) {
                 console.log(error);
@@ -126,6 +132,7 @@ const MedicalSuppliesRequest = () => {
         const requestData = {
             requesterInfo: {
                 requesterName: values.requesterName,
+                departmentId: values.departmentId,
                 type: values.type,
             },
             materialRequests: selectedMaterials.map((item) => ({
@@ -170,6 +177,22 @@ const MedicalSuppliesRequest = () => {
                                 return (
                                     <Select.Option key={item.id} values={item.id}>
                                         {item.fullName}
+                                    </Select.Option>
+                                );
+                            })}
+                    </Select>
+                </Form.Item>
+                <Form.Item
+                    label="Phòng ban nhận"
+                    name="departmentId"
+                    rules={[{ required: true, message: 'Vui lòng chọn phòng ban nhận' }]}
+                >
+                    <Select style={{ width: '100%' }} placeholder="Vui lòng chọn phòng ban nhận">
+                        {departments &&
+                            departments.map((item) => {
+                                return (
+                                    <Select.Option key={item.id} values={item.id}>
+                                        {item.name}
                                     </Select.Option>
                                 );
                             })}

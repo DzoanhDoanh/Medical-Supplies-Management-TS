@@ -9,6 +9,7 @@ import {
     MenuFoldOutlined,
     MenuUnfoldOutlined,
     DatabaseOutlined,
+    EditOutlined,
 } from '@ant-design/icons';
 import { Layout, Menu, Dropdown, Space, Avatar } from 'antd';
 import { Outlet, useLocation } from 'react-router-dom';
@@ -77,19 +78,24 @@ const LayoutAdmin = () => {
         {
             label: <span>Duyệt đơn</span>,
             key: '/admin/material-request',
-            icon: <UserOutlined />,
+            icon: <EditOutlined />,
             children: [
                 {
-                    label: <Link to="/admin/material-request">Duyệt đơn yêu cầu</Link>,
+                    label: <Link to="/admin/material-request">Đơn yêu cầu</Link>,
                     key: '/admin/material-request',
-                    icon: <TeamOutlined />,
+                    icon: <EditOutlined />,
                 },
                 {
-                    label: <Link to="/admin/material-buy-request">Duyệt đơn mua</Link>,
+                    label: <Link to="/admin/material-buy-request">Đơn mua</Link>,
                     key: '/admin/material-buy-request',
-                    icon: <TeamOutlined />,
+                    icon: <EditOutlined />,
                 },
             ],
+        },
+        {
+            label: <Link to="/admin/material-export">Bàn giao vật tư</Link>,
+            key: '/admin/material-export',
+            icon: <ExceptionOutlined />,
         },
     ];
 

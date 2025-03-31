@@ -97,12 +97,14 @@ declare global {
     }
     interface RequesterInfo {
         requesterName: string;
+        departmentId: string;
         type: string;
     }
     interface MaterialRequests {
         materialId: string;
-        materialName: string;
+        materialName: string;   
         quantity: number;
+        deliveredQuantity?: number;
     }
     interface IMaterialRequest {
         id: string;

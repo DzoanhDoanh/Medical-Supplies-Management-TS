@@ -1,4 +1,4 @@
-import { getUserByIdApi } from '@/services/api';
+import { getDepartmentByIdApi, getUserByIdApi } from '@/services/api';
 import { FORMAT_DATE_VN } from '@/services/helper';
 import { Badge, Descriptions, Divider, Drawer } from 'antd';
 import dayjs from 'dayjs';
@@ -14,20 +14,24 @@ interface IProps {
 const DetailMaterialRequest = (props: IProps) => {
     const { openViewDetail, setOpenViewDetail, dataViewDetail, setDataViewDetail } = props;
     const [user, setUsers] = useState<IUser>();
+    const [depart, setDepart] = useState<IDepartment>();
 
     const onClose = () => {
         setOpenViewDetail(false);
         setDataViewDetail(null);
     };
     useEffect(() => {
-        const fetchUser = async () => {
+        const fetchData = async () => {
             const res = await getUserByIdApi(dataViewDetail?.requesterInfo.requesterName ?? '');
-            console.log('Check res');
+            const departData = await getDepartmentByIdApi(dataViewDetail?.requesterInfo.departmentId ?? '');
             if (res && res.data) {
                 setUsers(res.data);
             }
+            if (departData && departData.data) {
+                setDepart(departData.data);
+            }
         };
-        fetchUser();
+        fetchData();
     }, [dataViewDetail]);
     return (
         <>
@@ -36,6 +40,7 @@ const DetailMaterialRequest = (props: IProps) => {
                     <Descriptions.Item label="ID">{dataViewDetail?.id}</Descriptions.Item>
                     <Descriptions.Item label="Tên đơn yêu cầu">{dataViewDetail?.requestName}</Descriptions.Item>
                     <Descriptions.Item label="Tên người yêu cầu">{user?.fullName}</Descriptions.Item>
+                    <Descriptions.Item label="Tên phòng ban nhận">{depart?.name}</Descriptions.Item>
                     <Descriptions.Item label="Trạng thái">
                         {dataViewDetail && dataViewDetail.status === 0 ? (
                             <Badge status="default" text="Đang chờ" />

@@ -1,6 +1,11 @@
+import Dashboard from '../admin/dashboard';
 
 const HomePage = () => {
-    return <></>;
+    return (
+        <>
+            <Dashboard />
+        </>
+    );
 };
 
 export default HomePage;

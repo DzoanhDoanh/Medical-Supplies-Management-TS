@@ -107,6 +107,11 @@ const LayoutAdmin = () => {
             key: '/admin/material-import-list',
             icon: <ExceptionOutlined />,
         },
+        {
+            label: <Link to="/admin/material-report">Báo cáo</Link>,
+            key: '/admin/material-report',
+            icon: <ExceptionOutlined />,
+        },
     ];
 
     const itemsDropdown = [

@@ -3,7 +3,7 @@ import { deleteSupplyApi, getCategoryApi, getSuppliesApi } from '@/services/api'
 import { DeleteTwoTone, EditTwoTone, ExportOutlined, PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
-import { App, Button, Popconfirm } from 'antd';
+import { App, Button, Input, Popconfirm } from 'antd';
 import { useEffect, useRef, useState } from 'react';
 // import ImportUser from './data/import.user';
 import { CSVLink } from 'react-csv';
@@ -116,6 +116,7 @@ const TableSupplies = () => {
             title: 'Nhà cung cấp',
             dataIndex: 'manufacturer',
             hideInSearch: false,
+            renderFormItem: () => <Input placeholder="Nhập nhà cung cấp" style={{ marginLeft: '10px' }} />,
         },
         {
             title: 'Số lô',

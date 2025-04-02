@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { App, ConfigProvider } from 'antd';
 import Layout from './layout';
-import BookPage from './pages/client/book';
+import Material from './pages/client/material.detail';
 import AboutPage from './pages/client/about';
 import RegisterPage from './pages/client/auth/register';
 import './styles/global.scss';
@@ -42,10 +42,10 @@ const router = createBrowserRouter([
                 ),
             },
             {
-                path: '/book/:id',
+                path: '/medical-supply/:id',
                 element: (
                     <ProtectedRoute>
-                        <BookPage />
+                        <Material />
                     </ProtectedRoute>
                 ),
             },

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { getMaterialRequestsApi, getUsersApi, updateStatusMaterialRequestApi } from '@/services/api';
+import { getDepartmentsApi, getMaterialRequestsApi, getUsersApi, updateStatusMaterialRequestApi } from '@/services/api';
 // import { dateRangeValidate } from '@/services/helper';
 import { EditTwoTone, ExportOutlined, PrinterOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
@@ -9,6 +9,8 @@ import { useEffect, useRef, useState } from 'react';
 import { CSVLink } from 'react-csv';
 import dayjs from 'dayjs';
 import DetailDepartment from './detail.material.request';
+import { Document, Packer, Paragraph, Table, TableCell, TableRow, TextRun, WidthType } from 'docx';
+import { saveAs } from 'file-saver';
 
 type TSearch = {
     requestName: string;
@@ -22,13 +24,19 @@ const TableMaterialRequest = () => {
     const [excelData, setExcelData] = useState([]);
     const [users, setUsers] = useState<IUser[]>([]);
     const [isDeleteMaterialRequest, setIsDeleteMaterialRequest] = useState<boolean>(false);
+    const [departments, setDepartments] = useState<IDepartment[]>([]);
     const { message } = App.useApp();
 
     useEffect(() => {
         const fetchUser = async () => {
             const res = await getUsersApi('');
+            const fetchDepart = await getDepartmentsApi('');
+
             if (res && res.data) {
                 setUsers(res.data);
+            }
+            if (fetchDepart && fetchDepart.data) {
+                setDepartments(fetchDepart.data);
             }
         };
         fetchUser();
@@ -45,6 +53,77 @@ const TableMaterialRequest = () => {
         } catch (error) {
             message.error('Có lỗi xảy ra vui lòng thử lại');
         }
+    };
+    const handlePrint = async (entity: IMaterialRequest) => {
+        const requestData = {
+            requestNumber: entity.id,
+            department: departments.find((e) => e.id === entity.requesterInfo.departmentId)?.name || 'N/A',
+            requestDate: dayjs(entity.createAt).format('DD/MM/YYYY'),
+            requester: users.find((e) => e.id === entity.requesterInfo.requesterName)?.fullName || 'N/A',
+            items: entity.materialRequests.map((item, index) => ({
+                stt: index + 1,
+                name: item.materialName,
+                quantity: item.quantity,
+            })),
+        };
+
+        // Tiêu đề phiếu yêu cầu
+        const title = new Paragraph({
+            children: [new TextRun({ text: 'PHIẾU YÊU CẦU VẬT TƯ', bold: true, size: 28 })],
+            alignment: 'center',
+        });
+
+        // Thông tin chung (xuống dòng mỗi dòng riêng biệt)
+        const info = [
+            new Paragraph({ children: [new TextRun(`Số phiếu: ${requestData.requestNumber}`)] }),
+            new Paragraph({ children: [new TextRun(`Khoa: ${requestData.department}`)] }),
+            new Paragraph({ children: [new TextRun(`Ngày yêu cầu: ${requestData.requestDate}`)] }),
+            new Paragraph({ children: [new TextRun(`Người yêu cầu: ${requestData.requester}`)] }),
+        ];
+
+        // Tạo bảng danh sách vật tư
+        const table = new Table({
+            width: { size: 100, type: WidthType.PERCENTAGE },
+            rows: [
+                // Header của bảng
+                new TableRow({
+                    children: ['STT', 'Tên vật tư', 'Số lượng'].map(
+                        (text) =>
+                            new TableCell({
+                                children: [new Paragraph({ children: [new TextRun({ text, bold: true })] })],
+                            }),
+                    ),
+                }),
+                // Dữ liệu vật tư
+                ...requestData.items.map(
+                    (item) =>
+                        new TableRow({
+                            children: [
+                                new TableCell({ children: [new Paragraph(item.stt.toString())] }),
+                                new TableCell({ children: [new Paragraph(item.name)] }),
+                                new TableCell({ children: [new Paragraph(item.quantity.toString())] }),
+                            ],
+                        }),
+                ),
+            ],
+        });
+
+        // Chữ ký
+        const signature = new Paragraph({
+            children: [new TextRun('\n\nNgười yêu cầu\n(Ký và ghi rõ họ tên)')],
+            alignment: 'right',
+        });
+
+        // Tạo file Word
+        const doc = new Document({
+            sections: [{ properties: {}, children: [title, ...info, table, signature] }],
+        });
+
+        // Chuyển thành file Blob
+        const blob = await Packer.toBlob(doc);
+
+        // Tải file xuống mà không hiển thị hộp thoại in
+        saveAs(blob, 'Phieu_Yeu_Cau_Vat_Tu.docx');
     };
     const handleReject = async (entity: IMaterialRequest) => {
         try {
@@ -175,7 +254,7 @@ const TableMaterialRequest = () => {
                             <></>
                         )}
 
-                        <span style={{ cursor: 'pointer', marginLeft: '20px' }}>
+                        <span style={{ cursor: 'pointer', marginLeft: '20px' }} onClick={() => handlePrint(entity)}>
                             <PrinterOutlined twoToneColor={'#ff4d4f'} style={{ cursor: 'pointer' }} />
                         </span>
                     </>

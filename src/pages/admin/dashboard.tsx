@@ -89,7 +89,7 @@ const Dashboard: React.FC = () => {
 
     return (
         <div style={{ padding: 24 }}>
-            <h2 style={{ marginBottom: '10px' }}>Bảng điều khiển</h2>
+            <h2 style={{ marginBottom: '10px' }}>Thống kê vật tư</h2>
             <Row gutter={16}>
                 {stats.map((stat, index) => (
                     <Col span={8} key={stat.title}>

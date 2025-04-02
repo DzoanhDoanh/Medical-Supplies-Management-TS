@@ -1,6 +1,6 @@
 import { Spin } from 'antd';
 
-const BookLoader = () => {
+const MaterialLoader = () => {
     return <Spin fullscreen />;
 };
-export default BookLoader;
+export default MaterialLoader;

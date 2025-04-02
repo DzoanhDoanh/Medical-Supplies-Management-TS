@@ -85,11 +85,11 @@ const LayoutAdmin = () => {
                     key: '/admin/material-request',
                     icon: <EditOutlined />,
                 },
-                {
-                    label: <Link to="/admin/material-buy-request">Đơn mua</Link>,
-                    key: '/admin/material-buy-request',
-                    icon: <EditOutlined />,
-                },
+                // {
+                //     label: <Link to="/admin/material-buy-request">Đơn mua</Link>,
+                //     key: '/admin/material-buy-request',
+                //     icon: <EditOutlined />,
+                // },
             ],
         },
         {

@@ -275,7 +275,7 @@ export const getSuppliesApi = (query: string) => {
     return axios.get<IBackendRes<ISupplies[]>>(`/supplies?_page=1&${query}`);
 };
 export const getSupplyByIdApi = (id: string) => {
-    return axios.get<IBackendRes<IBook>>(`/supplies/${id}`);
+    return axios.get<IBackendRes<ISupplies>>(`/supplies/${id}`);
 };
 export const createSupplyApi = (
     name: string,

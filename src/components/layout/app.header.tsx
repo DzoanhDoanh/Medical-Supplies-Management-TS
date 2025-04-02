@@ -12,9 +12,8 @@ import {
     AppstoreAddOutlined,
     LoginOutlined,
     LogoutOutlined,
-    PayCircleOutlined,
+    // PayCircleOutlined,
     SnippetsOutlined,
-    UserOutlined,
 } from '@ant-design/icons';
 
 interface IProps {
@@ -131,20 +130,17 @@ const AppHeader = (props: IProps) => {
                 <Menu mode="vertical">
                     {isAuthenticated ? (
                         <>
-                            <Menu.Item key="1" icon={<UserOutlined />}>
-                                <Link to="/">Dashboard</Link>
+                            <Menu.Item key="1" icon={<SnippetsOutlined />}>
+                                <Link to="/">Thống kê vật tư</Link>
                             </Menu.Item>
-                            <Menu.Item key="2" icon={<PayCircleOutlined />}>
+                            {/* <Menu.Item key="2" icon={<PayCircleOutlined />}>
                                 <Link to="/required-buy-supplies">Đề nghị mua vật tư</Link>
-                            </Menu.Item>
+                            </Menu.Item> */}
                             <Menu.Item key="3" icon={<AppstoreAddOutlined />}>
                                 <Link to="/medical-supplies-request">Đề nghị cung cấp vật tư</Link>
                             </Menu.Item>
                             <Menu.Item key="4" icon={<ApartmentOutlined />}>
                                 <Link to="/medical-supplies-detail">Chi tiết vật tư</Link>
-                            </Menu.Item>
-                            <Menu.Item key="5" icon={<SnippetsOutlined />}>
-                                <Link to="/medical-supplies-report">Thống kê vật tư</Link>
                             </Menu.Item>
                             <Menu.Item key="6" icon={<LogoutOutlined />} danger onClick={handleLogout}>
                                 Đăng xuất

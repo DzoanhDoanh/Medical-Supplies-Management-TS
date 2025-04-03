@@ -99,12 +99,6 @@ export const deleteUserApi = (id: string) => {
     const urlBackend = `/660/users/${id}`;
     return axios.delete<IBackendRes<IAuth>>(urlBackend);
 };
-export const getBooksApi = (query: string) => {
-    return axios.get<IBackendRes<IBook[]>>(`/books?_page=1&${query}`);
-};
-export const getBookByIdApi = (id: string) => {
-    return axios.get<IBackendRes<IBook>>(`/books/${id}`);
-};
 export const getCategoryApi = () => {
     const urlBackend = `/categories`;
     return axios.get<IBackendRes<ICategory[]>>(urlBackend);
@@ -134,104 +128,6 @@ export const updateCategoryApi = (id: string, categoryName: string, createAt: st
 export const deleteCategoryApi = (id: string) => {
     const urlBackend = `/660/categories/${id}`;
     return axios.delete<IBackendRes<ICategory>>(urlBackend);
-};
-
-export const addBookApi = (
-    thumbnail: string,
-    slider: string[],
-    mainText: string,
-    author: string,
-    price: number,
-    quantity: number,
-    category: string,
-) => {
-    const urlBackend = `/660/books`;
-    return axios.post<IBackendRes<IBook>>(urlBackend, {
-        thumbnail,
-        slider,
-        mainText,
-        author,
-        price,
-        sold: 10,
-        quantity,
-        category,
-        updateAt: new Date(),
-        createAt: new Date(),
-    });
-};
-export const updateBookApi = (
-    id: string,
-    thumbnail: string,
-    slider: string[],
-    mainText: string,
-    author: string,
-    price: number,
-    quantity: number,
-    category: string,
-) => {
-    const urlBackend = `/660/books/${id}`;
-    return axios.put<IBackendRes<IBook>>(urlBackend, {
-        thumbnail,
-        slider,
-        mainText,
-        author,
-        price,
-        sold: 10,
-        quantity,
-        category,
-        updateAt: new Date(),
-    });
-};
-export const deleteBookApi = (id: string) => {
-    const urlBackend = `/660/books/${id}`;
-    return axios.delete<IBackendRes<IBook>>(urlBackend);
-};
-export const getCartsApi = () => {
-    const urlBackend = `/660/carts`;
-    return axios.get<IBackendRes<ICart[]>>(urlBackend);
-};
-export const addToCartApi = (quantity: number, detail: IBook) => {
-    const urlBackend = `/660/carts`;
-    return axios.post<IBackendRes<ICart>>(urlBackend, { quantity, detail });
-};
-export const deleteCartByIdApi = (id: string) => {
-    const urlBackend = `/660/carts/${id}`;
-    return axios.delete<IBackendRes<ICart>>(urlBackend);
-};
-export const updateQuantityCart = (id: string, quantity: number) => {
-    const urlBackend = `/660/carts/${id}`;
-    return axios.patch<IBackendRes<ICart>>(urlBackend, {
-        quantity,
-    });
-};
-export const postOrderApi = (
-    userId: string,
-    address: string,
-    detail: ICart[],
-    name: string,
-    phone: string,
-    totalPrice: number,
-    type: string,
-) => {
-    const urlBackend = `/660/orders`;
-    return axios.post<IBackendRes<IOrder>>(urlBackend, {
-        userId,
-        address,
-        detail,
-        name,
-        phone,
-        totalPrice,
-        type,
-        createAt: new Date(),
-    });
-};
-export const getOrderById = (id: string) => {
-    const urlBackend = `/660/orders/${id}`;
-    return axios.get<IBackendRes<IOrder>>(urlBackend);
-};
-export const getOrderByUserId = (id: string, query?: string) => {
-    const urlBackend = `/660/orders?userId=${id}&${query}`;
-    return axios.get<IBackendRes<IOrder[]>>(urlBackend);
 };
 export const getDepartmentsApi = (query: string) => {
     return axios.get<IBackendRes<IDepartment[]>>(`/departments?_page=1&${query}`);
@@ -383,7 +279,6 @@ export const updateMaterialRequestApi = (id: string, status: number, materialReq
         updateAt: new Date(),
     });
 };
-//
 export const getImportRequestsApi = (query: string) => {
     return axios.get<IBackendRes<IImportRequest[]>>(`/importRequests?_page=1&${query}`);
 };

@@ -77,7 +77,7 @@ const MaterialDetail = ({ currentMaterial }: IProps) => {
                                 <Input value={currentMaterial?.unit} readOnly style={{ margin: '5px 0' }} />
                             </div>
                             <div>
-                                <b>Nhà sản xuất:</b>{' '}
+                                <b>Xuất xứ:</b>{' '}
                                 <Input value={currentMaterial?.manufacturer} readOnly style={{ margin: '5px 0' }} />
                             </div>
                             <div>
@@ -93,6 +93,7 @@ const MaterialDetail = ({ currentMaterial }: IProps) => {
                                 <DatePicker
                                     value={dayjs(currentMaterial?.expirationDate)}
                                     readOnly
+                                    disabled
                                     style={{ width: '100%', margin: '5px 0' }}
                                 />
                             </div>

@@ -37,38 +37,9 @@ declare global {
         originalPass?: string;
     }
 
-    interface IBook {
-        id: string;
-        thumbnail: string;
-        slider: string[];
-        mainText: string;
-        author: string;
-        price: number;
-        sold: number;
-        quantity: number;
-        category: string;
-        createAt: string;
-        updateAt: string;
-    }
     interface ICategory {
         id: string;
         categoryName: string;
-        createAt: string;
-    }
-    interface ICart {
-        id: string;
-        quantity: number;
-        detail: IBook;
-    }
-    interface IOrder {
-        id: string;
-        userId: string;
-        address: string;
-        detail: ICart[];
-        name: string;
-        phone: string;
-        totalPrice: number;
-        type: string;
         createAt: string;
     }
     interface IDepartment {

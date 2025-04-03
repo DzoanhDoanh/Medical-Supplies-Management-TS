@@ -116,6 +116,14 @@ const MedicalSuppliesRequest = () => {
             },
         },
         {
+            title: 'Số lượng trong kho',
+            key: 'storage',
+            render: (text: any, record: any) => {
+                const result = materialsList.find((e) => e.id === record.id);
+                return <span>{result?.availableQuantity}</span>;
+            },
+        },
+        {
             title: 'Hành động',
             key: 'action',
             render: (_: any, record: Material) => (

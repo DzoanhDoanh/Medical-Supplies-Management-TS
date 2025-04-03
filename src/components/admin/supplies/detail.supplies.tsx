@@ -2,6 +2,7 @@ import CurrencyFormatter from '@/components/currencyFormatter/currency.formatter
 import { FORMAT_DATE_VN } from '@/services/helper';
 import { Avatar, Descriptions, Drawer } from 'antd';
 import dayjs from 'dayjs';
+import image from '../../../assets/images/thumbnailMaterial.png';
 
 interface IProps {
     openViewDetail: boolean;
@@ -43,7 +44,7 @@ const DetailSupply = (props: IProps) => {
                         {dayjs(dataViewDetail?.updateAt).format(FORMAT_DATE_VN)}
                     </Descriptions.Item>
                     <Descriptions.Item label="Thumbnail">
-                        <Avatar src={`${dataViewDetail?.thumbnail}`} size={100}>
+                        <Avatar src={`${image}`} size={100}>
                             {dataViewDetail?.thumbnail}
                         </Avatar>
                     </Descriptions.Item>

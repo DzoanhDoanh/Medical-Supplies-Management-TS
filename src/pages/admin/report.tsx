@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-// import { DatePicker, Button, Table, Card, message, Tabs } from 'antd';
-import { Button, Table, Card, message, Tabs } from 'antd';
+import { Button, Table, Card, message, Tabs, DatePicker } from 'antd';
 import dayjs from 'dayjs';
 import type { ColumnsType } from 'antd/es/table';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { getImportRequestsApi, getMaterialRequestsApi, getSuppliesApi } from '@/services/api';
 import { CSVLink } from 'react-csv';
 import { ExportOutlined } from '@ant-design/icons';
+import MaterialRequestReport from '@/components/admin/report/material.report.period';
 
 interface MaterialData {
     key: string;
@@ -19,19 +19,23 @@ interface MaterialData {
 }
 
 const MaterialStatisticsReport: React.FC = () => {
-    // const [fromDate, setFromDate] = useState<string>('');
-    // const [toDate, setToDate] = useState<string>('');
+    const [fromDate, setFromDate] = useState<string>('');
+    const [toDate, setToDate] = useState<string>('');
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState<MaterialData[]>([]);
+    const [isDisplay, setIsDisplay] = useState<boolean>(false);
+    const [activeTab, setActiveTab] = useState<string>('');
 
     const handleReport = async () => {
-        // if (!fromDate || !toDate) {
-        //     message.error('Vui lòng chọn đầy đủ ngày bắt đầu và ngày kết thúc.');
-        //     return;
-        // }
-
+        if (activeTab === '3') {
+            if (!fromDate || !toDate) {
+                message.error('Vui lòng chọn đầy đủ ngày bắt đầu và ngày kết thúc.');
+                return;
+            }
+            setIsDisplay(true);
+            return;
+        }
         setLoading(true);
-
         try {
             const [fetchMaterial, fetchRequest, fetchImport] = await Promise.all([
                 getSuppliesApi(''),
@@ -73,7 +77,7 @@ const MaterialStatisticsReport: React.FC = () => {
                         exportDate: exportData ? exportData.updateAt : 'Trống',
                     };
                 });
-
+                setIsDisplay(true);
                 setData(fetchedData);
                 console.log(fetchedData);
                 setLoading(false);
@@ -85,7 +89,11 @@ const MaterialStatisticsReport: React.FC = () => {
             setLoading(false);
         }
     };
-
+    const handleTabChange = (key: string) => {
+        setActiveTab(key);
+        setData([]);
+        setIsDisplay(false);
+    };
     const columns: ColumnsType<MaterialData> = [
         { title: 'Tên vật tư', dataIndex: 'name', key: 'name' },
         { title: 'Số lượng nhập', dataIndex: 'importQuantity', key: 'importQuantity' },
@@ -119,26 +127,35 @@ const MaterialStatisticsReport: React.FC = () => {
         <div style={{ padding: 24 }}>
             <Card style={{ marginBottom: 24 }}>
                 <div style={{ display: 'flex', gap: 16 }}>
-                    {/* <DatePicker
-                        placeholder="Từ ngày"
-                        onChange={(date) => setFromDate(date ? dayjs(date).format('YYYY-MM-DD') : '')}
-                    />
-                    <DatePicker
-                        placeholder="Đến ngày"
-                        onChange={(date) => setToDate(date ? dayjs(date).format('YYYY-MM-DD') : '')}
-                    /> */}
+                    {activeTab === '3' ? (
+                        <>
+                            <DatePicker
+                                placeholder="Từ ngày"
+                                onChange={(date) => setFromDate(date ? dayjs(date).format('YYYY-MM-DD') : '')}
+                            />
+                            <DatePicker
+                                placeholder="Đến ngày"
+                                onChange={(date) => setToDate(date ? dayjs(date).format('YYYY-MM-DD') : '')}
+                            />
+                        </>
+                    ) : (
+                        <></>
+                    )}
+
                     <Button type="primary" onClick={handleReport} loading={loading}>
                         Xem báo cáo thống kê
                     </Button>
-                    <CSVLink data={data} filename="report-supplies.csv">
-                        <Button icon={<ExportOutlined />} type="primary">
-                            Tải excel
-                        </Button>
-                    </CSVLink>
+                    {isDisplay && (
+                        <CSVLink data={data} filename="report-supplies.csv">
+                            <Button icon={<ExportOutlined />} type="primary">
+                                Tải excel
+                            </Button>
+                        </CSVLink>
+                    )}
                 </div>
             </Card>
 
-            <Tabs defaultActiveKey="1">
+            <Tabs defaultActiveKey="1" onChange={handleTabChange}>
                 <Tabs.TabPane tab="Báo cáo tổng thể" key="1">
                     <Table columns={columns} dataSource={data} loading={loading} pagination={false} bordered />
                 </Tabs.TabPane>
@@ -155,6 +172,9 @@ const MaterialStatisticsReport: React.FC = () => {
                             <Line type="monotone" dataKey="remaining" stroke="#ff7300" name="Tồn" />
                         </LineChart>
                     </ResponsiveContainer>
+                </Tabs.TabPane>
+                <Tabs.TabPane tab="Báo cáo theo đợt" key="3">
+                    {isDisplay && <MaterialRequestReport fromDate={fromDate} toDate={toDate} />}
                 </Tabs.TabPane>
             </Tabs>
         </div>

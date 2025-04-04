@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { addBookApi, getCategoryApi, getCategoryByIdApi, updateBookApi, updateSupplyApi } from '@/services/api';
+import { getCategoryApi, getCategoryByIdApi, getManufacturerApi, getUnitApi, updateSupplyApi } from '@/services/api';
 import { App, Divider, Form, Modal, Input, Select, Upload, Row, Col, InputNumber, DatePicker } from 'antd';
 import type { FormProps } from 'antd';
 import { useEffect, useState } from 'react';
@@ -36,6 +36,8 @@ const UpdateSupply = (props: IProps) => {
     const { openModalUpdate, setOpenModalUpdate, dataUpdate, setDataUpdate, refreshTable } = props;
     const [isSubmit, setIsSubmit] = useState<boolean>(false);
     const [listCategory, setListCategory] = useState<ICategory[]>([]);
+    const [manufacturers, setManufacturers] = useState<IManufacturer[]>([]);
+    const [units, setUnits] = useState<IUnit[]>([]);
 
     // start handle image
     const [previewOpenThumb, setPreviewOpenThumb] = useState(false);
@@ -80,13 +82,17 @@ const UpdateSupply = (props: IProps) => {
                 status: dataUpdate.status,
             });
         }
-        const fetchCategory = async () => {
+        const fetchData = async () => {
             const res = await getCategoryApi();
-            if (res && res.data) {
+            const fetUnit = await getUnitApi();
+            const fetchManufacturer = await getManufacturerApi();
+            if (res && res.data && fetUnit && fetUnit.data && fetchManufacturer && fetchManufacturer.data) {
                 setListCategory(res.data);
+                setManufacturers(fetchManufacturer.data);
+                setUnits(fetUnit.data);
             }
         };
-        fetchCategory();
+        fetchData();
     }, [dataUpdate]);
     const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
         setIsSubmit(true);
@@ -99,7 +105,7 @@ const UpdateSupply = (props: IProps) => {
                     values.desc,
                     values.unit,
                     values.manufacturer,
-                    values.batchNumber,
+                    0,
                     values.expirationDate,
                     values.costPrice,
                     Number(values.quantity),
@@ -226,18 +232,32 @@ const UpdateSupply = (props: IProps) => {
                                 </Select>
                             </Form.Item>
                             <Form.Item<FieldType>
-                                label="Hãy điền đơn vị tính"
+                                label="Đơn vị tính"
                                 name="unit"
                                 rules={[{ required: true, message: 'Đơn vị tính là bắt buộc' }]}
                             >
-                                <Input placeholder="Vui lòng điền đơn vị tính " />
+                                <Select placeholder="Vui lòng chọn đơn vị tính" allowClear>
+                                    {units &&
+                                        units.map((item) => (
+                                            <Option key={item.id} value={item.name}>
+                                                {item.name}
+                                            </Option>
+                                        ))}
+                                </Select>
                             </Form.Item>
                             <Form.Item<FieldType>
-                                label="Vui lòng điền tên nhà cung cấp"
+                                label="Xuất xứ"
                                 name="manufacturer"
-                                rules={[{ required: true, message: 'Nhà cung cấp là bắt buộc' }]}
+                                rules={[{ required: true, message: 'Xuất xứ là bắt buộc' }]}
                             >
-                                <Input placeholder="Vui lòng điền tên nhà cung cấp " />
+                                <Select placeholder="Vui lòng chọn xuất xứ" allowClear>
+                                    {manufacturers &&
+                                        manufacturers.map((item) => (
+                                            <Option key={item.id} value={item.name}>
+                                                {item.name}
+                                            </Option>
+                                        ))}
+                                </Select>
                             </Form.Item>
                             <Form.Item
                                 label="Hãy chọn ảnh đại diện cho vật tư"
@@ -264,7 +284,7 @@ const UpdateSupply = (props: IProps) => {
                             </Form.Item>
                         </Col>
                         <Col span={12}>
-                            <Form.Item<FieldType>
+                            {/* <Form.Item<FieldType>
                                 label="Số lô sản xuất"
                                 name="batchNumber"
                                 rules={[
@@ -280,12 +300,11 @@ const UpdateSupply = (props: IProps) => {
                                 ]}
                             >
                                 <Input type="number" placeholder="Vui lòng điền số lô sản xuất" />
-                            </Form.Item>
+                            </Form.Item> */}
                             <Form.Item<FieldType>
                                 labelCol={{ span: 24 }}
                                 label="Chọn hạn sử dụng"
                                 name="expirationDate"
-                                rules={[{ required: true, message: 'Hạn sử dụng là bắt buộc' }]}
                             >
                                 <DatePicker />
                             </Form.Item>

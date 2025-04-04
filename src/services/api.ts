@@ -332,7 +332,7 @@ export const deleteManufacturerApi = (id: string) => {
 };
 
 export const getUnitApi = () => {
-    const urlBackend = `/manufacturers`;
+    const urlBackend = `/units`;
     return axios.get<IBackendRes<IUnit[]>>(urlBackend);
 };
 export const getUnitWidthQueryApi = (query: string) => {

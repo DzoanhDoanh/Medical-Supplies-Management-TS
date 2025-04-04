@@ -32,7 +32,9 @@ const DetailSupply = (props: IProps) => {
                     {/* <Descriptions.Item label="Trạng thái">{dataViewDetail?.status}</Descriptions.Item> */}
                     <Descriptions.Item label="Số lượng">{dataViewDetail?.quantity}</Descriptions.Item>
                     <Descriptions.Item label="Ngày hết hạn">
-                        {dayjs(dataViewDetail?.expirationDate).format(FORMAT_DATE_VN)}
+                        {dataViewDetail?.expirationDate === '2003-12-16T17:00:00.000Z'
+                            ? 'Không có'
+                            : dayjs(dataViewDetail?.expirationDate).format(FORMAT_DATE_VN)}
                     </Descriptions.Item>
                     <Descriptions.Item label="Giá nhập">
                         <CurrencyFormatter value={dataViewDetail?.costPrice || 0} />

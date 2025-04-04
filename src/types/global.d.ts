@@ -95,4 +95,17 @@ declare global {
         requesterName: string;
         materialRequests: MaterialRequests[];
     }
+    interface IUnit {
+        id: string;
+        name: string;
+        createAt: string;
+        updateAt: string;
+        a;
+    }
+    interface IManufacturer {
+        id: string;
+        name: string;
+        createAt: string;
+        updteAt: string;
+    }
 }

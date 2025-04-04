@@ -297,3 +297,69 @@ export const createImportRequestsApi = (
         updateAt: new Date(),
     });
 };
+
+export const getManufacturerApi = () => {
+    const urlBackend = `/manufacturers`;
+    return axios.get<IBackendRes<IManufacturer[]>>(urlBackend);
+};
+export const getManufacturerWidthQueryApi = (query: string) => {
+    const urlBackend = `/manufacturers?_page=1&${query}`;
+    return axios.get<IBackendRes<IManufacturer[]>>(urlBackend);
+};
+export const getManufacturerByIdApi = (id: string) => {
+    const urlBackend = `/manufacturers/${id}`;
+    return axios.get<IBackendRes<IManufacturer>>(urlBackend);
+};
+export const createManufacturerApi = (name: string) => {
+    const urlBackend = `/660/manufacturers`;
+    return axios.post<IBackendRes<IManufacturer>>(urlBackend, {
+        name,
+        createAt: new Date(),
+        updateAt: new Date(),
+    });
+};
+export const updateManufacturerApi = (id: string, name: string, createAt: string) => {
+    const urlBackend = `/660/manufacturers/${id}`;
+    return axios.put<IBackendRes<IManufacturer>>(urlBackend, {
+        name,
+        createAt,
+        updateAt: new Date(),
+    });
+};
+export const deleteManufacturerApi = (id: string) => {
+    const urlBackend = `/660/manufacturers/${id}`;
+    return axios.delete<IBackendRes<IManufacturer>>(urlBackend);
+};
+
+export const getUnitApi = () => {
+    const urlBackend = `/manufacturers`;
+    return axios.get<IBackendRes<IUnit[]>>(urlBackend);
+};
+export const getUnitWidthQueryApi = (query: string) => {
+    const urlBackend = `/units?_page=1&${query}`;
+    return axios.get<IBackendRes<IUnit[]>>(urlBackend);
+};
+export const getUnitByIdApi = (id: string) => {
+    const urlBackend = `/units/${id}`;
+    return axios.get<IBackendRes<IUnit>>(urlBackend);
+};
+export const createUnitApi = (name: string) => {
+    const urlBackend = `/660/units`;
+    return axios.post<IBackendRes<IUnit>>(urlBackend, {
+        name,
+        createAt: new Date(),
+        updateAt: new Date(),
+    });
+};
+export const updateUnitApi = (id: string, name: string, createAt: string) => {
+    const urlBackend = `/660/units/${id}`;
+    return axios.put<IBackendRes<IUnit>>(urlBackend, {
+        name,
+        createAt,
+        updateAt: new Date(),
+    });
+};
+export const deleteUnitApi = (id: string) => {
+    const urlBackend = `/660/units/${id}`;
+    return axios.delete<IBackendRes<IUnit>>(urlBackend);
+};

@@ -27,9 +27,9 @@ const DetailSupply = (props: IProps) => {
                     <Descriptions.Item label="Mã danh mục">{dataViewDetail?.categoryId}</Descriptions.Item>
                     <Descriptions.Item label="Mô tả">{dataViewDetail?.desc}</Descriptions.Item>
                     <Descriptions.Item label="Đơn vị tính">{dataViewDetail?.unit}</Descriptions.Item>
-                    <Descriptions.Item label="Nhà phân phối">{dataViewDetail?.manufacturer}</Descriptions.Item>
-                    <Descriptions.Item label="Số lô">{dataViewDetail?.batchNumber}</Descriptions.Item>
-                    <Descriptions.Item label="Trạng thái">{dataViewDetail?.status}</Descriptions.Item>
+                    <Descriptions.Item label="Xuất xứ">{dataViewDetail?.manufacturer}</Descriptions.Item>
+                    {/* <Descriptions.Item label="Số lô">{dataViewDetail?.batchNumber}</Descriptions.Item> */}
+                    {/* <Descriptions.Item label="Trạng thái">{dataViewDetail?.status}</Descriptions.Item> */}
                     <Descriptions.Item label="Số lượng">{dataViewDetail?.quantity}</Descriptions.Item>
                     <Descriptions.Item label="Ngày hết hạn">
                         {dayjs(dataViewDetail?.expirationDate).format(FORMAT_DATE_VN)}

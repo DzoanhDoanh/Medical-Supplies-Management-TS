@@ -26,6 +26,8 @@ import ExportMaterial from './pages/admin/export.material';
 import ImportMaterial from './pages/admin/import.material';
 import ImportList from './pages/admin/material.import.list';
 import MaterialStatisticsReport from './pages/admin/report';
+import ManageManufacturer from './pages/admin/manage.manufacturer';
+import ManageUnit from './pages/admin/manage.unit';
 // import vie from 'antd/locale/vi_VN';
 
 const router = createBrowserRouter([
@@ -184,6 +186,22 @@ const router = createBrowserRouter([
                 element: (
                     <ProtectedRoute>
                         <MaterialStatisticsReport />
+                    </ProtectedRoute>
+                ),
+            },
+            {
+                path: 'manufacturer',
+                element: (
+                    <ProtectedRoute>
+                        <ManageManufacturer />
+                    </ProtectedRoute>
+                ),
+            },
+            {
+                path: 'unit',
+                element: (
+                    <ProtectedRoute>
+                        <ManageUnit />
                     </ProtectedRoute>
                 ),
             },

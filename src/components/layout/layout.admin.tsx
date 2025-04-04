@@ -43,6 +43,16 @@ const LayoutAdmin = () => {
             icon: <AppstoreOutlined />,
         },
         {
+            label: <Link to="/admin/manufacturer">Xuất xứ</Link>,
+            key: '/admin/manufacturer',
+            icon: <AppstoreOutlined />,
+        },
+        {
+            label: <Link to="/admin/unit">Đơn vị tính</Link>,
+            key: '/admin/unit',
+            icon: <AppstoreOutlined />,
+        },
+        {
             label: <Link to="/admin/category">Quản lý danh mục</Link>,
             key: '/admin/category',
             icon: <MenuFoldOutlined />,

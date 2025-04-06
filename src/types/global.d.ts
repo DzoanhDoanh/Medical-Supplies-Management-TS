@@ -49,6 +49,7 @@ declare global {
         userId: string;
         userName: string;
         createAt: string;
+        storageId: string;
     }
     interface ISupplies {
         id: string;
@@ -107,5 +108,26 @@ declare global {
         name: string;
         createAt: string;
         updteAt: string;
+    }
+    interface MaterialStorage {
+        supplyId: string;
+        materialName: string;
+        quantity: string;
+    }
+    interface ManageStorage {
+        userId: string;
+        userName: string;
+    }
+    interface IStorage {
+        id: string;
+        name: string;
+        materials: MaterialStorage[];
+        manager: ManageStorage[];
+        departmentId: string;
+        mainStorage: boolean;
+        status: number;
+        desc: string;
+        createAt: string;
+        updateAt: string;
     }
 }

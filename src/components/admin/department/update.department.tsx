@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { App, Col, DatePicker, Divider, Form, Input, Modal, Row, Select, Upload } from 'antd';
 import type { FormProps } from 'antd';
-import { getAllUsers, getUserByIdApi, updateDepartmentApi, updateUserApi } from '@/services/api';
+import { getAllUsers, getStorageApi, getUserByIdApi, updateDepartmentApi, updateUserApi } from '@/services/api';
 import { Rule } from 'antd/es/form';
 import { PlusOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
@@ -20,6 +20,7 @@ type FieldType = {
     name: string;
     affiliatedUnit: string;
     userId: string;
+    storageId: string;
 };
 const { Option } = Select;
 const UpdateDepartment = (props: IProps) => {
@@ -27,14 +28,17 @@ const UpdateDepartment = (props: IProps) => {
     const [users, setUsers] = useState<IUser[]>([]);
     const [isSubmit, setIsSubmit] = useState<boolean>(false);
     const { message, notification } = App.useApp();
+    const [storages, setStorages] = useState<IStorage[]>([]);
 
     const [form] = Form.useForm();
 
     useEffect(() => {
         const fetchUser = async () => {
             const res = await getAllUsers();
-            if (res && res.data) {
+            const fetchStorage = await getStorageApi('');
+            if (res && res.data && fetchStorage && fetchStorage.data) {
                 setUsers(res.data);
+                setStorages(fetchStorage.data);
             }
         };
         fetchUser();
@@ -44,6 +48,7 @@ const UpdateDepartment = (props: IProps) => {
                 name: dataUpdate.name,
                 affiliatedUnit: dataUpdate.affiliatedUnit,
                 userId: dataUpdate.userId,
+                storageId: dataUpdate.storageId,
             });
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -57,6 +62,7 @@ const UpdateDepartment = (props: IProps) => {
             values.userId,
             user.data?.fullName ?? '',
             values.affiliatedUnit,
+            values.storageId,
             dataUpdate?.createAt ?? '',
         );
         setTimeout(() => {
@@ -127,6 +133,19 @@ const UpdateDepartment = (props: IProps) => {
                                     {users &&
                                         users.map((item) => {
                                             return <Option value={item.id}>{item.fullName}</Option>;
+                                        })}
+                                </Select>
+                            </Form.Item>
+                            <Form.Item<FieldType>
+                                labelCol={{ span: 24 }}
+                                label="Vui lòng chọn kho quản lý"
+                                name="storageId"
+                                rules={[{ required: true, message: 'Vui lòng chọn kho quản lý' }]}
+                            >
+                                <Select placeholder="Hãy chọn kho quản lý" allowClear>
+                                    {storages &&
+                                        storages.map((item) => {
+                                            return <Option value={item.id}>{item.name}</Option>;
                                         })}
                                 </Select>
                             </Form.Item>

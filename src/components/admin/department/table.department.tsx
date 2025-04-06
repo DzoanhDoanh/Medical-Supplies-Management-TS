@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { deleteDepartmentApi, getDepartmentsApi } from '@/services/api';
+import { deleteDepartmentApi, getDepartmentsApi, getStorageApi } from '@/services/api';
 // import { dateRangeValidate } from '@/services/helper';
 import { CloudUploadOutlined, DeleteTwoTone, EditTwoTone, ExportOutlined, PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
 import { App, Button, Popconfirm } from 'antd';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import ImportUser from './data/import.department';
 import { CSVLink } from 'react-csv';
 import dayjs from 'dayjs';
@@ -30,11 +30,11 @@ const TableDepartment = () => {
     const [dataUpdate, setDataUpdate] = useState<IDepartment | null>(null);
     const [openModalUpdate, setOpenModalUpdate] = useState<boolean>(false);
     const [isDeleteDepartment, setIsDeleteDepartment] = useState<boolean>(false);
+    const [storages, setStorages] = useState<IStorage[]>([]);
     const { message, notification } = App.useApp();
 
     const handleDeleteDepartment = async (id: string) => {
         const res = await deleteDepartmentApi(id);
-        console.log('Check ressss', res);
         setTimeout(() => {
             if (res && res.data && typeof res.data === 'string') {
                 const alertMessage = res.data + '';
@@ -51,6 +51,15 @@ const TableDepartment = () => {
             }
         }, 500);
     };
+    useEffect(() => {
+        const fetchData = async () => {
+            const res = await getStorageApi('');
+            if (res && res.data) {
+                setStorages(res.data);
+            }
+        };
+        fetchData();
+    }, []);
     const columns: ProColumns<IDepartment>[] = [
         {
             dataIndex: 'index',
@@ -94,6 +103,19 @@ const TableDepartment = () => {
             hideInSearch: true,
             render(dom, entity) {
                 return <span>{entity.affiliatedUnit}</span>;
+            },
+        },
+        {
+            title: 'Kho quản lý',
+            dataIndex: 'storageId',
+            hideInSearch: true,
+            render(dom, entity) {
+                try {
+                    const result = storages.find((e) => e.id === entity.storageId);
+                    return <span>{result?.name}</span>;
+                } catch (error) {
+                    return <span>Trống</span>;
+                }
             },
         },
         {

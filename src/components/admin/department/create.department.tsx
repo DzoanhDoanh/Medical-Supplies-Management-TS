@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { createDepartmentApi, getAllUsers, getUserByIdApi, registerApi } from '@/services/api';
+import { createDepartmentApi, getAllUsers, getStorageApi, getUserByIdApi, registerApi } from '@/services/api';
 import { App, Divider, Form, Modal, Input, Select, DatePicker, Upload, Row, Col } from 'antd';
 import type { FormProps } from 'antd';
 import { useEffect, useState } from 'react';
@@ -16,23 +16,27 @@ type FieldType = {
     name: string;
     affiliatedUnit: string;
     userId: string;
+    storageId: string;
 };
 const { Option } = Select;
 const CreateDepartment = (props: IProps) => {
     const { openModalCreate, setOpenModalCreate, refreshTable } = props;
     const [isSubmit, setIsSubmit] = useState<boolean>(false);
     const [users, setUsers] = useState<IUser[]>([]);
+    const [storages, setStorages] = useState<IStorage[]>([]);
     const { message, notification } = App.useApp();
 
     const [form] = Form.useForm();
     useEffect(() => {
-        const fetchUser = async () => {
+        const fetchData = async () => {
             const res = await getAllUsers();
-            if (res && res.data) {
+            const fetchStorage = await getStorageApi('');
+            if (res && res.data && fetchStorage && fetchStorage.data) {
                 setUsers(res.data);
+                setStorages(fetchStorage.data);
             }
         };
-        fetchUser();
+        fetchData();
     }, []);
     const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
         setIsSubmit(true);
@@ -43,6 +47,7 @@ const CreateDepartment = (props: IProps) => {
                 values.userId,
                 user.data.fullName,
                 values.affiliatedUnit,
+                values.storageId,
             );
             setTimeout(() => {
                 if (res && res.data && typeof res.data === 'string') {
@@ -111,6 +116,19 @@ const CreateDepartment = (props: IProps) => {
                                     {users &&
                                         users.map((item) => {
                                             return <Option value={item.id}>{item.fullName}</Option>;
+                                        })}
+                                </Select>
+                            </Form.Item>
+                            <Form.Item<FieldType>
+                                labelCol={{ span: 24 }}
+                                label="Vui lòng chọn kho quản lý"
+                                name="storageId"
+                                rules={[{ required: true, message: 'Vui lòng chọn kho quản lý' }]}
+                            >
+                                <Select placeholder="Hãy chọn kho quản lý" allowClear>
+                                    {storages &&
+                                        storages.map((item) => {
+                                            return <Option value={item.id}>{item.name}</Option>;
                                         })}
                                 </Select>
                             </Form.Item>

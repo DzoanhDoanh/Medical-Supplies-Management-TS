@@ -135,12 +135,19 @@ export const getDepartmentsApi = (query: string) => {
 export const getDepartmentByIdApi = (id: string) => {
     return axios.get<IBackendRes<IDepartment>>(`/departments/${id}`);
 };
-export const createDepartmentApi = (name: string, userId: string, userName: string, affiliatedUnit: string) => {
+export const createDepartmentApi = (
+    name: string,
+    userId: string,
+    userName: string,
+    affiliatedUnit: string,
+    storageId: string,
+) => {
     const urlBackend = `/660/departments`;
     return axios.post<IBackendRes<IDepartment>>(urlBackend, {
         name,
         userId,
         userName,
+        storageId,
         affiliatedUnit,
         createAt: new Date(),
     });
@@ -151,6 +158,7 @@ export const updateDepartmentApi = (
     userId: string,
     userName: string,
     affiliatedUnit: string,
+    storageId: string,
     createAt: string,
 ) => {
     const urlBackend = `/660/departments/${id}`;
@@ -159,6 +167,7 @@ export const updateDepartmentApi = (
         userId,
         userName,
         affiliatedUnit,
+        storageId,
         createAt,
     });
 };
@@ -362,4 +371,8 @@ export const updateUnitApi = (id: string, name: string, createAt: string) => {
 export const deleteUnitApi = (id: string) => {
     const urlBackend = `/660/units/${id}`;
     return axios.delete<IBackendRes<IUnit>>(urlBackend);
+};
+export const getStorageApi = (query: string) => {
+    const urlBackend = `/storages?_page=1&${query}`;
+    return axios.get<IBackendRes<IStorage[]>>(urlBackend);
 };

@@ -376,3 +376,42 @@ export const getStorageApi = (query: string) => {
     const urlBackend = `/storages?_page=1&${query}`;
     return axios.get<IBackendRes<IStorage[]>>(urlBackend);
 };
+export const createStorageApi = (name: string, departmentId: string, mainStorage: boolean, desc: string) => {
+    const urlBackend = `/660/storages`;
+    return axios.post<IBackendRes<IStorage>>(urlBackend, {
+        name,
+        departmentId,
+        mainStorage,
+        desc,
+        materials: [],
+        manager: [],
+        status: 0,
+        createAt: new Date(),
+        updateAt: new Date(),
+    });
+};
+export const updateStorageApi = (
+    id: string,
+    name: string,
+    departmentId: string,
+    mainStorage: boolean,
+    desc: string,
+    createAt: string,
+) => {
+    const urlBackend = `/660/storages/${id}`;
+    return axios.put<IBackendRes<IStorage>>(urlBackend, {
+        name,
+        departmentId,
+        mainStorage,
+        desc,
+        materials: [],
+        manager: [],
+        status: 0,
+        createAt,
+        updateAt: new Date(),
+    });
+};
+export const deleteStorageApi = (id: string) => {
+    const urlBackend = `/660/storages/${id}`;
+    return axios.delete<IBackendRes<IStorage>>(urlBackend);
+};

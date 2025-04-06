@@ -28,6 +28,7 @@ import ImportList from './pages/admin/material.import.list';
 import MaterialStatisticsReport from './pages/admin/report';
 import ManageManufacturer from './pages/admin/manage.manufacturer';
 import ManageUnit from './pages/admin/manage.unit';
+import ManageStorage from './pages/admin/manage.storage';
 // import vie from 'antd/locale/vi_VN';
 
 const router = createBrowserRouter([
@@ -202,6 +203,14 @@ const router = createBrowserRouter([
                 element: (
                     <ProtectedRoute>
                         <ManageUnit />
+                    </ProtectedRoute>
+                ),
+            },
+            {
+                path: 'storage',
+                element: (
+                    <ProtectedRoute>
+                        <ManageStorage />
                     </ProtectedRoute>
                 ),
             },

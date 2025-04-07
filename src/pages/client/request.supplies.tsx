@@ -2,7 +2,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
 import { Input, message, Button, Form, Select, Table, InputNumber } from 'antd';
-import { createMaterialRequestsApi, getDepartmentsApi, getSuppliesApi, getUsersApi } from '@/services/api';
+import {
+    createMaterialRequestsApi,
+    getDepartmentsApi,
+    getStorageApi,
+    getStorageByIdApi,
+    getSuppliesApi,
+    getUsersApi,
+} from '@/services/api';
 
 interface IProps {
     searchTerm: string;
@@ -27,7 +34,7 @@ const MedicalSuppliesRequest = () => {
     const [selectedMaterials, setSelectedMaterials] = useState<Material[]>([]);
     const [users, setUsers] = useState<IUser[]>([]);
     const [materialsList, SetMaterialsList] = useState<Material[]>([]);
-    const [departments, setDepartments] = useState<IDepartment[]>([]);
+    const [storages, setStorages] = useState<IStorage[]>([]);
     const [loading, setLoading] = useState(false);
     const [form] = Form.useForm();
 
@@ -35,23 +42,23 @@ const MedicalSuppliesRequest = () => {
         const fetchData = async () => {
             try {
                 const userData = await getUsersApi('');
-                const materialData = await getSuppliesApi('');
-                const departmentsData = await getDepartmentsApi('');
+                const materialData = await getStorageByIdApi('5Hqqg5d33');
+                const storageData = await getStorageApi('&mainStorage=false');
                 if (userData && userData.data) {
                     setUsers(userData.data);
                 }
                 if (materialData && materialData.data) {
-                    const result = materialData.data.map((item) => {
+                    const result = materialData.data.materials.map((item) => {
                         return {
-                            id: item.id,
-                            name: item.name,
+                            id: item.supplyId,
+                            name: item.materialName,
                             availableQuantity: item.quantity,
                         };
                     });
                     SetMaterialsList(result as []);
                 }
-                if (departmentsData && departmentsData.data) {
-                    setDepartments(departmentsData.data);
+                if (storageData && storageData.data) {
+                    setStorages(storageData.data);
                 }
             } catch (error) {
                 console.log(error);
@@ -191,13 +198,13 @@ const MedicalSuppliesRequest = () => {
                     </Select>
                 </Form.Item>
                 <Form.Item
-                    label="Phòng ban nhận"
+                    label="Kho nhận vật tư"
                     name="departmentId"
-                    rules={[{ required: true, message: 'Vui lòng chọn phòng ban nhận' }]}
+                    rules={[{ required: true, message: 'Vui lòng chọn kho nhận vật tư' }]}
                 >
-                    <Select style={{ width: '100%' }} placeholder="Vui lòng chọn phòng ban nhận">
-                        {departments &&
-                            departments.map((item) => {
+                    <Select style={{ width: '100%' }} placeholder="Vui lòng chọn kho nhận vật tư">
+                        {storages &&
+                            storages.map((item) => {
                                 return (
                                     <Select.Option key={item.id} values={item.id}>
                                         {item.name}

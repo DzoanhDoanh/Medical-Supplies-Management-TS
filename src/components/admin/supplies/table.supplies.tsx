@@ -1,4 +1,4 @@
-import { deleteSupplyApi, getCategoryApi, getSuppliesApi } from '@/services/api';
+import { deleteSupplyApi, getCategoryApi, getSuppliesApi, updateAllQuantityMaterialApi } from '@/services/api';
 // import { dateRangeValidate } from '@/services/helper';
 import { DeleteTwoTone, EditTwoTone, ExportOutlined, PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
@@ -59,6 +59,11 @@ const TableSupplies = () => {
                 refreshTable();
             }
         }, 500);
+    };
+    const handleUpdateQuantity = async () => {
+        await updateAllQuantityMaterialApi();
+        refreshTable();
+        message.success('Cập nhật lại số lượng vật tư thành công');
     };
     const columns: ProColumns<ISupplies>[] = [
         {
@@ -287,6 +292,9 @@ const TableSupplies = () => {
                         type="primary"
                     >
                         Thêm mới
+                    </Button>,
+                    <Button key="button" icon={<PlusOutlined />} onClick={handleUpdateQuantity} type="primary">
+                        Cập nhật số lượng vật tư
                     </Button>,
                 ]}
             />

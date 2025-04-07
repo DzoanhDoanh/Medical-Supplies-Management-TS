@@ -327,7 +327,7 @@ const UpdateSupply = (props: IProps) => {
                             </Form.Item> */}
 
                             <Form.Item<FieldType> label="Số lượng" name="quantity" rules={quantityRules}>
-                                <Input type="number" placeholder="Enter quantity" />
+                                <Input disabled type="number" placeholder="Enter quantity" />
                             </Form.Item>
                         </Col>
                     </Row>

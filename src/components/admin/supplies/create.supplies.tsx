@@ -88,7 +88,6 @@ const CreateSupply = (props: IProps) => {
                     0,
                     values.expirationDate ? values.expirationDate : '2003-12-16T17:00:00.000Z',
                     values.costPrice,
-                    Number(values.quantity),
                     2,
                 );
                 if (res && res.data) {
@@ -117,10 +116,9 @@ const CreateSupply = (props: IProps) => {
                     values.desc,
                     values.unit,
                     values.manufacturer,
-                    values.batchNumber,
+                    0,
                     values.expirationDate,
                     values.costPrice,
-                    Number(values.quantity),
                     0,
                     base64,
                 );
@@ -302,10 +300,10 @@ const CreateSupply = (props: IProps) => {
                                     <Option value={2}>Tốt</Option>
                                 </Select>
                             </Form.Item> */}
-
+                            {/* 
                             <Form.Item<FieldType> label="Số lượng" name="quantity" rules={quantityRules}>
                                 <Input min={0} type="number" placeholder="Enter quantity" />
-                            </Form.Item>
+                            </Form.Item> */}
                         </Col>
                     </Row>
                 </Form>

@@ -191,7 +191,7 @@ export const createSupplyApi = (
     batchNumber: number,
     expirationDate: string,
     costPrice: number,
-    quantity: number,
+    // quantity: number,
     status: number,
     thumbnail?: string,
 ) => {
@@ -205,7 +205,7 @@ export const createSupplyApi = (
         batchNumber,
         expirationDate,
         costPrice,
-        quantity,
+        quantity: 0,
         status,
         thumbnail: thumbnail ? thumbnail : 'user.png',
         createAt: new Date(),
@@ -390,9 +390,15 @@ export const createStorageApi = (name: string, departmentId: string, mainStorage
         updateAt: new Date(),
     });
 };
+export const getStorageByIdApi = (id: string) => {
+    const urlBackend = `/storages/${id}`;
+    return axios.get<IBackendRes<IStorage>>(urlBackend);
+};
 export const updateStorageApi = (
     id: string,
     name: string,
+    materials: MaterialStorage[],
+    manager: ManageStorage[],
     departmentId: string,
     mainStorage: boolean,
     desc: string,
@@ -404,8 +410,8 @@ export const updateStorageApi = (
         departmentId,
         mainStorage,
         desc,
-        materials: [],
-        manager: [],
+        materials: materials,
+        manager: manager,
         status: 0,
         createAt,
         updateAt: new Date(),
@@ -414,4 +420,25 @@ export const updateStorageApi = (
 export const deleteStorageApi = (id: string) => {
     const urlBackend = `/660/storages/${id}`;
     return axios.delete<IBackendRes<IStorage>>(urlBackend);
+};
+export const updateAllQuantityMaterialApi = async () => {
+    const materials = await getSuppliesApi('');
+    const storage = await getStorageByIdApi('5Hqqg5d33');
+    if (materials && materials.data && storage && storage.data) {
+        for (const item of storage.data.materials) {
+            await updateQuantitySupplyApi(item.supplyId, item.quantity);
+        }
+    }
+};
+export const getMainStorageApi = () => {
+    const urlBackend = `/storages/5Hqqg5d33`;
+    return axios.get<IBackendRes<IStorage>>(urlBackend);
+};
+export const updateQuantityOfMainStorageApi = (materials: MaterialStorage) => {
+    const urlBackend = `/storages/5Hqqg5d33`;
+    return axios.patch<IBackendRes<IStorage>>(urlBackend, { materials, updateAt: new Date() });
+};
+export const transferToAnotherStorageApi = (id: string, materials: MaterialStorage) => {
+    const urlBackend = `/storages/${id}`;
+    return axios.patch<IBackendRes<IStorage>>(urlBackend, { materials, updateAt: new Date() });
 };

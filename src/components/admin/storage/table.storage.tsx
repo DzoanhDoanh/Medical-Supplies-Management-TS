@@ -30,8 +30,12 @@ const TableStorage = () => {
     const [departments, setDepartments] = useState<IDepartment[]>([]);
     const { message, notification } = App.useApp();
 
-    const handleDeleteDepartment = async (id: string) => {
-        const res = await deleteStorageApi(id);
+    const handleDeleteDepartment = async (entity: IStorage) => {
+        if (entity.materials.length > 0) {
+            message.warning('Không thể xóa kho vì vẫn còn vật tư');
+            return;
+        }
+        const res = await deleteStorageApi(entity.id);
         setTimeout(() => {
             if (res && res.data && typeof res.data === 'string') {
                 const alertMessage = res.data + '';
@@ -150,7 +154,7 @@ const TableStorage = () => {
                             placement="leftTop"
                             title={'Xóa'}
                             description="Bạn có chắc là xóa?"
-                            onConfirm={() => handleDeleteDepartment(entity.id)}
+                            onConfirm={() => handleDeleteDepartment(entity)}
                             okText="Xác nhận"
                             cancelText="Hủy"
                             okButtonProps={{ loading: isDeleteStorage }}

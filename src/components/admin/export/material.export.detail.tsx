@@ -1,11 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
-import { Form, Button, Select, Table, message, InputNumber, Card, Typography, Spin } from 'antd';
+import { Form, Button, Select, Table, InputNumber, Card, Typography, Spin } from 'antd';
 import {
+    getMainStorageApi,
     getMaterialRequestsApi,
-    getSuppliesApi,
-    updateMaterialRequestApi,
-    updateQuantitySupplyApi,
+    getStorageByIdApi,
+    transferToAnotherStorageApi,
+    updateQuantityOfMainStorageApi,
+    updateStatusMaterialRequestApi,
 } from '@/services/api';
 
 const { Title } = Typography;
@@ -16,7 +18,11 @@ interface MaterialRequest {
     quantity: number;
     deliveredQuantity?: number;
 }
-
+type MaterialRequestMerge = {
+    materialId: string;
+    materialName: string;
+    quantity: number;
+};
 interface Request {
     id: string;
     requestName: string;
@@ -34,19 +40,19 @@ const MaterialTransfer = () => {
     const [selectedRequest, setSelectedRequest] = useState<Request | null>(null);
     const [tableData, setTableData] = useState<MaterialRequest[]>([]);
     const [materialRequests, setMaterialRequests] = useState<IMaterialRequest[]>([]);
-    const [allMaterials, setAllMaterials] = useState<ISupplies[]>([]);
+    const [allMaterials, setAllMaterials] = useState<MaterialStorage[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [form] = Form.useForm();
 
     useEffect(() => {
         const fetchData = async () => {
             const res = await getMaterialRequestsApi('status_like=1');
-            const res2 = await getSuppliesApi('');
+            const res2 = await getMainStorageApi();
             if (res && res.data) {
                 setMaterialRequests(res.data);
             }
             if (res2 && res2.data) {
-                setAllMaterials(res2.data);
+                setAllMaterials(res2.data.materials);
             }
         };
         fetchData();
@@ -74,50 +80,112 @@ const MaterialTransfer = () => {
             }),
         );
     };
+    const mergeMaterialRequests = (base: MaterialRequestMerge[], addition: MaterialRequestMerge[]) => {
+        const map = new Map<string, MaterialRequestMerge>();
 
+        // Bắt đầu với danh sách ban đầu
+        base.forEach((item) => {
+            map.set(item.materialId, { ...item });
+        });
+
+        // Gộp từ danh sách bổ sung
+        addition.forEach((item) => {
+            if (map.has(item.materialId)) {
+                map.get(item.materialId)!.quantity += item.quantity;
+            } else {
+                map.set(item.materialId, { ...item });
+            }
+        });
+
+        return Array.from(map.values());
+    };
+    const subtractMaterialRequests = (base: MaterialRequestMerge[], toSubtract: MaterialRequestMerge[]) => {
+        const map = new Map<string, MaterialRequestMerge>();
+
+        // Bắt đầu với danh sách gốc
+        base.forEach((item) => {
+            map.set(item.materialId, { ...item });
+        });
+
+        // Trừ đi từ danh sách toSubtract
+        toSubtract.forEach((item) => {
+            if (map.has(item.materialId)) {
+                const existing = map.get(item.materialId)!;
+                existing.quantity = Math.max(0, existing.quantity - item.quantity); // Không để âm
+            }
+        });
+
+        return Array.from(map.values());
+    };
     const handleSubmit = async () => {
         setLoading(true);
-        try {
-            for (const item of tableData) {
-                const material = allMaterials.find((e) => e.id === item.materialId);
+        const baseData = await getStorageByIdApi(selectedRequest?.requesterInfo.departmentId ?? '');
+        const mainStorage = await getMainStorageApi();
+        const addition = tableData.map((item) => {
+            return {
+                materialId: item.materialId,
+                materialName: item.materialName,
+                quantity: item.deliveredQuantity ?? 0,
+            };
+        });
+        const base = baseData.data?.materials.map((item) => {
+            return {
+                materialId: item.supplyId,
+                materialName: item.materialName,
+                quantity: item.quantity ?? 0,
+            };
+        });
+        const subBase = mainStorage.data?.materials.map((item) => {
+            return {
+                materialId: item.supplyId,
+                materialName: item.materialName,
+                quantity: item.quantity ?? 0,
+            };
+        });
+        const sub = tableData.map((item) => {
+            return {
+                materialId: item.materialId,
+                materialName: item.materialName,
+                quantity: item.deliveredQuantity ?? 0,
+            };
+        });
+        const materialsTransfer = mergeMaterialRequests(base ?? [], addition ?? []).map((item) => {
+            return {
+                supplyId: item.materialId,
+                materialName: item.materialName,
+                quantity: item.quantity,
+            };
+        });
+        const materialOfMainStorage = subtractMaterialRequests(subBase ?? [], sub).map((item) => {
+            return {
+                supplyId: item.materialId,
+                materialName: item.materialName,
+                quantity: item.quantity,
+            };
+        });
 
-                if (material) {
-                    if (material.quantity < (item.deliveredQuantity ?? 0)) {
-                        message.error('Số lượng bàn giao không được nhiều hơn số lượng trong kho');
-                        setLoading(false);
-                        return;
-                    }
-                }
-            }
-            for (const item of tableData) {
-                const material = allMaterials.find((e) => e.id === item.materialId);
-
-                if (material) {
-                    if (material.quantity < (item.deliveredQuantity ?? 0)) {
-                        message.error('Số lượng bàn giao không được nhiều hơn số lượng trong kho');
-                        setLoading(false);
-                        return;
-                    }
-                    const quantity = material.quantity - (item.deliveredQuantity ?? 0);
-                    await updateQuantitySupplyApi(item.materialId, quantity);
-                }
-            }
-            const res = await updateMaterialRequestApi(selectedRequest?.id ?? '', 3, tableData ?? []);
-            if (res && res.data) {
-                message.success('Bàn giao vật tư thành công!');
-                setSelectedRequest(null);
-                setTableData([]);
-                form.resetFields();
-                setLoading(false);
-            } else {
-                message.success('Bàn giao vật tư thất bại!');
-                setLoading(false);
-            }
-        } catch (error) {
-            console.log(error);
+        const updateMainStorage = await updateQuantityOfMainStorageApi(
+            materialOfMainStorage as unknown as MaterialStorage,
+        );
+        const updateDestinationStorage = await transferToAnotherStorageApi(
+            selectedRequest?.requesterInfo.departmentId ?? '',
+            materialsTransfer as unknown as MaterialStorage,
+        );
+        const updateStatus = await updateStatusMaterialRequestApi(selectedRequest?.id ?? '', 3);
+        if (
+            updateMainStorage &&
+            updateMainStorage.data &&
+            updateDestinationStorage &&
+            updateDestinationStorage.data &&
+            updateStatus &&
+            updateStatus.data
+        ) {
+            setSelectedRequest(null);
+            setTableData([]);
+            form.resetFields();
             setLoading(false);
-            message.success('Bàn giao vật tư thất bại!');
         }
+        setLoading(false);
     };
 
     const columns = [
@@ -148,7 +216,7 @@ const MaterialTransfer = () => {
             title: 'Số lượng trong kho',
             key: 'storage',
             render: (text: any, record: any) => {
-                const result = allMaterials.find((e) => e.id === record.materialId);
+                const result = allMaterials.find((e) => e.supplyId === record.materialId);
                 return <span>{result?.quantity}</span>;
             },
         },

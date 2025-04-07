@@ -112,7 +112,7 @@ declare global {
     interface MaterialStorage {
         supplyId: string;
         materialName: string;
-        quantity: string;
+        quantity: number;
     }
     interface ManageStorage {
         userId: string;

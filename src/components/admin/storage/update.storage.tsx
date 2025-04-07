@@ -3,18 +3,7 @@
 import { useEffect, useState } from 'react';
 import { App, Checkbox, Col, DatePicker, Divider, Form, Input, Modal, Row, Select, Upload } from 'antd';
 import type { FormProps } from 'antd';
-import {
-    getAllUsers,
-    getDepartmentsApi,
-    getStorageApi,
-    getUserByIdApi,
-    updateDepartmentApi,
-    updateStorageApi,
-    updateUserApi,
-} from '@/services/api';
-import { Rule } from 'antd/es/form';
-import { PlusOutlined } from '@ant-design/icons';
-import dayjs from 'dayjs';
+import { getDepartmentsApi, updateStorageApi } from '@/services/api';
 
 interface IProps {
     openModalUpdate: boolean;
@@ -63,6 +52,8 @@ const UpdateStorage = (props: IProps) => {
         const res = await updateStorageApi(
             dataUpdate?.id ?? '',
             values.name,
+            dataUpdate?.materials ?? [],
+            dataUpdate?.manager ?? [],
             values.departmentId,
             values.mainStorage ? true : false,
             values.desc,

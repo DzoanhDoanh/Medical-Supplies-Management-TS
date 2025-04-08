@@ -1,7 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react';
-import { App, Checkbox, Col, DatePicker, Divider, Form, Input, Modal, Row, Select, Upload } from 'antd';
+import { App, Checkbox, Col, Divider, Form, Input, Modal, Row, Select } from 'antd';
 import type { FormProps } from 'antd';
 import { getDepartmentsApi, updateStorageApi } from '@/services/api';
 

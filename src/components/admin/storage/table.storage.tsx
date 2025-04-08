@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { deleteDepartmentApi, deleteStorageApi, getDepartmentsApi, getStorageApi } from '@/services/api';
+import { deleteStorageApi, getDepartmentsApi, getStorageApi } from '@/services/api';
 // import { dateRangeValidate } from '@/services/helper';
-import { CloudUploadOutlined, DeleteTwoTone, EditTwoTone, ExportOutlined, PlusOutlined } from '@ant-design/icons';
+import { DeleteTwoTone, EditTwoTone, ExportOutlined, PlusCircleTwoTone, PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
 import { App, Badge, Button, Checkbox, Col, Input, Popconfirm, Row } from 'antd';
@@ -11,6 +11,7 @@ import dayjs from 'dayjs';
 import DetailStorage from './detail.storage';
 import CreateStorage from './create.storage';
 import UpdateStorage from './update.storage';
+import AddUsers from './add.user';
 
 type TSearch = {
     name: string;
@@ -22,6 +23,8 @@ const TableStorage = () => {
     const [openViewDetail, setOpenViewDetail] = useState<boolean>(false);
     const [dataViewDetail, setDataViewDetail] = useState<IStorage | null>(null);
     const [openModalCreate, setOpenModalCreate] = useState<boolean>(false);
+    const [openModalAddUsers, setOpenModalAddUsers] = useState<boolean>(false);
+    const [dataAddUsers, setDataAddUsers] = useState<IStorage | null>(null);
     const [currentDataTable, setCurrentDataTable] = useState<IStorage[]>([]);
     const [excelData, setExcelData] = useState([]);
     const [dataUpdate, setDataUpdate] = useState<IStorage | null>(null);
@@ -150,6 +153,14 @@ const TableStorage = () => {
                                 setOpenModalUpdate(true);
                             }}
                         />
+                        <PlusCircleTwoTone
+                            twoToneColor={'#f57800'}
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => {
+                                setDataAddUsers(entity);
+                                setOpenModalAddUsers(true);
+                            }}
+                        />
                         <Popconfirm
                             placement="leftTop"
                             title={'Xóa'}
@@ -245,10 +256,18 @@ const TableStorage = () => {
                 dataViewDetail={dataViewDetail}
                 setDataViewDetail={setDataViewDetail}
             />
+
             <CreateStorage
                 openModalCreate={openModalCreate}
                 setOpenModalCreate={setOpenModalCreate}
                 refreshTable={refreshTable}
+            />
+            <AddUsers
+                openModalAddUsers={openModalAddUsers}
+                setOpenModalAddUsers={setOpenModalAddUsers}
+                refreshTable={refreshTable}
+                setDataAddUsers={setDataAddUsers}
+                dataAddUsers={dataAddUsers}
             />
             <UpdateStorage
                 openModalUpdate={openModalUpdate}

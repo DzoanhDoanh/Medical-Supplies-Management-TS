@@ -427,6 +427,13 @@ export const deleteStorageApi = (id: string) => {
     const urlBackend = `/660/storages/${id}`;
     return axios.delete<IBackendRes<IStorage>>(urlBackend);
 };
+export const addUsersToStorageApi = (id: string, manager: ManageStorage[]) => {
+    const urlBackend = `/660/storages/${id}`;
+    return axios.patch<IBackendRes<IStorage>>(urlBackend, {
+        manager: manager,
+        updateAt: new Date(),
+    });
+};
 export const updateAllQuantityMaterialApi = async () => {
     const materials = await getSuppliesApi('');
     const storage = await getStorageByIdApi('5Hqqg5d33');

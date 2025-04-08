@@ -280,11 +280,17 @@ export const updateStatusMaterialRequestApi = (id: string, status: number) => {
         updateAt: new Date(),
     });
 };
-export const updateMaterialRequestApi = (id: string, status: number, materialRequests: MaterialRequests[]) => {
+export const updateMaterialRequestApi = (
+    id: string,
+    senderInfo: SenderInfo,
+    status: number,
+    materialRequests: MaterialRequests[],
+) => {
     const urlBackend = `/660/requests/${id}`;
     return axios.patch<IBackendRes<IMaterialRequest>>(urlBackend, {
         status,
         materialRequests,
+        senderInfo,
         updateAt: new Date(),
     });
 };

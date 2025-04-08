@@ -325,10 +325,10 @@ const UpdateSupply = (props: IProps) => {
                                     <Option value={2}>Tốt</Option>
                                 </Select>
                             </Form.Item> */}
-
+                            {/* 
                             <Form.Item<FieldType> label="Số lượng" name="quantity" rules={quantityRules}>
                                 <Input disabled type="number" placeholder="Enter quantity" />
-                            </Form.Item>
+                            </Form.Item> */}
                         </Col>
                     </Row>
                 </Form>

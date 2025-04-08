@@ -30,7 +30,7 @@ const DetailSupply = (props: IProps) => {
                     <Descriptions.Item label="Xuất xứ">{dataViewDetail?.manufacturer}</Descriptions.Item>
                     {/* <Descriptions.Item label="Số lô">{dataViewDetail?.batchNumber}</Descriptions.Item> */}
                     {/* <Descriptions.Item label="Trạng thái">{dataViewDetail?.status}</Descriptions.Item> */}
-                    <Descriptions.Item label="Số lượng">{dataViewDetail?.quantity}</Descriptions.Item>
+                    {/* <Descriptions.Item label="Số lượng">{dataViewDetail?.quantity}</Descriptions.Item> */}
                     <Descriptions.Item label="Ngày hết hạn">
                         {dataViewDetail?.expirationDate === '2003-12-16T17:00:00.000Z'
                             ? 'Không có'

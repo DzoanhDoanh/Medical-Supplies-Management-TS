@@ -1,14 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
-import { Form, Button, Select, Table, InputNumber, Card, Typography, Spin } from 'antd';
+import { Form, Button, Select, Table, InputNumber, Card, Typography, Spin, message, Descriptions } from 'antd';
 import {
     getMainStorageApi,
     getMaterialRequestsApi,
+    getStorageApi,
     getStorageByIdApi,
+    getUsersApi,
     transferToAnotherStorageApi,
+    updateMaterialRequestApi,
     updateQuantityOfMainStorageApi,
-    updateStatusMaterialRequestApi,
 } from '@/services/api';
+import dayjs from 'dayjs';
+import { FORMAT_DATE_VN } from '@/services/helper';
 
 const { Title } = Typography;
 
@@ -41,6 +45,9 @@ const MaterialTransfer = () => {
     const [tableData, setTableData] = useState<MaterialRequest[]>([]);
     const [materialRequests, setMaterialRequests] = useState<IMaterialRequest[]>([]);
     const [allMaterials, setAllMaterials] = useState<MaterialStorage[]>([]);
+    const [users, setUsers] = useState<IUser[]>([]);
+    const [storages, setStorages] = useState<IStorage[]>([]);
+    const [senderInfo, setSenderInfo] = useState<SenderInfo>({ userId: '', userName: '' });
     const [loading, setLoading] = useState<boolean>(false);
     const [form] = Form.useForm();
 
@@ -48,11 +55,19 @@ const MaterialTransfer = () => {
         const fetchData = async () => {
             const res = await getMaterialRequestsApi('status_like=1');
             const res2 = await getMainStorageApi();
+            const fetchUser = await getUsersApi('');
+            const fetchStorage = await getStorageApi('');
             if (res && res.data) {
                 setMaterialRequests(res.data);
             }
             if (res2 && res2.data) {
                 setAllMaterials(res2.data.materials);
+            }
+            if (fetchUser && fetchUser.data) {
+                setUsers(fetchUser.data);
+            }
+            if (fetchStorage && fetchStorage.data) {
+                setStorages(fetchStorage.data);
             }
         };
         fetchData();
@@ -117,75 +132,91 @@ const MaterialTransfer = () => {
 
         return Array.from(map.values());
     };
+    const handleChangeReceiver = (values: string) => {
+        const user = users.find((e) => e.id === values);
+        setSenderInfo({ userId: user?.id ?? '', userName: user?.fullName ?? '' });
+    };
     const handleSubmit = async () => {
-        setLoading(true);
-        const baseData = await getStorageByIdApi(selectedRequest?.requesterInfo.departmentId ?? '');
-        const mainStorage = await getMainStorageApi();
-        const addition = tableData.map((item) => {
-            return {
-                materialId: item.materialId,
-                materialName: item.materialName,
-                quantity: item.deliveredQuantity ?? 0,
-            };
-        });
-        const base = baseData.data?.materials.map((item) => {
-            return {
-                materialId: item.supplyId,
-                materialName: item.materialName,
-                quantity: item.quantity ?? 0,
-            };
-        });
-        const subBase = mainStorage.data?.materials.map((item) => {
-            return {
-                materialId: item.supplyId,
-                materialName: item.materialName,
-                quantity: item.quantity ?? 0,
-            };
-        });
-        const sub = tableData.map((item) => {
-            return {
-                materialId: item.materialId,
-                materialName: item.materialName,
-                quantity: item.deliveredQuantity ?? 0,
-            };
-        });
-        const materialsTransfer = mergeMaterialRequests(base ?? [], addition ?? []).map((item) => {
-            return {
-                supplyId: item.materialId,
-                materialName: item.materialName,
-                quantity: item.quantity,
-            };
-        });
-        const materialOfMainStorage = subtractMaterialRequests(subBase ?? [], sub).map((item) => {
-            return {
-                supplyId: item.materialId,
-                materialName: item.materialName,
-                quantity: item.quantity,
-            };
-        });
+        if (senderInfo.userId === '') {
+            message.error('Hãy chọn người nhận');
+            return;
+        }
+        try {
+            setLoading(true);
+            const baseData = await getStorageByIdApi(selectedRequest?.requesterInfo.departmentId ?? '');
+            const mainStorage = await getMainStorageApi();
+            const addition = tableData.map((item) => {
+                return {
+                    materialId: item.materialId,
+                    materialName: item.materialName,
+                    quantity: item.deliveredQuantity ?? 0,
+                };
+            });
+            const base = baseData.data?.materials.map((item) => {
+                return {
+                    materialId: item.supplyId,
+                    materialName: item.materialName,
+                    quantity: item.quantity ?? 0,
+                };
+            });
+            const subBase = mainStorage.data?.materials.map((item) => {
+                return {
+                    materialId: item.supplyId,
+                    materialName: item.materialName,
+                    quantity: item.quantity ?? 0,
+                };
+            });
+            const sub = tableData.map((item) => {
+                return {
+                    materialId: item.materialId,
+                    materialName: item.materialName,
+                    quantity: item.deliveredQuantity ?? 0,
+                };
+            });
+            const materialsTransfer = mergeMaterialRequests(base ?? [], addition ?? []).map((item) => {
+                return {
+                    supplyId: item.materialId,
+                    materialName: item.materialName,
+                    quantity: item.quantity,
+                };
+            });
+            const materialOfMainStorage = subtractMaterialRequests(subBase ?? [], sub).map((item) => {
+                return {
+                    supplyId: item.materialId,
+                    materialName: item.materialName,
+                    quantity: item.quantity,
+                };
+            });
 
-        const updateMainStorage = await updateQuantityOfMainStorageApi(
-            materialOfMainStorage as unknown as MaterialStorage,
-        );
-        const updateDestinationStorage = await transferToAnotherStorageApi(
-            selectedRequest?.requesterInfo.departmentId ?? '',
-            materialsTransfer as unknown as MaterialStorage,
-        );
-        const updateStatus = await updateStatusMaterialRequestApi(selectedRequest?.id ?? '', 3);
-        if (
-            updateMainStorage &&
-            updateMainStorage.data &&
-            updateDestinationStorage &&
-            updateDestinationStorage.data &&
-            updateStatus &&
-            updateStatus.data
-        ) {
-            setSelectedRequest(null);
-            setTableData([]);
-            form.resetFields();
+            const updateMainStorage = await updateQuantityOfMainStorageApi(
+                materialOfMainStorage as unknown as MaterialStorage,
+            );
+            const updateDestinationStorage = await transferToAnotherStorageApi(
+                selectedRequest?.requesterInfo.departmentId ?? '',
+                materialsTransfer as unknown as MaterialStorage,
+            );
+            // const updateStatus = await updateStatusMaterialRequestApi(selectedRequest?.id ?? '', 3);
+            const updateStatus = await updateMaterialRequestApi(selectedRequest?.id ?? '', senderInfo, 3, tableData);
+            if (
+                updateMainStorage &&
+                updateMainStorage.data &&
+                updateDestinationStorage &&
+                updateDestinationStorage.data &&
+                updateStatus &&
+                updateStatus.data
+            ) {
+                setSelectedRequest(null);
+                setTableData([]);
+                form.resetFields();
+                setLoading(false);
+                message.success('Bàn giao vật tư thành công thông tin chi tiết hãy xem ở chi tiết đơn yêu cầu');
+            }
+            setLoading(false);
+        } catch (error) {
+            message.error('Có lỗi khi bàn giao vật tư vui lòng thử lại');
+            console.log(error);
             setLoading(false);
         }
-        setLoading(false);
     };
 
     const columns = [
@@ -253,7 +284,37 @@ const MaterialTransfer = () => {
                                     ))}
                                 </Select>
                             </Form.Item>
+                            <Form.Item name={'receiverInfo'} label="Chọn người gửi">
+                                <Select
+                                    placeholder="Chọn người gửi"
+                                    style={{ width: '100%' }}
+                                    onChange={handleChangeReceiver}
+                                >
+                                    {users.map((item) => (
+                                        <Select.Option key={item.id} value={item.id}>
+                                            {item.fullName}
+                                        </Select.Option>
+                                    ))}
+                                </Select>
+                            </Form.Item>
                         </Form>
+                        {selectedRequest && (
+                            <Descriptions title="Chi tiết phiếu yêu cầu" bordered column={2}>
+                                <Descriptions.Item label="Tên người nhận vật tư">
+                                    {users.find((e) => e.id === selectedRequest?.requesterInfo.requesterName)?.fullName}
+                                </Descriptions.Item>
+                                <Descriptions.Item label="Tên đơn yêu cầu">
+                                    {selectedRequest?.requestName}
+                                </Descriptions.Item>
+                                <Descriptions.Item label="Kho nhận">
+                                    {storages.find((e) => e.id === selectedRequest?.requesterInfo.departmentId)?.name}
+                                </Descriptions.Item>
+                                <Descriptions.Item label="Ngày tạo">
+                                    {' '}
+                                    {dayjs(selectedRequest?.createAt).format(FORMAT_DATE_VN)}
+                                </Descriptions.Item>
+                            </Descriptions>
+                        )}
                     </Card>
 
                     {selectedRequest && (

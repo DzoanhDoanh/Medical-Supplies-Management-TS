@@ -78,6 +78,10 @@ declare global {
         quantity: number;
         deliveredQuantity?: number;
     }
+    interface SenderInfo {
+        userId: string;
+        userName: string;
+    }
     interface IMaterialRequest {
         id: string;
         status: number;
@@ -86,6 +90,7 @@ declare global {
         requestName: string;
         requesterInfo: RequesterInfo;
         materialRequests: MaterialRequests[];
+        receiverInfo?: ReceiverInfo;
     }
     interface IImportRequest {
         id: string;
@@ -101,7 +106,6 @@ declare global {
         name: string;
         createAt: string;
         updateAt: string;
-        a;
     }
     interface IManufacturer {
         id: string;

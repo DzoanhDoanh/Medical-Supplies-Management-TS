@@ -145,11 +145,11 @@ const TableSupplies = () => {
         //         return <CurrencyFormatter value={entity.costPrice} />;
         //     },
         // },
-        {
-            title: 'Số lượng tồn kho',
-            dataIndex: 'quantity',
-            hideInSearch: false,
-        },
+        // {
+        //     title: 'Số lượng tồn kho',
+        //     dataIndex: 'quantity',
+        //     hideInSearch: false,
+        // },
         // {
         //     title: 'Trạng thái',
         //     dataIndex: 'status',

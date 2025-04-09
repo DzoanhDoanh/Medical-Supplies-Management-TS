@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
-import { Input, message, Button, Form, Select, Table, InputNumber } from 'antd';
+import { Input, message, Button, Form, Select, Table, InputNumber, Tag } from 'antd';
 import { createImportRequestsApi, getSuppliesApi, getUsersApi, updateQuantitySupplyApi } from '@/services/api';
 
 interface FieldProps {
@@ -138,16 +138,23 @@ const ImportExistingMaterial = () => {
 
         setLoading(false);
     };
-
+    const customTagRender = (props: any) => {
+        const { label } = props;
+        return (
+            <Tag style={{ marginRight: 3 }}>
+                {label} {/* Không hiển thị nút X */}
+            </Tag>
+        );
+    };
     return (
         <div>
             <Form layout="vertical" form={form} onFinish={onFinish}>
                 <Form.Item
-                    label="Tên người thực hiện"
+                    label="Người đề nghị"
                     name="requesterName"
-                    rules={[{ required: true, message: 'Vui lòng chọn tên người thực hiện' }]}
+                    rules={[{ required: true, message: 'Vui lòng chọn tên người đề nghị' }]}
                 >
-                    <Select style={{ width: '100%' }} placeholder="Chọn người thực hiện">
+                    <Select style={{ width: '100%' }} placeholder="Chọn người đề nghị">
                         {users.map((user) => (
                             <Select.Option key={user.id} value={user.id}>
                                 {user.fullName}
@@ -156,15 +163,16 @@ const ImportExistingMaterial = () => {
                     </Select>
                 </Form.Item>
                 <Form.Item
-                    label="Tên phiếu nhập"
+                    label="Tên đề nghị"
                     name="requestName"
-                    rules={[{ required: true, message: 'Vui lòng nhập tên phiếu nhập' }]}
+                    rules={[{ required: true, message: 'Vui lòng nhập tên đề nghị' }]}
                 >
-                    <Input placeholder="Nhập tên phiếu nhập" />
+                    <Input placeholder="Nhập tên đề nghị" />
                 </Form.Item>
-                <Form.Item label="Chọn vật tư cần nhập" name="materialId">
+                <Form.Item label="Chọn vật tư cần mua" name="materialId">
                     <Select
                         mode="multiple"
+                        tagRender={customTagRender}
                         style={{ width: '100%' }}
                         placeholder="Chọn vật tư"
                         onChange={handleMaterialChange}
@@ -179,7 +187,7 @@ const ImportExistingMaterial = () => {
                 <Table dataSource={selectedMaterials} columns={columns} rowKey="key" pagination={false} />
                 <Form.Item>
                     <Button type="primary" htmlType="submit" loading={loading} style={{ marginTop: '20px' }}>
-                        Nhập Vật Tư
+                        Tiến hành gửi đề nghị mua
                     </Button>
                 </Form.Item>
             </Form>

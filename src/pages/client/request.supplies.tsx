@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
-import { Input, message, Button, Form, Select, Table, InputNumber } from 'antd';
+import { Input, message, Button, Form, Select, Table, InputNumber, Tag } from 'antd';
 import {
     createMaterialRequestsApi,
     getDepartmentsApi,
@@ -176,9 +176,16 @@ const MedicalSuppliesRequest = () => {
             setLoading(false);
         }
     };
-
+    const customTagRender = (props: any) => {
+        const { label } = props;
+        return (
+            <Tag style={{ marginRight: 3 }}>
+                {label} {/* Không hiển thị nút X */}
+            </Tag>
+        );
+    };
     return (
-        <div style={{ padding: 50 }}>
+        <div style={{ padding: 50, backgroundColor: '#fff' }}>
             <h1 style={{ marginBottom: '20px' }}>Tạo Phiếu Yêu Cầu Vật Tư</h1>
             <Form layout="vertical" form={form} onFinish={onFinish}>
                 <Form.Item
@@ -241,6 +248,7 @@ const MedicalSuppliesRequest = () => {
                     <Select
                         mode="multiple"
                         style={{ width: '100%' }}
+                        tagRender={customTagRender}
                         placeholder="Chọn vật tư"
                         onChange={handleMaterialChange}
                     >

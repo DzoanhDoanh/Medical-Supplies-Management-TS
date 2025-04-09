@@ -140,6 +140,29 @@ const TableStorage = () => {
             hideInSearch: true,
         },
         {
+            title: 'Xác định cán bộ quản lý',
+            hideInSearch: true,
+            render(dom, entity) {
+                return (
+                    <>
+                        {entity.mainStorage ? (
+                            <></>
+                        ) : (
+                            <Button
+                                type="primary"
+                                onClick={() => {
+                                    setDataAddUsers(entity);
+                                    setOpenModalAddUsers(true);
+                                }}
+                            >
+                                Xác định quản lý
+                            </Button>
+                        )}
+                    </>
+                );
+            },
+        },
+        {
             title: 'Hành động',
             hideInSearch: true,
             render(dom, entity) {
@@ -153,14 +176,7 @@ const TableStorage = () => {
                                 setOpenModalUpdate(true);
                             }}
                         />
-                        <PlusCircleTwoTone
-                            twoToneColor={'#f57800'}
-                            style={{ cursor: 'pointer' }}
-                            onClick={() => {
-                                setDataAddUsers(entity);
-                                setOpenModalAddUsers(true);
-                            }}
-                        />
+
                         <Popconfirm
                             placement="leftTop"
                             title={'Xóa'}

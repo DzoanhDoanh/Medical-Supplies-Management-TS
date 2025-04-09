@@ -90,7 +90,7 @@ declare global {
         requestName: string;
         requesterInfo: RequesterInfo;
         materialRequests: MaterialRequests[];
-        receiverInfo?: ReceiverInfo;
+        senderInfo?: SenderInfo;
     }
     interface IImportRequest {
         id: string;
@@ -100,6 +100,8 @@ declare global {
         requestName: string;
         requesterName: string;
         materialRequests: MaterialRequests[];
+        senderInfo?: SenderInfo;
+        receiverInfo?: SenderInfo;
     }
     interface IUnit {
         id: string;

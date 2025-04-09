@@ -104,7 +104,7 @@ export const getCategoryApi = () => {
     return axios.get<IBackendRes<ICategory[]>>(urlBackend);
 };
 export const getCategoryWidthQueryApi = (query: string) => {
-    const urlBackend = `/categories?_page=1&${query}`;
+    const urlBackend = `/categories?_page=1&_limit=100&${query}`;
     return axios.get<IBackendRes<ICategory[]>>(urlBackend);
 };
 export const getCategoryByIdApi = (id: string) => {
@@ -130,7 +130,7 @@ export const deleteCategoryApi = (id: string) => {
     return axios.delete<IBackendRes<ICategory>>(urlBackend);
 };
 export const getDepartmentsApi = (query: string) => {
-    return axios.get<IBackendRes<IDepartment[]>>(`/departments?_page=1&${query}`);
+    return axios.get<IBackendRes<IDepartment[]>>(`/departments?_page=1&_limit=100&${query}`);
 };
 export const getDepartmentByIdApi = (id: string) => {
     return axios.get<IBackendRes<IDepartment>>(`/departments/${id}`);
@@ -177,7 +177,7 @@ export const deleteDepartmentApi = (id: string) => {
 };
 
 export const getSuppliesApi = (query: string) => {
-    return axios.get<IBackendRes<ISupplies[]>>(`/supplies?_page=1&${query}`);
+    return axios.get<IBackendRes<ISupplies[]>>(`/supplies?_page=1&_limit=100&${query}`);
 };
 export const getSupplyByIdApi = (id: string) => {
     return axios.get<IBackendRes<ISupplies>>(`/supplies/${id}`);
@@ -256,7 +256,7 @@ export const deleteSupplyApi = (id: string) => {
     return axios.delete<IBackendRes<ISupplies>>(urlBackend);
 };
 export const getMaterialRequestsApi = (query: string) => {
-    return axios.get<IBackendRes<IMaterialRequest[]>>(`/requests?_page=1&${query}`);
+    return axios.get<IBackendRes<IMaterialRequest[]>>(`/requests?_page=1&_limit=100&${query}`);
 };
 export const createMaterialRequestsApi = (
     requestName: string,
@@ -295,7 +295,7 @@ export const updateMaterialRequestApi = (
     });
 };
 export const getImportRequestsApi = (query: string) => {
-    return axios.get<IBackendRes<IImportRequest[]>>(`/importRequests?_page=1&${query}`);
+    return axios.get<IBackendRes<IImportRequest[]>>(`/importRequests?_page=1&_limit=100&${query}`);
 };
 export const createImportRequestsApi = (
     requestName: string,
@@ -312,13 +312,35 @@ export const createImportRequestsApi = (
         updateAt: new Date(),
     });
 };
-
+export const updateStatusMateriaImportApi = (id: string, status: number) => {
+    const urlBackend = `/660/importRequests/${id}`;
+    return axios.patch<IBackendRes<IImportRequest>>(urlBackend, {
+        status,
+        updateAt: new Date(),
+    });
+};
+export const updateImportRequestApi = (
+    id: string,
+    senderInfo: SenderInfo,
+    receiverInfo: SenderInfo,
+    status: number,
+    materialRequests: MaterialRequests[],
+) => {
+    const urlBackend = `/660/importRequests/${id}`;
+    return axios.patch<IBackendRes<IMaterialRequest>>(urlBackend, {
+        status,
+        materialRequests,
+        senderInfo,
+        receiverInfo,
+        updateAt: new Date(),
+    });
+};
 export const getManufacturerApi = () => {
     const urlBackend = `/manufacturers`;
     return axios.get<IBackendRes<IManufacturer[]>>(urlBackend);
 };
 export const getManufacturerWidthQueryApi = (query: string) => {
-    const urlBackend = `/manufacturers?_page=1&${query}`;
+    const urlBackend = `/manufacturers?_page=1&_limit=100&${query}`;
     return axios.get<IBackendRes<IManufacturer[]>>(urlBackend);
 };
 export const getManufacturerByIdApi = (id: string) => {
@@ -351,7 +373,7 @@ export const getUnitApi = () => {
     return axios.get<IBackendRes<IUnit[]>>(urlBackend);
 };
 export const getUnitWidthQueryApi = (query: string) => {
-    const urlBackend = `/units?_page=1&${query}`;
+    const urlBackend = `/units?_page=1&_limit=100&${query}`;
     return axios.get<IBackendRes<IUnit[]>>(urlBackend);
 };
 export const getUnitByIdApi = (id: string) => {
@@ -379,7 +401,7 @@ export const deleteUnitApi = (id: string) => {
     return axios.delete<IBackendRes<IUnit>>(urlBackend);
 };
 export const getStorageApi = (query: string) => {
-    const urlBackend = `/storages?_page=1&${query}`;
+    const urlBackend = `/storages?_page=1&_limit=100&${query}`;
     return axios.get<IBackendRes<IStorage[]>>(urlBackend);
 };
 export const createStorageApi = (name: string, departmentId: string, mainStorage: boolean, desc: string) => {

@@ -3,6 +3,7 @@ import {
     getImportRequestsApi,
     getMaterialRequestsApi,
     getUsersApi,
+    updateStatusMateriaImportApi,
     updateStatusMaterialRequestApi,
 } from '@/services/api';
 // import { dateRangeValidate } from '@/services/helper';
@@ -38,6 +39,33 @@ const TableMaterialImport = () => {
         };
         fetchUser();
     }, []);
+
+    const handleApprove = async (entity: IImportRequest) => {
+        try {
+            const res = await updateStatusMateriaImportApi(entity.id, 1);
+            if (res && res.data) {
+                message.success('Duyệt đơn thành công');
+                refreshTable();
+            } else {
+                message.error('Có lỗi xảy ra vui lòng thử lại');
+            }
+        } catch (error) {
+            message.error('Có lỗi xảy ra vui lòng thử lại');
+        }
+    };
+    const handleReject = async (entity: IImportRequest) => {
+        try {
+            const res = await updateStatusMateriaImportApi(entity.id, 2);
+            if (res && res.data) {
+                message.success('Đã từ chối đơn này');
+                refreshTable();
+            } else {
+                message.error('Có lỗi xảy ra vui lòng thử lại');
+            }
+        } catch (error) {
+            message.error('Có lỗi xảy ra vui lòng thử lại');
+        }
+    };
     const columns: ProColumns<IImportRequest>[] = [
         {
             dataIndex: 'index',
@@ -45,7 +73,7 @@ const TableMaterialImport = () => {
             width: 48,
         },
         {
-            title: 'Mã đơn nhập',
+            title: 'ID',
             dataIndex: 'id',
             hideInSearch: true,
             sorter: true,
@@ -71,7 +99,7 @@ const TableMaterialImport = () => {
             },
         },
         {
-            title: 'Tên người thực hiện',
+            title: 'Tên người đề nghị',
             hideInSearch: true,
             render(dom, entity) {
                 try {
@@ -83,7 +111,7 @@ const TableMaterialImport = () => {
             },
         },
         {
-            title: 'Vật tư đã nhập',
+            title: 'Vật tư đề nghị',
             hideInSearch: true,
             render(dom, entity) {
                 return entity.materialRequests.map((item) => {
@@ -96,6 +124,22 @@ const TableMaterialImport = () => {
                         </div>
                     );
                 });
+            },
+        },
+        {
+            title: 'Trạng thái',
+            dataIndex: 'status',
+            hideInSearch: true,
+            render(dom, entity) {
+                return entity.status === 0 ? (
+                    <Badge status="default" text="Đang chờ" />
+                ) : entity.status === 1 ? (
+                    <Badge status="success" text="Đã duyệt" />
+                ) : entity.status === 2 ? (
+                    <Badge status="error" text="Từ chối" />
+                ) : (
+                    <Badge status="warning" text="Đã nhập vào kho tổng" />
+                );
             },
         },
         {
@@ -114,6 +158,39 @@ const TableMaterialImport = () => {
             sorter: true,
             hideInTable: true,
             hideInSearch: true,
+        },
+        {
+            title: 'Hành động',
+            hideInSearch: true,
+            render(dom, entity) {
+                return (
+                    <>
+                        {entity.status === 0 ? (
+                            <Popconfirm
+                                placement="leftTop"
+                                title={'Duyệt đơn yêu cầu'}
+                                description="Bạn có muốn duyệt đơn này?"
+                                onConfirm={() => handleApprove(entity)}
+                                onCancel={() => handleReject(entity)}
+                                okText="Duyệt"
+                                cancelText="Từ chối"
+                                okButtonProps={{ loading: isDeleteMaterialRequest }}
+                            >
+                                <EditTwoTone twoToneColor={'#f57800'} style={{ cursor: 'pointer', marginRight: 15 }} />
+                            </Popconfirm>
+                        ) : (
+                            <></>
+                        )}
+
+                        {/* <span style={{ cursor: 'pointer', marginLeft: '20px' }} onClick={() => handlePrint(entity)}>
+                            <PrinterOutlined twoToneColor={'#ff4d4f'} style={{ cursor: 'pointer' }} />
+                        </span> */}
+                        <span style={{ cursor: 'pointer', marginLeft: '20px' }}>
+                            <PrinterOutlined twoToneColor={'#ff4d4f'} style={{ cursor: 'pointer' }} />
+                        </span>
+                    </>
+                );
+            },
         },
     ];
 
@@ -166,7 +243,7 @@ const TableMaterialImport = () => {
                     pageSize: 5,
                     onChange: (page) => console.log(page),
                 }}
-                headerTitle="Danh sách đơn nhập vật tư"
+                headerTitle="Danh sách đơn đề nghị nhập vật tư"
                 toolBarRender={() => [
                     <Button icon={<ExportOutlined />} type="primary">
                         <CSVLink data={excelData} filename="export-material-request.csv">

@@ -84,9 +84,9 @@ const CreateStorage = (props: IProps) => {
                                 labelCol={{ span: 24 }}
                                 label="Tên kho"
                                 name="name"
-                                rules={[{ required: true, message: 'Vui lòng điền tên phòng ban' }]}
+                                rules={[{ required: true, message: 'Vui lòng điền tên kho' }]}
                             >
-                                <Input placeholder="Vui lòng điền tên phòng ban" />
+                                <Input placeholder="Vui lòng điền tên kho" />
                             </Form.Item>
                             <Form.Item<FieldType>
                                 labelCol={{ span: 24 }}

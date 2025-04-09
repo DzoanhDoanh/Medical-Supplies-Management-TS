@@ -10,6 +10,14 @@ import {
     MenuUnfoldOutlined,
     DatabaseOutlined,
     EditOutlined,
+    MergeCellsOutlined,
+    LinkOutlined,
+    MedicineBoxOutlined,
+    ClusterOutlined,
+    DeliveredProcedureOutlined,
+    DownloadOutlined,
+    ExportOutlined,
+    ScheduleOutlined,
 } from '@ant-design/icons';
 import { Layout, Menu, Dropdown, Space, Avatar } from 'antd';
 import { Outlet, useLocation } from 'react-router-dom';
@@ -43,19 +51,19 @@ const LayoutAdmin = () => {
             icon: <AppstoreOutlined />,
         },
         {
+            label: <Link to="/admin/category">Danh mục vật tư</Link>,
+            key: '/admin/category',
+            icon: <MenuFoldOutlined />,
+        },
+        {
             label: <Link to="/admin/manufacturer">Xuất xứ</Link>,
             key: '/admin/manufacturer',
-            icon: <AppstoreOutlined />,
+            icon: <MergeCellsOutlined />,
         },
         {
             label: <Link to="/admin/unit">Đơn vị tính</Link>,
             key: '/admin/unit',
-            icon: <AppstoreOutlined />,
-        },
-        {
-            label: <Link to="/admin/category">Quản lý danh mục</Link>,
-            key: '/admin/category',
-            icon: <MenuFoldOutlined />,
+            icon: <LinkOutlined />,
         },
         {
             label: <span>Nhân viên</span>,
@@ -75,20 +83,39 @@ const LayoutAdmin = () => {
             ],
         },
         {
-            label: <Link to="/admin/department">Quản lý phòng ban</Link>,
-            key: '/admin/department',
-            icon: <DatabaseOutlined />,
-        },
-
-        {
-            label: <Link to="/admin/supplies">Quản lý vật tư</Link>,
+            label: <Link to="/admin/supplies">Danh sách vật tư</Link>,
             key: '/admin/supplies',
-            icon: <ExceptionOutlined />,
+            icon: <MedicineBoxOutlined />,
         },
         {
             label: <Link to="/admin/storage">Quản lý kho</Link>,
             key: '/admin/storage',
+            icon: <ClusterOutlined />,
+        },
+        {
+            label: <Link to="/admin/department">Quản lý phòng ban</Link>,
+            key: '/admin/department',
+            icon: <DatabaseOutlined />,
+        },
+        {
+            label: <Link to="/admin/material-import">Đề nghị mua vật tư</Link>,
+            key: '/admin/material-import',
+            icon: <DeliveredProcedureOutlined />,
+        },
+        {
+            label: <Link to="/admin/material-import-list">Duyệt đơn mua</Link>,
+            key: '/admin/material-import-list',
             icon: <ExceptionOutlined />,
+        },
+        {
+            label: <Link to="/admin/import">Nhập vật tư</Link>,
+            key: '/admin/import',
+            icon: <DownloadOutlined />,
+        },
+        {
+            label: <Link to="/admin/medical-supplies-request">Đề nghị cấp vật tư</Link>,
+            key: '/admin/medical-supplies-request',
+            icon: <DeliveredProcedureOutlined />,
         },
         {
             label: <span>Duyệt đơn</span>,
@@ -108,24 +135,14 @@ const LayoutAdmin = () => {
             ],
         },
         {
-            label: <Link to="/admin/material-export">Bàn giao vật tư</Link>,
+            label: <Link to="/admin/material-export">Cấp phát vật tư</Link>,
             key: '/admin/material-export',
-            icon: <ExceptionOutlined />,
-        },
-        {
-            label: <Link to="/admin/material-import">Nhập vật tư</Link>,
-            key: '/admin/material-import',
-            icon: <ExceptionOutlined />,
-        },
-        {
-            label: <Link to="/admin/material-import-list">Phiếu nhập</Link>,
-            key: '/admin/material-import-list',
-            icon: <ExceptionOutlined />,
+            icon: <ExportOutlined />,
         },
         {
             label: <Link to="/admin/material-report">Báo cáo</Link>,
             key: '/admin/material-report',
-            icon: <ExceptionOutlined />,
+            icon: <ScheduleOutlined />,
         },
     ];
 

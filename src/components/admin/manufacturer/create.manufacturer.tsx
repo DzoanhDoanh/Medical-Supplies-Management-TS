@@ -75,7 +75,7 @@ const CreateManufacturer = (props: IProps) => {
                         <Col span={24} md={24} xs={24}>
                             <Form.Item<FieldType>
                                 labelCol={{ span: 24 }}
-                                label="Tên danh mục"
+                                label="Tên nơi xuất xứ"
                                 name="name"
                                 rules={[{ required: true, message: 'Vui lòng điền nơi xuất xứ' }]}
                             >

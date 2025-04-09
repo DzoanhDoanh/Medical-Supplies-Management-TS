@@ -191,15 +191,15 @@ const TableCategory = () => {
                             Tải excel
                         </CSVLink>
                     </Button>,
-                    <Button
-                        icon={<CloudUploadOutlined />}
-                        type="primary"
-                        onClick={() => {
-                            setOpenModalImport(true);
-                        }}
-                    >
-                        Import category
-                    </Button>,
+                    // <Button
+                    //     icon={<CloudUploadOutlined />}
+                    //     type="primary"
+                    //     onClick={() => {
+                    //         setOpenModalImport(true);
+                    //     }}
+                    // >
+                    //     Import category
+                    // </Button>,
                     <Button
                         key="button"
                         icon={<PlusOutlined />}

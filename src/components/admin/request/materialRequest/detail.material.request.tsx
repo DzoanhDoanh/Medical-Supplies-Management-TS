@@ -72,12 +72,15 @@ const DetailMaterialRequest = (props: IProps) => {
                     </Descriptions.Item>
                 </Descriptions>
                 <Divider>Thông tin chi tiết vật tư yêu cầu</Divider>
-                <Descriptions bordered column={2}>
+                <Descriptions bordered column={3}>
                     {dataViewDetail?.materialRequests.map((item) => {
                         return (
                             <>
                                 <Descriptions.Item label="Tên vật tư">{item?.materialName}</Descriptions.Item>
-                                <Descriptions.Item label="Số lượng">{item?.quantity}</Descriptions.Item>
+                                <Descriptions.Item label="Số lượng yêu cầu">{item?.quantity}</Descriptions.Item>
+                                <Descriptions.Item label="Số lượng bàn giao">
+                                    {item?.deliveredQuantity}
+                                </Descriptions.Item>
                             </>
                         );
                     })}

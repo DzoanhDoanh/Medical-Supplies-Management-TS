@@ -29,6 +29,7 @@ import MaterialStatisticsReport from './pages/admin/report';
 import ManageManufacturer from './pages/admin/manage.manufacturer';
 import ManageUnit from './pages/admin/manage.unit';
 import ManageStorage from './pages/admin/manage.storage';
+import Import from './components/admin/import/import';
 // import vie from 'antd/locale/vi_VN';
 
 const router = createBrowserRouter([
@@ -211,6 +212,22 @@ const router = createBrowserRouter([
                 element: (
                     <ProtectedRoute>
                         <ManageStorage />
+                    </ProtectedRoute>
+                ),
+            },
+            {
+                path: 'import',
+                element: (
+                    <ProtectedRoute>
+                        <Import />
+                    </ProtectedRoute>
+                ),
+            },
+            {
+                path: 'medical-supplies-request',
+                element: (
+                    <ProtectedRoute>
+                        <MedicalSuppliesRequest />
                     </ProtectedRoute>
                 ),
             },

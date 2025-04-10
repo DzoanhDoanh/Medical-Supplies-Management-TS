@@ -1,160 +1,175 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState, useEffect } from 'react';
-import { Card, Col, Row, Spin, Statistic, Tabs, message } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Card, Row, Col, Statistic, message } from 'antd';
 import {
     LineChart,
     Line,
-    PieChart,
-    Pie,
-    Tooltip,
-    Legend,
-    ResponsiveContainer,
-    BarChart,
-    Bar,
     XAxis,
     YAxis,
     CartesianGrid,
-    Cell,
+    Tooltip,
+    Legend,
+    BarChart,
+    Bar,
+    ResponsiveContainer,
 } from 'recharts';
-import { getCategoryApi, getImportRequestsApi, getMaterialRequestsApi, getSuppliesApi } from '@/services/api';
-import { FileTextOutlined, ShoppingCartOutlined, RiseOutlined } from '@ant-design/icons';
+import { getStorageApi, getImportRequestsApi, getMaterialRequestsApi } from '@/services/api';
+
+interface MaterialStorage {
+    supplyId: string;
+    materialName: string;
+    quantity: number;
+}
+
+interface IStorage {
+    id: string;
+    name: string;
+    materials: MaterialStorage[];
+    mainStorage: boolean; // Dùng để xác định kho tổng
+}
+
+interface MaterialRequests {
+    materialId: string;
+    materialName: string;
+    quantity: number;
+    deliveredQuantity?: number;
+}
+
+interface IMaterialRequest {
+    materialRequests: MaterialRequests[];
+    createAt: string;
+}
+
+interface IImportRequest {
+    materialRequests: MaterialRequests[];
+    createAt: string;
+}
 
 const Dashboard: React.FC = () => {
-    const [importRequests, setImportRequests] = useState<any[]>([]);
-    const [materialRequests, setMaterialRequests] = useState<any[]>([]);
-    const [categories, setCategories] = useState<ICategory[]>([]);
-    const [supplies, setSupplies] = useState<any[]>([]);
+    const [storages, setStorages] = useState<IStorage[]>([]);
+    const [importRequests, setImportRequests] = useState<IImportRequest[]>([]);
+    const [materialRequests, setMaterialRequests] = useState<IMaterialRequest[]>([]);
     const [loading, setLoading] = useState(false);
+
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
             try {
-                const importData = await getImportRequestsApi('');
-                const materialData = await getMaterialRequestsApi('');
-                const supplyData = await getSuppliesApi('');
-                const categoryData = await getCategoryApi();
-                setCategories(categoryData.data || []);
-                setImportRequests(importData.data || []);
-                setMaterialRequests(materialData.data || []);
-                setSupplies(supplyData.data || []);
+                const [storageRes, importRes, requestRes] = await Promise.all([
+                    getStorageApi(''),
+                    getImportRequestsApi(''),
+                    getMaterialRequestsApi(''),
+                ]);
+                if (storageRes?.data) setStorages(storageRes.data);
+                if (importRes?.data) setImportRequests(importRes.data);
+                if (requestRes?.data) setMaterialRequests(requestRes.data);
             } catch (error) {
-                message.error('Lỗi khi tải dữ liệu');
+                message.error('Lỗi khi lấy dữ liệu.');
+                console.log(error);
+            } finally {
+                setLoading(false);
             }
-            setLoading(false);
         };
 
         fetchData();
     }, []);
-    if (loading) {
-        return <Spin fullscreen />;
-    }
-    const stats = [
-        { title: 'Số lượng phiếu nhập', value: importRequests.length, icon: <ShoppingCartOutlined /> },
-        { title: 'Số lượng phiếu xuất', value: materialRequests.length, icon: <FileTextOutlined /> },
-        { title: 'Tổng số vật tư', value: supplies.length, icon: <RiseOutlined /> },
-    ];
-    const pieDataRaw = Object.values(
-        supplies.reduce<Record<string, { name: string; value: number }>>((acc, supply) => {
-            const { categoryId, quantity } = supply;
 
-            if (!acc[categoryId]) {
-                acc[categoryId] = { name: categoryId, value: 0 };
-            }
+    // Lấy dữ liệu từ kho tổng
+    const mainStorage = storages.find((storage) => storage.mainStorage);
+    const materialsInMainStorage = mainStorage ? mainStorage.materials : [];
 
-            acc[categoryId].value += quantity;
+    // Thống kê tổng vật tư trong kho tổng
+    const totalMaterials = materialsInMainStorage.reduce((sum, material) => sum + material.quantity, 0);
 
-            return acc;
-        }, {}),
-    );
-    const pieData = pieDataRaw.map((item) => {
-        const categoryValue = (categories ?? []).find((e) => e.id === item.name);
-        return {
-            name: categoryValue?.categoryName ?? '',
-            value: item.value,
-        };
+    // Dữ liệu biểu đồ cột
+    const barChartData = materialsInMainStorage.map((material) => ({
+        name: material.materialName,
+        quantity: material.quantity,
+    }));
+
+    // Chuẩn hóa dữ liệu nhập
+    const lineChartData = importRequests.map((req) => ({
+        date: req.createAt,
+        import: req.materialRequests.reduce((sum, material) => sum + material.quantity, 0),
+    }));
+
+    // Chuẩn hóa dữ liệu xuất
+    const exportChartData = materialRequests.map((req) => ({
+        date: req.createAt,
+        export: req.materialRequests.reduce((sum, material) => sum + (material.deliveredQuantity || 0), 0),
+    }));
+
+    // Gộp dữ liệu nhập - xuất
+    const combinedLineChartData: { date: string; import: number; export: number }[] = [];
+    lineChartData.forEach((item) => {
+        combinedLineChartData.push({ date: item.date, import: item.import, export: 0 });
     });
-    const COLORS = [
-        '#FF4D4F',
-        '#1890FF',
-        '#52C41A',
-        '#FAAD14',
-        '#722ED1',
-        '#FA8C16',
-        '#A52A2A',
-        '#000000',
-        '#FFFFFF',
-        '#EB2F96',
-    ];
+
+    exportChartData.forEach((item) => {
+        const existing = combinedLineChartData.find((data) => data.date === item.date);
+        if (existing) {
+            existing.export = item.export;
+        } else {
+            combinedLineChartData.push({ date: item.date, import: 0, export: item.export });
+        }
+    });
 
     return (
         <div style={{ padding: 24 }}>
-            <h2 style={{ marginBottom: '10px' }}>Thống kê vật tư</h2>
-            <Row gutter={16}>
-                {stats.map((stat, index) => (
-                    <Col span={8} key={stat.title}>
-                        <Card style={{ backgroundColor: `${COLORS[index]}` }}>
-                            <Statistic
-                                title={<span style={{ color: '#fff' }}>{stat.title}</span>}
-                                value={stat.value}
-                                prefix={<span style={{ color: '#fff' }}>{stat.icon}</span>}
-                                valueStyle={{ color: '#fff' }}
-                            />
-                        </Card>
-                    </Col>
-                ))}
+            <Row gutter={[16, 16]}>
+                {/* Thống kê tổng quan */}
+                <Col span={8}>
+                    <Card>
+                        <Statistic title="Tổng số vật tư" value={totalMaterials} />
+                    </Card>
+                </Col>
+                <Col span={8}>
+                    <Card>
+                        <Statistic title="Tổng số kho" value={storages.length} />
+                    </Card>
+                </Col>
+                <Col span={8}>
+                    <Card>
+                        <Statistic title="Tổng số phiếu nhập" value={importRequests.length} />
+                    </Card>
+                </Col>
             </Row>
 
-            <Tabs defaultActiveKey="1" style={{ marginTop: 24 }}>
-                <Tabs.TabPane tab="Biểu đồ tổng quan" key="1">
-                    <ResponsiveContainer width="100%" height={400}>
-                        <LineChart data={supplies} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                            <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis dataKey="name" />
-                            <YAxis />
-                            <Tooltip />
-                            <Legend />
-                            <Line type="monotone" dataKey="quantity" stroke="#8884d8" />
-                        </LineChart>
-                    </ResponsiveContainer>
-                </Tabs.TabPane>
+            {/* Biểu đồ đường */}
+            <Row gutter={[16, 16]} style={{ marginTop: 24 }}>
+                <Col span={24}>
+                    <Card title="Biểu đồ nhập - xuất vật tư theo thời gian">
+                        <ResponsiveContainer width="100%" height={400}>
+                            <LineChart data={combinedLineChartData}>
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis dataKey="date" />
+                                <YAxis />
+                                <Tooltip />
+                                <Legend />
+                                <Line type="monotone" dataKey="import" stroke="#82ca9d" name="Nhập" />
+                                <Line type="monotone" dataKey="export" stroke="#8884d8" name="Xuất" />
+                            </LineChart>
+                        </ResponsiveContainer>
+                    </Card>
+                </Col>
+            </Row>
 
-                <Tabs.TabPane tab="Biểu đồ cột thống kê số lượng" key="2">
-                    <ResponsiveContainer width="100%" height={400}>
-                        <BarChart data={supplies} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                            <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis dataKey="name" />
-                            <YAxis />
-                            <Tooltip />
-                            <Legend />
-                            <Bar dataKey="quantity" fill="#82ca9d" />
-                        </BarChart>
-                    </ResponsiveContainer>
-                </Tabs.TabPane>
-
-                <Tabs.TabPane tab="Phân loại vật tư" key="3">
-                    <ResponsiveContainer width="100%" height={400}>
-                        <PieChart>
-                            <Pie
-                                data={pieData}
-                                dataKey="value"
-                                nameKey="name"
-                                cx="50%"
-                                cy="50%"
-                                outerRadius={150}
-                                fill="red"
-                                label
-                            >
-                                {pieData.map((entry, index) => (
-                                    <Cell key={index} fill={COLORS[index % COLORS.length]} />
-                                ))}
-                            </Pie>
-                            <Tooltip />
-                            <Legend />
-                        </PieChart>
-                    </ResponsiveContainer>
-                </Tabs.TabPane>
-            </Tabs>
+            {/* Biểu đồ cột */}
+            <Row gutter={[16, 16]} style={{ marginTop: 24 }}>
+                <Col span={24}>
+                    <Card title="Biểu đồ cột - Số lượng vật tư trong kho tổng">
+                        <ResponsiveContainer width="100%" height={400}>
+                            <BarChart data={barChartData}>
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis dataKey="name" />
+                                <YAxis />
+                                <Tooltip />
+                                <Bar dataKey="quantity" fill="#8884d8" name="Số lượng" />
+                            </BarChart>
+                        </ResponsiveContainer>
+                    </Card>
+                </Col>
+            </Row>
         </div>
     );
 };

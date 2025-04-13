@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {
+    deleteBatchApi,
     deleteCategoryApi,
     deleteDepartmentApi,
+    getBatchWidthQueryApi,
     getCategoryApi,
     getCategoryWidthQueryApi,
     getDepartmentsApi,
@@ -12,32 +14,29 @@ import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
 import { App, Button, Popconfirm } from 'antd';
 import { useRef, useState } from 'react';
-import ImportUser from './data/import.category';
 import { CSVLink } from 'react-csv';
 import dayjs from 'dayjs';
-import DetailCategory from './detail.category';
-import CreateCategory from './create.category';
-import UpdateCategory from './update.category';
+import DetailBatch from './detail.batch';
+import CreateBatch from './create.batch';
+import UpdateBatch from './update.batch';
 
 type TSearch = {
-    categoryName: string;
+    name: string;
 };
-const TableCategory = () => {
+const TableBatch = () => {
     const actionRef = useRef<ActionType>();
     const [openViewDetail, setOpenViewDetail] = useState<boolean>(false);
-    const [dataViewDetail, setDataViewDetail] = useState<ICategory | null>(null);
+    const [dataViewDetail, setDataViewDetail] = useState<IBatch | null>(null);
     const [openModalCreate, setOpenModalCreate] = useState<boolean>(false);
-    const [openModalImport, setOpenModalImport] = useState<boolean>(false);
-    const [currentDataTable, setCurrentDataTable] = useState<ICategory[]>([]);
+    const [currentDataTable, setCurrentDataTable] = useState<IBatch[]>([]);
     const [excelData, setExcelData] = useState([]);
-    const [dataUpdate, setDataUpdate] = useState<ICategory | null>(null);
+    const [dataUpdate, setDataUpdate] = useState<IBatch | null>(null);
     const [openModalUpdate, setOpenModalUpdate] = useState<boolean>(false);
-    const [isDeleteCategory, setIsDeleteCategory] = useState<boolean>(false);
+    const [isDeleteBatch, setIsDeleteBatch] = useState<boolean>(false);
     const { message, notification } = App.useApp();
 
-    const handleDeleteCategory = async (id: string) => {
-        const res = await deleteCategoryApi(id);
-        console.log('Check ressss', res);
+    const handleDeleteBatch = async (id: string) => {
+        const res = await deleteBatchApi(id);
         setTimeout(() => {
             if (res && res.data && typeof res.data === 'string') {
                 const alertMessage = res.data + '';
@@ -45,23 +44,23 @@ const TableCategory = () => {
                     message: 'Has an error!',
                     description: alertMessage,
                 });
-                setIsDeleteCategory(true);
+                setIsDeleteBatch(true);
                 return;
             } else {
-                message.success('Xóa danh mục thành công!');
-                setIsDeleteCategory(false);
+                message.success('Xóa đợt cấp thành công!');
+                setIsDeleteBatch(false);
                 refreshTable();
             }
         }, 500);
     };
-    const columns: ProColumns<ICategory>[] = [
+    const columns: ProColumns<IBatch>[] = [
         {
             dataIndex: 'index',
             valueType: 'indexBorder',
             width: 48,
         },
         {
-            title: 'Mã danh mục',
+            title: 'Mã đợt cấp',
             dataIndex: 'id',
             hideInSearch: true,
             sorter: true,
@@ -80,8 +79,8 @@ const TableCategory = () => {
             },
         },
         {
-            title: 'Tên danh mục',
-            dataIndex: 'categoryName',
+            title: 'Tên đợt cấp',
+            dataIndex: 'name',
         },
         {
             title: 'Tạo ngày',
@@ -116,12 +115,12 @@ const TableCategory = () => {
                         />
                         <Popconfirm
                             placement="leftTop"
-                            title={'Xóa phòng ban'}
-                            description="Bạn có chắc là xóa danh mục này"
-                            onConfirm={() => handleDeleteCategory(entity.id)}
+                            title={'Xóa đợt cấp'}
+                            description="Bạn có chắc là xóa đợt cấp"
+                            onConfirm={() => handleDeleteBatch(entity.id)}
                             okText="Xác nhận"
                             cancelText="Hủy"
-                            okButtonProps={{ loading: isDeleteCategory }}
+                            okButtonProps={{ loading: isDeleteBatch }}
                         >
                             <span style={{ cursor: 'pointer', marginLeft: '20px' }}>
                                 <DeleteTwoTone twoToneColor={'#ff4d4f'} style={{ cursor: 'pointer' }} />
@@ -138,7 +137,7 @@ const TableCategory = () => {
     };
     return (
         <>
-            <ProTable<ICategory, TSearch>
+            <ProTable<IBatch, TSearch>
                 columns={columns}
                 scroll={{ x: 1000 }}
                 actionRef={actionRef}
@@ -148,8 +147,8 @@ const TableCategory = () => {
 
                     let query = '';
                     if (params) {
-                        if (params.categoryName) {
-                            query += `&categoryName_like=${params.categoryName}`;
+                        if (params.name) {
+                            query += `&name_like=${params.name}`;
                         }
                     }
 
@@ -157,15 +156,15 @@ const TableCategory = () => {
                         const sortBy = sort.id === 'ascend' ? 'asc' : 'desc';
                         query += `&_sort=id&_order=${sortBy}`;
                     }
-                    const allDepartments = await getCategoryWidthQueryApi(query);
-                    if (allDepartments && typeof allDepartments.data !== 'string') {
-                        setCurrentDataTable(allDepartments.data ?? []);
-                        if (allDepartments.data) {
-                            const data = allDepartments.data;
+                    const allData = await getBatchWidthQueryApi(query);
+                    if (allData && typeof allData.data !== 'string') {
+                        setCurrentDataTable(allData.data ?? []);
+                        if (allData.data) {
+                            const data = allData.data;
                             const result = data.map((item) => {
                                 return {
                                     id: item.id,
-                                    name: item.categoryName,
+                                    name: item.name,
                                     createAt: item.createAt,
                                 };
                             });
@@ -173,7 +172,7 @@ const TableCategory = () => {
                         }
                     }
                     return {
-                        data: allDepartments.data,
+                        data: allData.data,
                         page: 1,
                         success: true,
                         // total: 3,
@@ -184,10 +183,10 @@ const TableCategory = () => {
                     pageSize: 5,
                     onChange: (page) => console.log(page),
                 }}
-                headerTitle="Quản lý danh mục"
+                headerTitle="Quản lý đợt cấp"
                 toolBarRender={() => [
                     <Button icon={<ExportOutlined />} type="primary">
-                        <CSVLink data={excelData} filename="export-department.csv">
+                        <CSVLink data={excelData} filename="export-batch.csv">
                             Tải excel
                         </CSVLink>
                     </Button>,
@@ -212,19 +211,18 @@ const TableCategory = () => {
                     </Button>,
                 ]}
             />
-            <DetailCategory
+            <DetailBatch
                 openViewDetail={openViewDetail}
                 setOpenViewDetail={setOpenViewDetail}
                 dataViewDetail={dataViewDetail}
                 setDataViewDetail={setDataViewDetail}
             />
-            <CreateCategory
+            <CreateBatch
                 openModalCreate={openModalCreate}
                 setOpenModalCreate={setOpenModalCreate}
                 refreshTable={refreshTable}
             />
-            <ImportUser openModalImport={openModalImport} setOpenModalImport={setOpenModalImport} />
-            <UpdateCategory
+            <UpdateBatch
                 openModalUpdate={openModalUpdate}
                 setOpenModalUpdate={setOpenModalUpdate}
                 refreshTable={refreshTable}
@@ -235,4 +233,4 @@ const TableCategory = () => {
     );
 };
 
-export default TableCategory;
+export default TableBatch;

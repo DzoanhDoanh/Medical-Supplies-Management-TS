@@ -54,7 +54,7 @@ const AppHeader = (props: IProps) => {
             key: 'logout',
         },
     ];
-    if (user?.role === 'admin') {
+    if (user?.role === 'admin' || user?.role === 'head' || user?.role === 'manager') {
         items.unshift({
             label: <Link to="/admin">Trang quản trị</Link>,
             key: 'admin',

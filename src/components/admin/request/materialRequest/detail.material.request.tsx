@@ -41,6 +41,7 @@ const DetailMaterialRequest = (props: IProps) => {
                     <Descriptions.Item label="Tên đơn yêu cầu">{dataViewDetail?.requestName}</Descriptions.Item>
                     <Descriptions.Item label="Tên người yêu cầu">{user?.fullName}</Descriptions.Item>
                     <Descriptions.Item label="Tên kho nhận">{depart?.name}</Descriptions.Item>
+                    <Descriptions.Item label="Đợt cấp">{dataViewDetail?.batch}</Descriptions.Item>
                     <Descriptions.Item label="Trạng thái">
                         {dataViewDetail && dataViewDetail.status === 0 ? (
                             <Badge status="default" text="Đang chờ" />

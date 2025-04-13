@@ -285,12 +285,14 @@ export const updateMaterialRequestApi = (
     senderInfo: SenderInfo,
     status: number,
     materialRequests: MaterialRequests[],
+    batch: string,
 ) => {
     const urlBackend = `/660/requests/${id}`;
     return axios.patch<IBackendRes<IMaterialRequest>>(urlBackend, {
         status,
         materialRequests,
         senderInfo,
+        batch,
         updateAt: new Date(),
     });
 };
@@ -476,4 +478,32 @@ export const updateQuantityOfMainStorageApi = (materials: MaterialStorage) => {
 export const transferToAnotherStorageApi = (id: string, materials: MaterialStorage) => {
     const urlBackend = `/storages/${id}`;
     return axios.patch<IBackendRes<IStorage>>(urlBackend, { materials, updateAt: new Date() });
+};
+export const getBatchWidthQueryApi = (query: string) => {
+    const urlBackend = `/batches?_page=1&_limit=100&${query}`;
+    return axios.get<IBackendRes<IBatch[]>>(urlBackend);
+};
+export const getBatchByIdApi = (id: string) => {
+    const urlBackend = `/batches/${id}`;
+    return axios.get<IBackendRes<IBatch>>(urlBackend);
+};
+export const createBatchApi = (name: string) => {
+    const urlBackend = `/660/batches`;
+    return axios.post<IBackendRes<IBatch>>(urlBackend, {
+        name,
+        createAt: new Date(),
+        updateAt: new Date(),
+    });
+};
+export const updateBatchApi = (id: string, name: string, createAt: string) => {
+    const urlBackend = `/660/batches/${id}`;
+    return axios.put<IBackendRes<IBatch>>(urlBackend, {
+        name,
+        createAt,
+        updateAt: new Date(),
+    });
+};
+export const deleteBatchApi = (id: string) => {
+    const urlBackend = `/660/batches/${id}`;
+    return axios.delete<IBackendRes<IBatch>>(urlBackend);
 };

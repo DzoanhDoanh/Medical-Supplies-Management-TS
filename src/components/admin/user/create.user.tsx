@@ -66,8 +66,36 @@ const CreateUser = (props: IProps) => {
     const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
         setIsSubmit(true);
         if (fileListAvatar.length === 0) {
-            message.warning('Chưa có file nào để gửi lên!');
-            setIsSubmit(false);
+            const res = await registerApi(
+                values.fullName,
+                values.email,
+                values.password,
+                values.phone,
+                values.role,
+                values.departIdentity,
+                values.position,
+                values.gender,
+                values.dateOfBirth,
+                values.address,
+                'user.png',
+            );
+            setTimeout(() => {
+                if (res && res.data && typeof res.data === 'string') {
+                    const alertMessage = res.data + '';
+                    notification.error({
+                        message: 'Has an error!',
+                        description: alertMessage,
+                    });
+                    setIsSubmit(false);
+                    return;
+                } else {
+                    message.success('Create user success!');
+                    form.resetFields();
+                    setOpenModalCreate(false);
+                    setIsSubmit(false);
+                    refreshTable();
+                }
+            }, 2000);
             return;
         }
         const fileObj = fileListAvatar[0].originFileObj;
@@ -170,8 +198,10 @@ const CreateUser = (props: IProps) => {
                                 rules={[{ required: true, message: 'Vui lòng chọn vai trò' }]}
                             >
                                 <Select placeholder="Hãy chọn vai trò cho tài khoản này" allowClear>
-                                    <Option value="user">USER</Option>
-                                    <Option value="admin">ADMIN</Option>
+                                    <Option value="user">NHÂN VIÊN</Option>
+                                    <Option value="manager">QUẢN LÝ KHO</Option>
+                                    <Option value="admin">QUẢN TRỊ VIÊN</Option>
+                                    <Option value="head">TRƯỞNG TRẠM Y TẾ</Option>
                                 </Select>
                             </Form.Item>
                             <Form.Item<FieldType>

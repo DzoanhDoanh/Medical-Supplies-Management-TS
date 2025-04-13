@@ -30,6 +30,7 @@ import ManageManufacturer from './pages/admin/manage.manufacturer';
 import ManageUnit from './pages/admin/manage.unit';
 import ManageStorage from './pages/admin/manage.storage';
 import Import from './components/admin/import/import';
+import ManageBatch from './pages/admin/manage.batch';
 // import vie from 'antd/locale/vi_VN';
 
 const router = createBrowserRouter([
@@ -228,6 +229,14 @@ const router = createBrowserRouter([
                 element: (
                     <ProtectedRoute>
                         <MedicalSuppliesRequest />
+                    </ProtectedRoute>
+                ),
+            },
+            {
+                path: 'batch',
+                element: (
+                    <ProtectedRoute>
+                        <ManageBatch />
                     </ProtectedRoute>
                 ),
             },

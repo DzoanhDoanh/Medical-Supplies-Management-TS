@@ -124,7 +124,7 @@ const ImportExistingMaterial = () => {
                 requestData.materialRequests,
             );
             if (res && res.data) {
-                message.success('Nhập vật tư thành công!');
+                message.success('Gửi đơn yêu cầu thành công!');
                 form.resetFields();
                 setSelectedMaterials([]);
             } else {

@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { Form, Button, Select, Table, InputNumber, Card, Typography, Spin, message, Descriptions } from 'antd';
 import {
+    getBatchWidthQueryApi,
     getMainStorageApi,
     getMaterialRequestsApi,
     getStorageApi,
@@ -48,6 +49,8 @@ const MaterialTransfer = () => {
     const [users, setUsers] = useState<IUser[]>([]);
     const [storages, setStorages] = useState<IStorage[]>([]);
     const [senderInfo, setSenderInfo] = useState<SenderInfo>({ userId: '', userName: '' });
+    const [batchValue, setBatchValue] = useState<string>('');
+    const [batches, setBatches] = useState<IBatch[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [form] = Form.useForm();
 
@@ -57,6 +60,7 @@ const MaterialTransfer = () => {
             const res2 = await getMainStorageApi();
             const fetchUser = await getUsersApi('');
             const fetchStorage = await getStorageApi('');
+            const fetchBatch = await getBatchWidthQueryApi('');
             if (res && res.data) {
                 setMaterialRequests(res.data);
             }
@@ -68,6 +72,9 @@ const MaterialTransfer = () => {
             }
             if (fetchStorage && fetchStorage.data) {
                 setStorages(fetchStorage.data);
+            }
+            if (fetchBatch && fetchBatch.data) {
+                setBatches(fetchBatch.data);
             }
         };
         fetchData();
@@ -136,9 +143,16 @@ const MaterialTransfer = () => {
         const user = users.find((e) => e.id === values);
         setSenderInfo({ userId: user?.id ?? '', userName: user?.fullName ?? '' });
     };
+    const handleChangeBatch = (values: string) => {
+        setBatchValue(values);
+    };
     const handleSubmit = async () => {
         if (senderInfo.userId === '') {
             message.error('Hãy chọn người nhận');
+            return;
+        }
+        if (batchValue === '') {
+            message.error('Hãy chọn đợt cấp');
             return;
         }
         try {
@@ -196,7 +210,13 @@ const MaterialTransfer = () => {
                 materialsTransfer as unknown as MaterialStorage,
             );
             // const updateStatus = await updateStatusMaterialRequestApi(selectedRequest?.id ?? '', 3);
-            const updateStatus = await updateMaterialRequestApi(selectedRequest?.id ?? '', senderInfo, 3, tableData);
+            const updateStatus = await updateMaterialRequestApi(
+                selectedRequest?.id ?? '',
+                senderInfo,
+                3,
+                tableData,
+                batchValue,
+            );
             if (
                 updateMainStorage &&
                 updateMainStorage.data &&
@@ -209,7 +229,7 @@ const MaterialTransfer = () => {
                 setTableData([]);
                 form.resetFields();
                 setLoading(false);
-                message.success('Bàn giao vật tư thành công thông tin chi tiết hãy xem ở chi tiết đơn yêu cầu');
+                message.success('Bàn giao vật tư thành công');
             }
             setLoading(false);
         } catch (error) {
@@ -293,6 +313,19 @@ const MaterialTransfer = () => {
                                     {users.map((item) => (
                                         <Select.Option key={item.id} value={item.id}>
                                             {item.fullName}
+                                        </Select.Option>
+                                    ))}
+                                </Select>
+                            </Form.Item>
+                            <Form.Item name={'batch'} label="Chọn đợt cấp">
+                                <Select
+                                    placeholder="Chọn đợt cấp"
+                                    style={{ width: '100%' }}
+                                    onChange={handleChangeBatch}
+                                >
+                                    {batches.map((item) => (
+                                        <Select.Option key={item.id} value={item.name}>
+                                            {item.name}
                                         </Select.Option>
                                     ))}
                                 </Select>

@@ -86,8 +86,37 @@ const UpdateUser = (props: IProps) => {
     const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
         setIsSubmit(true);
         if (fileListAvatar.length === 0) {
-            message.warning('Chưa có file nào để gửi lên!');
-            setIsSubmit(false);
+            const res = await updateUserApi(
+                values.id,
+                values.email,
+                values.password,
+                values.fullName,
+                values.phone,
+                values.role,
+                values.departIdentity,
+                values.position,
+                values.gender,
+                values.dateOfBirth,
+                values.address,
+                'user.png',
+            );
+            setTimeout(() => {
+                if (res && res.data && typeof res.data === 'string') {
+                    const alertMessage = res.data + '';
+                    notification.error({
+                        message: 'Has an error!',
+                        description: alertMessage,
+                    });
+                    setIsSubmit(false);
+                    return;
+                } else {
+                    message.success('Cập nhật thông tin nhân viên thành công');
+                    form.resetFields();
+                    setOpenModalUpdate(false);
+                    setIsSubmit(false);
+                    refreshTable();
+                }
+            }, 2000);
             return;
         }
         const fileObj = fileListAvatar[0].originFileObj;
@@ -196,7 +225,9 @@ const UpdateUser = (props: IProps) => {
                             >
                                 <Select placeholder="Hãy chọn vai trò cho tài khoản này" allowClear>
                                     <Option value="user">USER</Option>
+                                    <Option value="manager">QUẢN LÝ KHO</Option>
                                     <Option value="admin">ADMIN</Option>
+                                    <Option value="head">TRƯỞNG TRẠM Y TẾ</Option>
                                 </Select>
                             </Form.Item>
                             <Form.Item<FieldType>

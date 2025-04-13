@@ -91,6 +91,7 @@ declare global {
         requesterInfo: RequesterInfo;
         materialRequests: MaterialRequests[];
         senderInfo?: SenderInfo;
+        batch?: string;
     }
     interface IImportRequest {
         id: string;
@@ -133,6 +134,12 @@ declare global {
         mainStorage: boolean;
         status: number;
         desc: string;
+        createAt: string;
+        updateAt: string;
+    }
+    interface IBatch {
+        id: string;
+        name: string;
         createAt: string;
         updateAt: string;
     }

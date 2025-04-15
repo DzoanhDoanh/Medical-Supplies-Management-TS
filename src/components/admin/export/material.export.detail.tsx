@@ -207,7 +207,7 @@ const MaterialTransfer = () => {
             );
             const updateDestinationStorage = await transferToAnotherStorageApi(
                 selectedRequest?.requesterInfo.departmentId ?? '',
-                materialsTransfer as unknown as MaterialStorage,
+                materialsTransfer,
             );
             // const updateStatus = await updateStatusMaterialRequestApi(selectedRequest?.id ?? '', 3);
             const updateStatus = await updateMaterialRequestApi(

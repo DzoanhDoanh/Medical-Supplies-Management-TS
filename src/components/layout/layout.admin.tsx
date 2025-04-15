@@ -230,6 +230,11 @@ const LayoutAdmin = () => {
                 icon: <ExportOutlined />,
             },
             {
+                label: <Link to="/admin/hand-over">Bàn giao cho người sử dụng</Link>,
+                key: '/admin/hand-over',
+                icon: <ScheduleOutlined />,
+            },
+            {
                 label: <Link to="/admin/material-report">Báo cáo</Link>,
                 key: '/admin/material-report',
                 icon: <ScheduleOutlined />,

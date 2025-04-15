@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { Form, Button, Select, Table, InputNumber, Card, Typography, Spin, Descriptions, message } from 'antd';
 import {
+    getBatchWidthQueryApi,
     getImportRequestsApi,
     getMainStorageApi,
     getUsersApi,
@@ -30,6 +31,7 @@ const Import = () => {
     const [importRequests, setImportRequests] = useState<IImportRequest[]>([]);
     const [users, setUsers] = useState<IUser[]>([]);
     const [senderInfo, setSenderInfo] = useState<SenderInfo>({ userId: '', userName: '' });
+    const [batches, setBatches] = useState<IBatch[]>([]);
     const [receiverInfo, setReceiverInfo] = useState<SenderInfo>({ userId: '', userName: '' });
     const [loading, setLoading] = useState<boolean>(false);
     const [form] = Form.useForm();
@@ -40,12 +42,17 @@ const Import = () => {
 
             const fetchUser = await getUsersApi('');
 
+            const fetchBatch = await getBatchWidthQueryApi('');
+
             if (res && res.data) {
                 setImportRequests(res.data);
             }
 
             if (fetchUser && fetchUser.data) {
                 setUsers(fetchUser.data);
+            }
+            if (fetchBatch && fetchBatch.data) {
+                setBatches(fetchBatch.data);
             }
         };
         fetchData();
@@ -93,8 +100,8 @@ const Import = () => {
         return Array.from(map.values());
     };
     const handleChangeReceiver = (values: string) => {
-        const user = users.find((e) => e.id === values);
-        setReceiverInfo({ userId: user?.id ?? '', userName: user?.fullName ?? '' });
+        const data = batches.find((e) => e.id === values);
+        setReceiverInfo({ userId: data?.id ?? '', userName: data?.name ?? '' });
     };
     const handleChangeUserImport = (values: string) => {
         const user = users.find((e) => e.id === values);
@@ -106,7 +113,7 @@ const Import = () => {
             return;
         }
         if (receiverInfo.userId === '') {
-            message.error('Hãy chọn người nhận vật tư');
+            message.error('Hãy chọn đợt nhập vật tư');
             return;
         }
         try {
@@ -230,15 +237,15 @@ const Import = () => {
                                     ))}
                                 </Select>
                             </Form.Item>
-                            <Form.Item name={'receiverInfo'} label="Chọn người nhận vật tư">
+                            <Form.Item name={'receiverInfo'} label="Chọn đợt">
                                 <Select
-                                    placeholder="Chọn người nhận"
+                                    placeholder="Chọn đợt"
                                     style={{ width: '100%' }}
                                     onChange={handleChangeReceiver}
                                 >
-                                    {users.map((item) => (
+                                    {batches.map((item) => (
                                         <Select.Option key={item.id} value={item.id}>
-                                            {item.fullName}
+                                            {item.name}
                                         </Select.Option>
                                     ))}
                                 </Select>

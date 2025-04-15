@@ -475,7 +475,7 @@ export const updateQuantityOfMainStorageApi = (materials: MaterialStorage) => {
     const urlBackend = `/storages/5Hqqg5d33`;
     return axios.patch<IBackendRes<IStorage>>(urlBackend, { materials, updateAt: new Date() });
 };
-export const transferToAnotherStorageApi = (id: string, materials: MaterialStorage) => {
+export const transferToAnotherStorageApi = (id: string, materials: MaterialStorage[]) => {
     const urlBackend = `/storages/${id}`;
     return axios.patch<IBackendRes<IStorage>>(urlBackend, { materials, updateAt: new Date() });
 };
@@ -506,4 +506,26 @@ export const updateBatchApi = (id: string, name: string, createAt: string) => {
 export const deleteBatchApi = (id: string) => {
     const urlBackend = `/660/batches/${id}`;
     return axios.delete<IBackendRes<IBatch>>(urlBackend);
+};
+export const createHandOverApi = (
+    name: string,
+    senderInfo: SenderInfo,
+    receiverInfo: SenderInfo,
+    receiveDate: string,
+    storage: string,
+    materials: MaterialStorage[],
+    batch: string,
+) => {
+    const urlBackend = `/660/handOver`;
+    return axios.post<IBackendRes<IHandOver>>(urlBackend, {
+        name,
+        senderInfo,
+        receiverInfo,
+        sendDate: new Date(),
+        receiveDate,
+        status: 0,
+        storage,
+        materials,
+        batch,
+    });
 };

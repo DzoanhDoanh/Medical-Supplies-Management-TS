@@ -31,6 +31,7 @@ import ManageUnit from './pages/admin/manage.unit';
 import ManageStorage from './pages/admin/manage.storage';
 import Import from './components/admin/import/import';
 import ManageBatch from './pages/admin/manage.batch';
+import ManageHandOver from './pages/admin/manage.hand.over';
 // import vie from 'antd/locale/vi_VN';
 
 const router = createBrowserRouter([
@@ -237,6 +238,14 @@ const router = createBrowserRouter([
                 element: (
                     <ProtectedRoute>
                         <ManageBatch />
+                    </ProtectedRoute>
+                ),
+            },
+            {
+                path: 'hand-over',
+                element: (
+                    <ProtectedRoute>
+                        <ManageHandOver />
                     </ProtectedRoute>
                 ),
             },

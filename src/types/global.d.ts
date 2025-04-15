@@ -143,4 +143,15 @@ declare global {
         createAt: string;
         updateAt: string;
     }
+    interface IHandOver {
+        id: string;
+        name: string;
+        senderInfo: SenderInfo;
+        receiverInfo: SenderInfo;
+        sendDate: string;
+        receiveDate: string;
+        status: number;
+        storage: string;
+        materials: MaterialStorage;
+    }
 }

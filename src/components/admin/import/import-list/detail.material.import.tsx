@@ -23,9 +23,7 @@ const DetailMaterialImport = (props: IProps) => {
                     <Descriptions.Item label="ID">{dataViewDetail?.id}</Descriptions.Item>
                     <Descriptions.Item label="Tên phiếu nhập">{dataViewDetail?.requestName}</Descriptions.Item>
                     <Descriptions.Item label="Tên người nhập">{dataViewDetail?.senderInfo?.userName}</Descriptions.Item>
-                    <Descriptions.Item label="Tên người nhận">
-                        {dataViewDetail?.receiverInfo?.userName}
-                    </Descriptions.Item>
+                    <Descriptions.Item label="Đợt nhập">{dataViewDetail?.receiverInfo?.userName}</Descriptions.Item>
                     <Descriptions.Item label="Ngày tạo">
                         {dayjs(dataViewDetail?.createAt).format(FORMAT_DATE_VN)}
                     </Descriptions.Item>

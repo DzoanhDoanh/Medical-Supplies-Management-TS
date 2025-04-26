@@ -152,6 +152,7 @@ declare global {
         receiveDate: string;
         status: number;
         storage: string;
-        materials: MaterialStorage;
+        materials: MaterialStorage[];
+        batch: string;
     }
 }

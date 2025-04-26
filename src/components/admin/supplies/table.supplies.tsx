@@ -1,4 +1,4 @@
-import { deleteSupplyApi, getCategoryApi, getSuppliesApi, updateAllQuantityMaterialApi } from '@/services/api';
+import { deleteSupplyApi, getCategoryApi, getSuppliesApi } from '@/services/api';
 // import { dateRangeValidate } from '@/services/helper';
 import { DeleteTwoTone, EditTwoTone, ExportOutlined, PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
@@ -60,11 +60,11 @@ const TableSupplies = () => {
             }
         }, 500);
     };
-    const handleUpdateQuantity = async () => {
-        await updateAllQuantityMaterialApi();
-        refreshTable();
-        message.success('Cập nhật lại số lượng vật tư thành công');
-    };
+    // const handleUpdateQuantity = async () => {
+    //     await updateAllQuantityMaterialApi();
+    //     refreshTable();
+    //     message.success('Cập nhật lại số lượng vật tư thành công');
+    // };
     const columns: ProColumns<ISupplies>[] = [
         {
             dataIndex: 'index',
@@ -273,7 +273,7 @@ const TableSupplies = () => {
                 }}
                 rowKey="id"
                 pagination={{
-                    pageSize: 5,
+                    pageSize: 7,
                     onChange: (page) => console.log(page),
                 }}
                 headerTitle="Vật tư y tế"
@@ -293,9 +293,9 @@ const TableSupplies = () => {
                     >
                         Thêm mới
                     </Button>,
-                    <Button key="button" icon={<PlusOutlined />} onClick={handleUpdateQuantity} type="primary">
-                        Cập nhật số lượng vật tư
-                    </Button>,
+                    // <Button key="button" icon={<PlusOutlined />} onClick={handleUpdateQuantity} type="primary">
+                    //     Cập nhật số lượng vật tư
+                    // </Button>,
                 ]}
             />
             <DetailSupply

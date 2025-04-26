@@ -3,6 +3,8 @@ import { FORMAT_DATE_VN } from '@/services/helper';
 import { Avatar, Descriptions, Drawer } from 'antd';
 import dayjs from 'dayjs';
 import image from '../../../assets/images/thumbnailMaterial.png';
+import { useEffect, useState } from 'react';
+import { getCategoryApi } from '@/services/api';
 
 interface IProps {
     openViewDetail: boolean;
@@ -13,18 +15,29 @@ interface IProps {
 
 const DetailSupply = (props: IProps) => {
     const { openViewDetail, setOpenViewDetail, dataViewDetail, setDataViewDetail } = props;
+    const [categories, setCategories] = useState<ICategory[]>([]);
     const onClose = () => {
         setOpenViewDetail(false);
         setDataViewDetail(null);
     };
-
+    useEffect(() => {
+        const fetchData = async () => {
+            const res = await getCategoryApi();
+            if (res && res.data) {
+                setCategories(res.data);
+            }
+        };
+        fetchData();
+    }, []);
     return (
         <>
             <Drawer title="Xem chi tiết vật tư" width={'50vw'} onClose={onClose} open={openViewDetail}>
                 <Descriptions title="Thông tin chi tiết vật tư" bordered column={2}>
                     <Descriptions.Item label="ID">{dataViewDetail?.id}</Descriptions.Item>
                     <Descriptions.Item label="Tên vật tư">{dataViewDetail?.name}</Descriptions.Item>
-                    <Descriptions.Item label="Mã danh mục">{dataViewDetail?.categoryId}</Descriptions.Item>
+                    <Descriptions.Item label="Danh mục">
+                        {categories.find((e) => e.id === dataViewDetail?.categoryId)?.categoryName}
+                    </Descriptions.Item>
                     <Descriptions.Item label="Mô tả">{dataViewDetail?.desc}</Descriptions.Item>
                     <Descriptions.Item label="Đơn vị tính">{dataViewDetail?.unit}</Descriptions.Item>
                     <Descriptions.Item label="Xuất xứ">{dataViewDetail?.manufacturer}</Descriptions.Item>

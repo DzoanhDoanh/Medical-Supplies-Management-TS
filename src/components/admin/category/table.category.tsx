@@ -80,7 +80,7 @@ const TableCategory = () => {
             },
         },
         {
-            title: 'Tên danh mục',
+            title: 'Danh mục',
             dataIndex: 'categoryName',
         },
         {
@@ -116,7 +116,7 @@ const TableCategory = () => {
                         />
                         <Popconfirm
                             placement="leftTop"
-                            title={'Xóa phòng ban'}
+                            title={'Xóa danh mục'}
                             description="Bạn có chắc là xóa danh mục này"
                             onConfirm={() => handleDeleteCategory(entity.id)}
                             okText="Xác nhận"
@@ -166,7 +166,7 @@ const TableCategory = () => {
                                 return {
                                     id: item.id,
                                     name: item.categoryName,
-                                    createAt: item.createAt,
+                                    createAt: dayjs(item.createAt).format('DD-MM-YYYY'),
                                 };
                             });
                             setExcelData(result as []);
@@ -181,13 +181,13 @@ const TableCategory = () => {
                 }}
                 rowKey="id"
                 pagination={{
-                    pageSize: 5,
+                    pageSize: 8,
                     onChange: (page) => console.log(page),
                 }}
-                headerTitle="Quản lý danh mục"
+                headerTitle="Danh mục vật tư"
                 toolBarRender={() => [
                     <Button icon={<ExportOutlined />} type="primary">
-                        <CSVLink data={excelData} filename="export-department.csv">
+                        <CSVLink data={excelData} filename="export-category.csv">
                             Tải excel
                         </CSVLink>
                     </Button>,

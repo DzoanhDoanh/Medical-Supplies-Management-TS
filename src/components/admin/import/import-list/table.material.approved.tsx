@@ -21,7 +21,7 @@ type TSearch = {
     createAt: string;
     createAtRange: string;
 };
-const TableMaterialImport = () => {
+const TableMaterialImportApproved = () => {
     const actionRef = useRef<ActionType>();
     const [openViewDetail, setOpenViewDetail] = useState<boolean>(false);
     const [dataViewDetail, setDataViewDetail] = useState<IImportRequest | null>(null);
@@ -111,7 +111,18 @@ const TableMaterialImport = () => {
             },
         },
         {
-            title: 'Vật tư đề nghị',
+            title: 'Tên người nhập',
+            hideInSearch: true,
+            render(dom, entity) {
+                try {
+                    return <span>{entity.senderInfo?.userName}</span>;
+                } catch (error) {
+                    console.log(error);
+                }
+            },
+        },
+        {
+            title: 'Vật tư đề nghị nhập',
             hideInSearch: true,
             render(dom, entity) {
                 return entity.materialRequests.map((item) => {
@@ -218,7 +229,7 @@ const TableMaterialImport = () => {
                         const sortBy = sort.id === 'ascend' ? 'asc' : 'desc';
                         query += `&_sort=id&_order=${sortBy}`;
                     }
-                    const allMaterialRequest = await getImportRequestsApi(query + '&status=0&status=1&status=2');
+                    const allMaterialRequest = await getImportRequestsApi(query + '&status=3');
                     if (allMaterialRequest && typeof allMaterialRequest.data !== 'string') {
                         if (allMaterialRequest.data) {
                             const data = allMaterialRequest.data;
@@ -243,7 +254,7 @@ const TableMaterialImport = () => {
                     pageSize: 5,
                     onChange: (page) => console.log(page),
                 }}
-                headerTitle="Danh sách đơn đề nghị nhập vật tư"
+                headerTitle="Danh sách đơn nhập vật tư"
                 toolBarRender={() => [
                     <Button icon={<ExportOutlined />} type="primary">
                         <CSVLink data={excelData} filename="export-material-request.csv">
@@ -262,4 +273,4 @@ const TableMaterialImport = () => {
     );
 };
 
-export default TableMaterialImport;
+export default TableMaterialImportApproved;

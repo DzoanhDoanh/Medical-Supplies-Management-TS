@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { Form, Button, Select, Table, InputNumber, Card, Typography, Spin, message, Descriptions } from 'antd';
 import {
+    checkStorageApi,
     getBatchWidthQueryApi,
     getMainStorageApi,
     getMaterialRequestsApi,
@@ -155,6 +156,20 @@ const MaterialTransfer = () => {
             message.error('Hãy chọn đợt cấp');
             return;
         }
+        const test = tableData.map((item) => {
+            return {
+                supplyId: item.materialId,
+                materialName: item.materialName,
+                quantity: item.deliveredQuantity ?? 0,
+            };
+        });
+        const check = await checkStorageApi('5Hqqg5d33', test);
+        if (!check) {
+            message.error(
+                'Số lượng bàn giao lớn hơn số lượng đang có trong kho vui lòng refresh lại trang để cập nhật và thử lại',
+            );
+            return;
+        }
         try {
             setLoading(true);
             const baseData = await getStorageByIdApi(selectedRequest?.requesterInfo.departmentId ?? '');
@@ -286,10 +301,8 @@ const MaterialTransfer = () => {
                             borderRadius: '10px',
                             boxShadow: '0 0 10px rgba(0,0,0,0.1)',
                         }}
+                        title="Cấp phát về kho đơn vị"
                     >
-                        <Title level={3} style={{ textAlign: 'center', marginBottom: 20 }}>
-                            Bàn Giao Vật Tư
-                        </Title>
                         <Form form={form} layout="vertical">
                             <Form.Item name={'requestName'} label="Chọn Phiếu Yêu Cầu">
                                 <Select
@@ -361,7 +374,7 @@ const MaterialTransfer = () => {
                                 style={{ marginBottom: 24 }}
                             />
                             <Button type="primary" onClick={handleSubmit}>
-                                Bàn giao vật tư
+                                Tiến hành cấp phát
                             </Button>
                         </Card>
                     )}

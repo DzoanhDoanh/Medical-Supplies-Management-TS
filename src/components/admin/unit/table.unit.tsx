@@ -172,7 +172,7 @@ const TableUnit = () => {
                 }}
                 rowKey="id"
                 pagination={{
-                    pageSize: 5,
+                    pageSize: 7,
                     onChange: (page) => console.log(page),
                 }}
                 headerTitle="Quản lý đơn vị tính"

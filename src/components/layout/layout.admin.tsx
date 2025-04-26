@@ -151,6 +151,11 @@ const LayoutAdmin = () => {
                 icon: <LinkOutlined />,
             },
             {
+                label: <Link to="/admin/batch">Đợt cấp vật tư</Link>,
+                key: '/admin/batch',
+                icon: <ExportOutlined />,
+            },
+            {
                 label: <span>Nhân viên</span>,
                 key: '/admin/user',
                 icon: <UserOutlined />,
@@ -173,29 +178,41 @@ const LayoutAdmin = () => {
                 icon: <MedicineBoxOutlined />,
             },
             {
-                label: <Link to="/admin/storage">Quản lý kho</Link>,
+                label: <Link to="/admin/storage">Kho</Link>,
                 key: '/admin/storage',
                 icon: <ClusterOutlined />,
             },
             {
-                label: <Link to="/admin/department">Quản lý phòng ban</Link>,
+                label: <Link to="/admin/department">Phòng ban</Link>,
                 key: '/admin/department',
                 icon: <DatabaseOutlined />,
             },
             {
-                label: <Link to="/admin/material-import">Đề nghị mua vật tư</Link>,
+                label: <span>Đề nghị mua</span>,
                 key: '/admin/material-import',
                 icon: <DeliveredProcedureOutlined />,
-            },
-            {
-                label: <Link to="/admin/material-import-list">Duyệt đơn mua</Link>,
-                key: '/admin/material-import-list',
-                icon: <ExceptionOutlined />,
-            },
-            {
-                label: <Link to="/admin/import">Nhập vật tư</Link>,
-                key: '/admin/import',
-                icon: <DownloadOutlined />,
+                children: [
+                    {
+                        label: <Link to="/admin/material-import">Yêu cầu mua</Link>,
+                        key: '/admin/material-import',
+                        icon: <TeamOutlined />,
+                    },
+                    {
+                        label: <Link to="/admin/material-import-list">Duyệt đơn</Link>,
+                        key: '/admin/material-import-list',
+                        icon: <ExceptionOutlined />,
+                    },
+                    {
+                        label: <Link to="/admin/import">Nhập vật tư</Link>,
+                        key: '/admin/import',
+                        icon: <DownloadOutlined />,
+                    },
+                    {
+                        label: <Link to="/admin/material-import-list-detail">Danh sách nhập</Link>,
+                        key: '/admin/material-import-list-detail',
+                        icon: <ExceptionOutlined />,
+                    },
+                ],
             },
             {
                 label: <Link to="/admin/medical-supplies-request">Đề nghị cấp vật tư</Link>,
@@ -203,36 +220,31 @@ const LayoutAdmin = () => {
                 icon: <DeliveredProcedureOutlined />,
             },
             {
-                label: <span>Duyệt đơn</span>,
+                label: <span>Cấp phát vật tư</span>,
                 key: '/admin/material-request',
                 icon: <EditOutlined />,
                 children: [
                     {
-                        label: <Link to="/admin/material-request">Đơn yêu cầu</Link>,
+                        label: <Link to="/admin/material-request">Đơn đề nghị</Link>,
                         key: '/admin/material-request',
                         icon: <EditOutlined />,
                     },
-                    // {
-                    //     label: <Link to="/admin/material-buy-request">Đơn mua</Link>,
-                    //     key: '/admin/material-buy-request',
-                    //     icon: <EditOutlined />,
-                    // },
+                    {
+                        label: <Link to="/admin/material-export">Cấp phát về kho</Link>,
+                        key: '/admin/material-export',
+                        icon: <ExportOutlined />,
+                    },
+                    {
+                        label: <Link to="/admin/hand-over">Bàn giao</Link>,
+                        key: '/admin/hand-over',
+                        icon: <ScheduleOutlined />,
+                    },
+                    {
+                        label: <Link to="/admin/hand-over-list">Danh sách</Link>,
+                        key: '/admin/hand-over-list',
+                        icon: <ScheduleOutlined />,
+                    },
                 ],
-            },
-            {
-                label: <Link to="/admin/material-export">Cấp phát vật tư</Link>,
-                key: '/admin/material-export',
-                icon: <ExportOutlined />,
-            },
-            {
-                label: <Link to="/admin/batch">Đợt cấp vật tư</Link>,
-                key: '/admin/batch',
-                icon: <ExportOutlined />,
-            },
-            {
-                label: <Link to="/admin/hand-over">Bàn giao cho người sử dụng</Link>,
-                key: '/admin/hand-over',
-                icon: <ScheduleOutlined />,
             },
             {
                 label: <Link to="/admin/material-report">Báo cáo</Link>,

@@ -212,7 +212,7 @@ const TableUser = () => {
                 }}
                 rowKey="id"
                 pagination={{
-                    pageSize: 5,
+                    pageSize: 7,
                     onChange: (page) => console.log(page),
                 }}
                 headerTitle="Quản lý nhân viên"
@@ -226,7 +226,8 @@ const TableUser = () => {
                         icon={<CloudUploadOutlined />}
                         type="primary"
                         onClick={() => {
-                            setOpenModalImport(true);
+                            // setOpenModalImport(true);
+                            message.warning('Chức năng đang phát triển');
                         }}
                     >
                         Import nhân viên

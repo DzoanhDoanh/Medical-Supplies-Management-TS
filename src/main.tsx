@@ -32,6 +32,8 @@ import ManageStorage from './pages/admin/manage.storage';
 import Import from './components/admin/import/import';
 import ManageBatch from './pages/admin/manage.batch';
 import ManageHandOver from './pages/admin/manage.hand.over';
+import TableMaterialImportApproved from './components/admin/import/import-list/table.material.approved';
+import TableHandOver from './components/admin/transfer/list/table.hand.over';
 // import vie from 'antd/locale/vi_VN';
 
 const router = createBrowserRouter([
@@ -162,10 +164,18 @@ const router = createBrowserRouter([
                 ),
             },
             {
-                path: 'material-buy-request',
+                path: 'material-import-list-detail',
                 element: (
                     <ProtectedRoute>
-                        <div>Đơn đề nghị mua thêm</div>
+                        <TableMaterialImportApproved />
+                    </ProtectedRoute>
+                ),
+            },
+            {
+                path: 'hand-over-list',
+                element: (
+                    <ProtectedRoute>
+                        <TableHandOver />
                     </ProtectedRoute>
                 ),
             },

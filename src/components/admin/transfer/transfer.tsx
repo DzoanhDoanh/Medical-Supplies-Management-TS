@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { message, Button, Form, Select, Table, InputNumber, Tag, Card, DatePicker } from 'antd';
 import {
+    checkStorageApi,
     createHandOverApi,
     getBatchWidthQueryApi,
     getStorageApi,
@@ -183,6 +184,16 @@ const TransferToUser = () => {
                 quantity: item.quantity,
             };
         });
+        const check = await checkStorageApi(selectedStorage?.id ?? '', requestData.materialRequests);
+        if (!check) {
+            message.error(
+                'Số lượng bàn giao lớn hơn số lượng đang có trong kho vui lòng refresh lại trang để cập nhật và thử lại',
+            );
+            form.resetFields();
+            setSelectedMaterials([]);
+            setLoading(false);
+            return;
+        }
         const senderInfo = users.find((e) => e.id === values.senderInfo);
         const receiveInfo = users.find((e) => e.id === values.receiveInfo);
         const batch = batches.find((e) => e.id === values.batch);

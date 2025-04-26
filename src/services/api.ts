@@ -507,6 +507,10 @@ export const deleteBatchApi = (id: string) => {
     const urlBackend = `/660/batches/${id}`;
     return axios.delete<IBackendRes<IBatch>>(urlBackend);
 };
+export const getHandOverApi = (query: string) => {
+    const urlBackend = `/handOver?_page=1&_limit=100&${query}`;
+    return axios.get<IBackendRes<IHandOver[]>>(urlBackend);
+};
 export const createHandOverApi = (
     name: string,
     senderInfo: SenderInfo,
@@ -528,4 +532,16 @@ export const createHandOverApi = (
         materials,
         batch,
     });
+};
+export const checkStorageApi = async(id: string, vatTuBanGiao: MaterialStorage[]) => {
+    const vatTuTrongKho: MaterialStorage[] = await (await getStorageByIdApi(id)).data?.materials ?? []
+    for (const vatTu of vatTuBanGiao) {
+        const vatTuKho = vatTuTrongKho.find((item) => item.supplyId === vatTu.supplyId);
+
+        if (vatTu.quantity > (vatTuKho?.quantity ?? 0)) {
+            return false;
+        }
+    }
+
+    return true;
 };

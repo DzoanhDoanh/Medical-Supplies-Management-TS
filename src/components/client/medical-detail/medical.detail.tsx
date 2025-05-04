@@ -2,7 +2,6 @@
 import { Row, Col, Typography, Rate, Tag, Button, InputNumber, Card, Image, Spin, Input, DatePicker } from 'antd';
 import { ArrowLeftOutlined, ShoppingCartOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
-import CurrencyFormatter from '@/components/currencyFormatter/currency.formatter';
 import { useEffect, useState } from 'react';
 import image from 'assets/images/thumbnailMaterial.png';
 import { getCategoryApi } from '@/services/api';
@@ -28,6 +27,11 @@ const MaterialDetail = ({ currentMaterial }: IProps) => {
         };
         fetchData();
     }, [currentMaterial]);
+    const isExpired = (expiryDateString: string): boolean => {
+        const expiryDate = new Date(expiryDateString);
+        const currentDate = new Date();
+        return currentDate >= expiryDate; // True nếu đã hết hạn, False nếu còn hạn
+    };
     return (
         <div style={{ maxWidth: 1400, margin: '0 auto', padding: '40px 0' }}>
             {loading ? (
@@ -81,46 +85,44 @@ const MaterialDetail = ({ currentMaterial }: IProps) => {
                                 <Input value={currentMaterial?.manufacturer} readOnly style={{ margin: '5px 0' }} />
                             </div>
                             <div>
-                                <b>Số lô:</b>{' '}
-                                <InputNumber
-                                    value={currentMaterial?.batchNumber}
-                                    readOnly
-                                    style={{ width: '100%', margin: '5px 0' }}
-                                />
-                            </div>
-                            <div>
                                 <b>Hạn sử dụng:</b>{' '}
-                                <DatePicker
-                                    value={dayjs(currentMaterial?.expirationDate)}
-                                    readOnly
-                                    disabled
-                                    style={{ width: '100%', margin: '5px 0' }}
-                                />
-                            </div>
-                            <div>
-                                <b>Giá nhập:</b>{' '}
-                                <InputNumber
-                                    value={currentMaterial?.costPrice}
-                                    readOnly
-                                    style={{ width: '100%', margin: '5px 0' }}
-                                />
-                            </div>
-                            <div>
-                                <b>Số lượng:</b>{' '}
-                                <InputNumber
-                                    value={currentMaterial?.quantity}
-                                    readOnly
-                                    style={{ width: '100%', margin: '5px 0' }}
-                                />
+                                {currentMaterial?.expirationDate === '2003-12-16T17:00:00.000Z' ? (
+                                    <div
+                                        style={{
+                                            backgroundColor: 'green',
+                                            width: '60px',
+                                            padding: '5px 12px',
+                                            color: '#fff',
+                                        }}
+                                    >
+                                        Không có
+                                    </div>
+                                ) : (
+                                    <DatePicker
+                                        value={dayjs(currentMaterial?.expirationDate)}
+                                        format={'DD-MM-YYYY'}
+                                        readOnly
+                                        disabled
+                                        style={{ width: '100%', margin: '5px 0' }}
+                                    />
+                                )}
                             </div>
                             <div>
                                 <b>Trạng thái:</b>{' '}
-                                <Tag
-                                    style={{ marginTop: '12px' }}
-                                    color={currentMaterial?.status === 1 ? 'green' : 'red'}
-                                >
-                                    {currentMaterial?.status === 1 ? 'Tốt' : 'Hết'}
-                                </Tag>
+                                {currentMaterial?.expirationDate === '2003-12-16T17:00:00.000Z' ? (
+                                    <Tag style={{ marginTop: '12px' }} color={'green'}>
+                                        Còn hạn sử dụng
+                                    </Tag>
+                                ) : (
+                                    <Tag
+                                        style={{ marginTop: '12px' }}
+                                        color={isExpired(currentMaterial?.expirationDate ?? '') ? 'red' : 'green'}
+                                    >
+                                        {isExpired(currentMaterial?.expirationDate ?? '')
+                                            ? 'Hết hạn sử dụng'
+                                            : 'Còn hạn sử dụng'}
+                                    </Tag>
+                                )}
                             </div>
                         </Col>
                     </Row>

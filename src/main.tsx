@@ -34,6 +34,7 @@ import ManageBatch from './pages/admin/manage.batch';
 import ManageHandOver from './pages/admin/manage.hand.over';
 import TableMaterialImportApproved from './components/admin/import/import-list/table.material.approved';
 import TableHandOver from './components/admin/transfer/list/table.hand.over';
+import PrintOneHandOver from './components/admin/transfer/list/print';
 // import vie from 'antd/locale/vi_VN';
 
 const router = createBrowserRouter([
@@ -74,6 +75,14 @@ const router = createBrowserRouter([
                 element: (
                     <ProtectedRoute>
                         <div>required-buy-supplies</div>
+                    </ProtectedRoute>
+                ),
+            },
+            {
+                path: '/print',
+                element: (
+                    <ProtectedRoute>
+                        <PrintOneHandOver />
                     </ProtectedRoute>
                 ),
             },

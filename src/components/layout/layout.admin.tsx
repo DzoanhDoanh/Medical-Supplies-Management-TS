@@ -25,6 +25,7 @@ import { Link } from 'react-router-dom';
 import { useCurrentApp } from '../context/app.context';
 import type { MenuProps } from 'antd';
 import { FaPlusSquare } from 'react-icons/fa';
+import ChangeInfo from '@/pages/admin/info.change';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -33,6 +34,8 @@ const { Content, Footer, Sider } = Layout;
 const LayoutAdmin = () => {
     const [collapsed, setCollapsed] = useState(false);
     const [activeMenu, setActiveMenu] = useState('');
+    const [openModalUpdate, setOpenModalUpdate] = useState<boolean>(false);
+    const [dataUpdate, setDataUpdate] = useState<IUser | null>(null);
     const { user, setUser, setIsAuthenticated, isAuthenticated } = useCurrentApp();
     const location = useLocation();
     useEffect(() => {
@@ -225,7 +228,7 @@ const LayoutAdmin = () => {
                 icon: <EditOutlined />,
                 children: [
                     {
-                        label: <Link to="/admin/material-request">Đơn đề nghị</Link>,
+                        label: <Link to="/admin/material-request">Đơn cấp phát</Link>,
                         key: '/admin/material-request',
                         icon: <EditOutlined />,
                     },
@@ -240,7 +243,7 @@ const LayoutAdmin = () => {
                         icon: <ScheduleOutlined />,
                     },
                     {
-                        label: <Link to="/admin/hand-over-list">Danh sách</Link>,
+                        label: <Link to="/admin/hand-over-list">Đơn bàn giao</Link>,
                         key: '/admin/hand-over-list',
                         icon: <ScheduleOutlined />,
                     },
@@ -257,7 +260,13 @@ const LayoutAdmin = () => {
     const itemsDropdown = [
         {
             label: (
-                <label style={{ cursor: 'pointer' }} onClick={() => alert('me')}>
+                <label
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => {
+                        setOpenModalUpdate(true);
+                        setDataUpdate(user);
+                    }}
+                >
                     Quản lý tài khoản
                 </label>
             ),
@@ -314,7 +323,11 @@ const LayoutAdmin = () => {
                         {isAuthenticated === true ? (
                             <Dropdown menu={{ items: itemsDropdown }} trigger={['click']}>
                                 <Space style={{ cursor: 'pointer' }}>
-                                    <Avatar src={`http://localhost:5173/src/assets/images/${user?.avatar}`} />
+                                    {user && user.avatar.length > 10 ? (
+                                        <Avatar src={`${user?.avatar}`} />
+                                    ) : (
+                                        <Avatar src={`http://localhost:5173/src/assets/images/${user?.avatar}`} />
+                                    )}
                                     {user?.fullName}
                                 </Space>
                             </Dropdown>
@@ -330,6 +343,12 @@ const LayoutAdmin = () => {
                     </Footer>
                 </Layout>
             </Layout>
+            <ChangeInfo
+                openModalUpdate={openModalUpdate}
+                setOpenModalUpdate={setOpenModalUpdate}
+                setDataUpdate={setDataUpdate}
+                dataUpdate={dataUpdate}
+            />
         </>
     );
 };

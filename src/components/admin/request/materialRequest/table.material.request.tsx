@@ -210,7 +210,7 @@ const TableMaterialRequest = () => {
                 ) : entity.status === 2 ? (
                     <Badge status="error" text="Từ chối" />
                 ) : (
-                    <Badge status="warning" text="Đã bàn giao" />
+                    <Badge status="warning" text="Đã cấp phát" />
                 );
             },
         },

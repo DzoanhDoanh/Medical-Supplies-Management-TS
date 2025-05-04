@@ -50,7 +50,7 @@ const DetailMaterialRequest = (props: IProps) => {
                         ) : dataViewDetail && dataViewDetail!.status === 2 ? (
                             <Badge status="error" text="Từ chối" />
                         ) : (
-                            <Badge status="warning" text="Đã bàn giao" />
+                            <Badge status="warning" text="Đã cấp phát" />
                         )}
                     </Descriptions.Item>
                     <Descriptions.Item label="Mức độ ưu tiên">

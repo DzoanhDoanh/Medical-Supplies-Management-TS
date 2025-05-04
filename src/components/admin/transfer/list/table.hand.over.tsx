@@ -1,12 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import {
-    getHandOverApi,
-    getImportRequestsApi,
-    getMaterialRequestsApi,
-    getUsersApi,
-    updateStatusMateriaImportApi,
-    updateStatusMaterialRequestApi,
-} from '@/services/api';
+import { getHandOverApi, getStorageApi, getUsersApi } from '@/services/api';
 // import { dateRangeValidate } from '@/services/helper';
 import { EditTwoTone, ExportOutlined, PrinterOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
@@ -16,6 +9,8 @@ import { useEffect, useRef, useState } from 'react';
 import { CSVLink } from 'react-csv';
 import dayjs from 'dayjs';
 import DetailHandOver from './detail.hand.over';
+import { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, WidthType } from 'docx';
+import { saveAs } from 'file-saver';
 
 type TSearch = {
     requestName: string;
@@ -27,6 +22,7 @@ const TableHandOver = () => {
     const [openViewDetail, setOpenViewDetail] = useState<boolean>(false);
     const [dataViewDetail, setDataViewDetail] = useState<IHandOver | null>(null);
     const [excelData, setExcelData] = useState([]);
+    const [storages, setStorages] = useState<IStorage[]>([]);
     const [users, setUsers] = useState<IUser[]>([]);
     const [isDeleteMaterialRequest, setIsDeleteMaterialRequest] = useState<boolean>(false);
     const { message } = App.useApp();
@@ -34,13 +30,76 @@ const TableHandOver = () => {
     useEffect(() => {
         const fetchUser = async () => {
             const res = await getUsersApi('');
+            const storage = await getStorageApi('');
             if (res && res.data) {
                 setUsers(res.data);
+            }
+            if (storage && storage.data) {
+                setStorages(storage.data);
             }
         };
         fetchUser();
     }, []);
+    const handleExportHandOverToWord = async (entity: IHandOver) => {
+        const docTitle = new Paragraph({
+            children: [new TextRun({ text: 'BIÊN BẢN GIAO NHẬN VẬT TƯ', bold: true, size: 28 })],
+            alignment: 'center',
+        });
 
+        const info = [
+            new Paragraph({ children: [new TextRun(`Mã biên bản: ${entity.id}`)] }),
+            new Paragraph({ children: [new TextRun(`Tên biên bản: ${entity.name}`)] }),
+            new Paragraph({ children: [new TextRun(`Người bàn giao: ${entity.senderInfo?.userName || 'N/A'}`)] }),
+            new Paragraph({ children: [new TextRun(`Người nhận: ${entity.receiverInfo?.userName || 'N/A'}`)] }),
+            new Paragraph({ children: [new TextRun(`Ngày bàn giao: ${dayjs(entity.sendDate).format('DD/MM/YYYY')}`)] }),
+            new Paragraph({ children: [new TextRun(`Ngày nhận: ${dayjs(entity.receiveDate).format('DD/MM/YYYY')}`)] }),
+            new Paragraph({
+                children: [
+                    new TextRun(
+                        `Kho thực hiện bàn giao: ${storages.find((e) => e.id === entity.storage)?.name || 'N/A'}`,
+                    ),
+                ],
+            }),
+            new Paragraph({ children: [new TextRun(`Đợt: ${entity.batch || 'N/A'}`)] }),
+        ];
+
+        const tableHeader = new TableRow({
+            children: ['STT', 'Tên vật tư', 'Số lượng'].map(
+                (text) =>
+                    new TableCell({
+                        children: [new Paragraph({ children: [new TextRun({ text, bold: true })] })],
+                    }),
+            ),
+        });
+
+        const tableRows = entity.materials.map(
+            (item, index) =>
+                new TableRow({
+                    children: [
+                        new TableCell({ children: [new Paragraph((index + 1).toString())] }),
+                        new TableCell({ children: [new Paragraph(item.materialName)] }),
+                        new TableCell({ children: [new Paragraph(item.quantity.toString())] }),
+                    ],
+                }),
+        );
+
+        const table = new Table({
+            width: { size: 100, type: WidthType.PERCENTAGE },
+            rows: [tableHeader, ...tableRows],
+        });
+
+        const signature = new Paragraph({
+            children: [new TextRun('\n\nNgười bàn giao\n(Ký và ghi rõ họ tên)')],
+            alignment: 'right',
+        });
+
+        const doc = new Document({
+            sections: [{ properties: {}, children: [docTitle, ...info, table, signature] }],
+        });
+
+        const blob = await Packer.toBlob(doc);
+        saveAs(blob, `Bien_Ban_Giao_Nhan_${entity.id}.docx`);
+    };
     const columns: ProColumns<IHandOver>[] = [
         {
             dataIndex: 'index',
@@ -65,6 +124,11 @@ const TableHandOver = () => {
                     </a>
                 );
             },
+        },
+        {
+            title: 'Tên đơn bàn giao',
+            hideInSearch: true,
+            dataIndex: 'name',
         },
         {
             title: 'Tên người bàn giao',
@@ -121,6 +185,15 @@ const TableHandOver = () => {
                     );
                 });
             },
+        },
+        {
+            title: 'Thao tác',
+            key: 'action',
+            render: (_, record) => (
+                <Button icon={<PrinterOutlined />} onClick={() => handleExportHandOverToWord(record)}>
+                    In biên bản
+                </Button>
+            ),
         },
     ];
 

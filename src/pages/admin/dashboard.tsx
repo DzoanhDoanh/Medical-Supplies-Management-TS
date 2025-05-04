@@ -135,25 +135,6 @@ const Dashboard: React.FC = () => {
                 </Col>
             </Row>
 
-            {/* Biểu đồ đường */}
-            <Row gutter={[16, 16]} style={{ marginTop: 24 }}>
-                <Col span={24}>
-                    <Card title="Biểu đồ nhập - xuất vật tư theo thời gian">
-                        <ResponsiveContainer width="100%" height={400}>
-                            <LineChart data={combinedLineChartData}>
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="date" />
-                                <YAxis />
-                                <Tooltip />
-                                <Legend />
-                                <Line type="monotone" dataKey="import" stroke="#82ca9d" name="Nhập" />
-                                <Line type="monotone" dataKey="export" stroke="#8884d8" name="Xuất" />
-                            </LineChart>
-                        </ResponsiveContainer>
-                    </Card>
-                </Col>
-            </Row>
-
             {/* Biểu đồ cột */}
             <Row gutter={[16, 16]} style={{ marginTop: 24 }}>
                 <Col span={24}>
@@ -170,6 +151,24 @@ const Dashboard: React.FC = () => {
                     </Card>
                 </Col>
             </Row>
+            {/* Biểu đồ đường */}
+            {/* <Row gutter={[16, 16]} style={{ marginTop: 24 }}>
+                <Col span={24}>
+                    <Card title="Biểu đồ nhập - xuất vật tư theo thời gian">
+                        <ResponsiveContainer width="100%" height={400}>
+                            <LineChart data={combinedLineChartData}>
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis dataKey="date" />
+                                <YAxis />
+                                <Tooltip />
+                                <Legend />
+                                <Line type="monotone" dataKey="import" stroke="#82ca9d" name="Nhập" />
+                                <Line type="monotone" dataKey="export" stroke="#8884d8" name="Xuất" />
+                            </LineChart>
+                        </ResponsiveContainer>
+                    </Card>
+                </Col>
+            </Row> */}
         </div>
     );
 };

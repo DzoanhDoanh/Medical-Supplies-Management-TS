@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react';
-import { message, Button, Form, Select, Table, InputNumber, Tag, Card, DatePicker } from 'antd';
+import { message, Button, Form, Select, Table, InputNumber, Tag, Card, DatePicker, Input } from 'antd';
 import {
     checkStorageApi,
     createHandOverApi,
@@ -18,6 +18,7 @@ interface FieldProps {
     receiveInfo: string;
     sendDate: string;
     storageId: string;
+    name: string;
 }
 interface Material {
     key: string;
@@ -199,7 +200,7 @@ const TransferToUser = () => {
         const batch = batches.find((e) => e.id === values.batch);
         const res1 = await transferToAnotherStorageApi(selectedStorage?.id ?? '', materialsResult);
         const res = await createHandOverApi(
-            'Ban giao',
+            values.name,
             { userId: senderInfo?.id ?? '', userName: senderInfo?.fullName ?? '' },
             { userId: receiveInfo?.id ?? '', userName: receiveInfo?.fullName ?? '' },
             values.sendDate,
@@ -210,6 +211,8 @@ const TransferToUser = () => {
         setTimeout(() => {
             if (res && res.data && res1 && res1.data) {
                 message.success('Thực hiện bàn giao cho người sử dụng thành công');
+                form.resetFields();
+                setSelectedMaterials([]);
                 setLoading(false);
             } else {
                 message.error('Thao tác không thành công vui lòng thử lại sau');
@@ -257,6 +260,13 @@ const TransferToUser = () => {
                                 );
                             })}
                     </Select>
+                </Form.Item>
+                <Form.Item<FieldProps>
+                    label="Điền tên biên bản bàn giao"
+                    name="name"
+                    rules={[{ required: true, message: 'Điền tên biên bản bàn giao' }]}
+                >
+                    <Input placeholder="Điền tên biên bản bàn giao" />
                 </Form.Item>
                 <Form.Item<FieldProps>
                     label="Hãy chọn đợt cấp"

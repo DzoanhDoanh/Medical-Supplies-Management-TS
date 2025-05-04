@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
-import { Input, message, Button, Form, Select, Table, InputNumber, Tag } from 'antd';
+import { Input, message, Button, Form, Select, Table, InputNumber, Tag, Card } from 'antd';
 import {
     createMaterialRequestsApi,
     getDepartmentsApi,
@@ -185,8 +185,7 @@ const MedicalSuppliesRequest = () => {
         );
     };
     return (
-        <div style={{ padding: 50, backgroundColor: '#fff' }}>
-            <h1 style={{ marginBottom: '20px' }}>Tạo Phiếu Yêu Cầu Vật Tư</h1>
+        <Card title="Tạo Phiếu Yêu Cầu Vật Tư">
             <Form layout="vertical" form={form} onFinish={onFinish}>
                 <Form.Item
                     label="Tên người yêu cầu"
@@ -272,7 +271,7 @@ const MedicalSuppliesRequest = () => {
                     </Button>
                 </Form.Item>
             </Form>
-        </div>
+        </Card>
     );
 };
 

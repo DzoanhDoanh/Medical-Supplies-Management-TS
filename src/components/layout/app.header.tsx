@@ -1,33 +1,46 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { FaPlusSquare } from 'react-icons/fa';
-import { VscSearchFuzzy } from 'react-icons/vsc';
 import { Divider, Drawer, Avatar, App, Menu } from 'antd';
 import { Dropdown, Space } from 'antd';
 import { useNavigate } from 'react-router';
 import './app.header.scss';
 import { Link } from 'react-router-dom';
 import { useCurrentApp } from 'components/context/app.context';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
     ApartmentOutlined,
-    AppstoreAddOutlined,
     LoginOutlined,
     LogoutOutlined,
     // PayCircleOutlined,
     SnippetsOutlined,
 } from '@ant-design/icons';
+import ChangeInfo from '@/pages/admin/info.change';
+import { AutoComplete, Input } from 'antd';
+import type { AutoCompleteProps } from 'antd';
+import { getSuppliesApi } from '@/services/api';
 
-interface IProps {
-    searchTerm: string;
-    setSearchTerm: (v: string) => void;
-}
-const AppHeader = (props: IProps) => {
+const AppHeader = () => {
     const [openDrawer, setOpenDrawer] = useState(false);
+    const [openModalUpdate, setOpenModalUpdate] = useState<boolean>(false);
+    const [dataUpdate, setDataUpdate] = useState<IUser | null>(null);
+    const [options, setOptions] = useState<AutoCompleteProps['options']>([]);
+    const [materials, setMaterials] = useState<ISupplies[]>([]);
 
     const { message } = App.useApp();
 
     const { isAuthenticated, user, setUser, setIsAuthenticated } = useCurrentApp();
 
     const navigate = useNavigate();
+    useEffect(() => {
+        const fetchData = async () => {
+            const res = await getSuppliesApi('');
+            if (res && res.data) {
+                setMaterials(res.data);
+            }
+        };
+        fetchData();
+    }, []);
+
     const handleLogout = async () => {
         setUser(null);
         setIsAuthenticated(false);
@@ -35,11 +48,39 @@ const AppHeader = (props: IProps) => {
         message.success('Đăng xuất thành công!');
         navigate('/login');
     };
+    const handleSearch = async (value: string) => {
+        if (!value) {
+            setOptions([]);
+            return;
+        }
+
+        try {
+            const response = await getSuppliesApi(`&name_like=${value}`);
+            if (response && response.data) {
+                const formattedData = response.data.map((item: any) => ({
+                    value: item.name,
+                }));
+                setOptions(formattedData);
+            }
+        } catch (error) {
+            console.error('Search error:', error);
+        }
+    };
+    const onSelect = (value: string) => {
+        const material = materials.find((e) => e.name === value);
+        navigate(`/medical-supply/${material?.id ?? ''}`);
+    };
     // eslint-disable-next-line prefer-const
     let items = [
         {
             label: (
-                <label style={{ cursor: 'pointer' }} onClick={() => navigate('/account/1')}>
+                <label
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => {
+                        setOpenModalUpdate(true);
+                        setDataUpdate(user);
+                    }}
+                >
                     Quản lý tài khoản
                 </label>
             ),
@@ -75,7 +116,7 @@ const AppHeader = (props: IProps) => {
                         >
                             ☰
                         </div>
-                        <div className="page-header__logo">
+                        <div className="page-header__logo" style={{ display: 'flex', justifyContent: 'space-between' }}>
                             <span className="logo" style={{ color: '#fff' }}>
                                 <span onClick={() => navigate('/')}>
                                     {' '}
@@ -83,15 +124,18 @@ const AppHeader = (props: IProps) => {
                                     Vật tư y tế
                                 </span>
 
-                                <VscSearchFuzzy className="icon-search" style={{ color: '#000' }} />
+                                {/* <VscSearchFuzzy className="icon-search" style={{ color: '#000' }} /> */}
                             </span>
-                            <input
-                                className="input-search"
-                                type={'text'}
-                                placeholder="Tìm kiếm vật tư"
-                                value={props.searchTerm}
-                                onChange={(e) => props.setSearchTerm(e.target.value)}
-                            />
+                            <AutoComplete
+                                // popupMatchSelectWidth={500}
+                                style={{ width: '80%' }}
+                                options={options}
+                                onSelect={onSelect}
+                                onSearch={handleSearch}
+                                size="middle"
+                            >
+                                <Input.Search size="middle" placeholder="Tìm kiếm vật tư" enterButton />
+                            </AutoComplete>
                         </div>
                     </div>
                     <nav className="page-header__bottom">
@@ -116,7 +160,13 @@ const AppHeader = (props: IProps) => {
                                 ) : (
                                     <Dropdown menu={{ items }} trigger={['click']}>
                                         <Space style={{ color: '#fff' }}>
-                                            <Avatar src={`http://localhost:5173/src/assets/images/${user?.avatar}`} />
+                                            {user && user.avatar.length > 10 ? (
+                                                <Avatar src={`${user?.avatar}`} />
+                                            ) : (
+                                                <Avatar
+                                                    src={`http://localhost:5173/src/assets/images/${user?.avatar}`}
+                                                />
+                                            )}
                                             {user?.fullName}
                                         </Space>
                                     </Dropdown>
@@ -136,8 +186,11 @@ const AppHeader = (props: IProps) => {
                             {/* <Menu.Item key="2" icon={<PayCircleOutlined />}>
                                 <Link to="/required-buy-supplies">Đề nghị mua vật tư</Link>
                             </Menu.Item> */}
-                            <Menu.Item key="3" icon={<AppstoreAddOutlined />}>
+                            {/* <Menu.Item key="3" icon={<AppstoreAddOutlined />}>
                                 <Link to="/medical-supplies-request">Đề nghị cung cấp vật tư</Link>
+                            </Menu.Item> */}
+                            <Menu.Item key="2" icon={<ApartmentOutlined />}>
+                                <Link to="/print">In biên bản giao nhận vật tư</Link>
                             </Menu.Item>
                             <Menu.Item key="4" icon={<ApartmentOutlined />}>
                                 <Link to="/medical-supplies-detail">Chi tiết vật tư</Link>
@@ -153,6 +206,12 @@ const AppHeader = (props: IProps) => {
                     )}
                 </Menu>
             </Drawer>
+            <ChangeInfo
+                openModalUpdate={openModalUpdate}
+                setOpenModalUpdate={setOpenModalUpdate}
+                setDataUpdate={setDataUpdate}
+                dataUpdate={dataUpdate}
+            />
         </>
     );
 };

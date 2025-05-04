@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Select, Button, Table, message } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { getStorageApi, getStorageByIdApi } from '@/services/api';
+import { CSVLink } from 'react-csv';
+import { ExportOutlined } from '@ant-design/icons';
 
 interface MaterialStorage {
     supplyId: string;
@@ -58,6 +60,7 @@ const StorageReport: React.FC = () => {
                 const mappedMaterials = storage.materials.map((material) => ({
                     ...material,
                     key: material.supplyId, // Thêm key vào mỗi vật tư
+                    storageName: storage.name,
                 }));
                 setStorageMaterials(mappedMaterials);
                 message.success(`Báo cáo kho "${storage.name}" đã được tạo.`);
@@ -92,8 +95,17 @@ const StorageReport: React.FC = () => {
                     }))}
                 />
                 <Button type="primary" onClick={handleGenerateReport} disabled={!selectedStorageId} loading={loading}>
-                    Báo cáo
+                    Lọc dữ liệu
                 </Button>
+                {storageMaterials.length === 0 ? (
+                    <></>
+                ) : (
+                    <CSVLink data={storageMaterials} filename="report.csv" style={{ marginLeft: '12px' }}>
+                        <Button icon={<ExportOutlined />} type="primary">
+                            Tải excel
+                        </Button>
+                    </CSVLink>
+                )}
             </div>
             <Table columns={columns} dataSource={storageMaterials} bordered pagination={false} loading={loading} />
         </div>

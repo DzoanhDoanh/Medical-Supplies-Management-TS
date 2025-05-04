@@ -1,19 +1,21 @@
 import React, { useState } from 'react';
-import { Button, Table, Card, message, Tabs, DatePicker } from 'antd';
+import { Button, Table, Card, message, Tabs, DatePicker, Tag } from 'antd';
 import dayjs from 'dayjs';
 import type { ColumnsType } from 'antd/es/table';
 import { getStorageApi, getMaterialRequestsApi, getImportRequestsApi } from '@/services/api';
 import isBetween from 'dayjs/plugin/isBetween';
 import StorageReport from '@/components/admin/report/material.report.storage';
+import MaterialBatchReport from '@/components/admin/report/material.report.batch';
+import { CSVLink } from 'react-csv';
+import { ExportOutlined } from '@ant-design/icons';
 dayjs.extend(isBetween);
+
 interface MaterialData {
     key: string;
     name: string;
-    importQuantity: number;
-    exportQuantity: number;
-    remaining: number;
-    importDate?: string;
-    exportDate?: string;
+    quantity: number;
+    date: string;
+    type: 'import' | 'export';
 }
 
 interface MaterialStorage {
@@ -50,8 +52,8 @@ const MaterialStatisticsReport: React.FC = () => {
     const [data, setData] = useState<MaterialData[]>([]);
     const [filteredData, setFilteredData] = useState<MaterialData[]>([]);
     const [isDisplay, setIsDisplay] = useState(false);
-    const [fromDate, setFromDate] = useState<string>('');
-    const [toDate, setToDate] = useState<string>('');
+    const [fromDate, setFromDate] = useState<dayjs.Dayjs | null>(null);
+    const [toDate, setToDate] = useState<dayjs.Dayjs | null>(null);
 
     const handleReport = async () => {
         setLoading(true);
@@ -73,7 +75,9 @@ const MaterialStatisticsReport: React.FC = () => {
                 return;
             }
 
-            const fetchedData: MaterialData[] = mainStorage.materials.map((material) => {
+            const fetchedData: MaterialData[] = [];
+
+            mainStorage.materials.forEach((material) => {
                 const totalImported = importRequests.reduce((total, request) => {
                     const materialRequest = request.materialRequests.find((m) => m.materialId === material.supplyId);
                     return total + (materialRequest ? materialRequest.quantity : 0);
@@ -96,15 +100,25 @@ const MaterialStatisticsReport: React.FC = () => {
                     .sort()
                     .pop();
 
-                return {
-                    key: material.supplyId,
-                    name: material.materialName,
-                    importQuantity: totalImported,
-                    exportQuantity: totalExported,
-                    remaining: material.quantity,
-                    importDate: lastImportDate ? dayjs(lastImportDate).format('DD-MM-YYYY') : 'Trống',
-                    exportDate: lastExportDate ? dayjs(lastExportDate).format('DD-MM-YYYY') : 'Trống',
-                };
+                if (totalImported > 0 && lastImportDate) {
+                    fetchedData.push({
+                        key: `${material.supplyId}-import`,
+                        name: material.materialName,
+                        quantity: totalImported,
+                        date: dayjs(lastImportDate).format('DD-MM-YYYY'),
+                        type: 'import',
+                    });
+                }
+
+                if (totalExported > 0 && lastExportDate) {
+                    fetchedData.push({
+                        key: `${material.supplyId}-export`,
+                        name: material.materialName,
+                        quantity: totalExported,
+                        date: dayjs(lastExportDate).format('DD-MM-YYYY'),
+                        type: 'export',
+                    });
+                }
             });
 
             setData(fetchedData);
@@ -124,21 +138,26 @@ const MaterialStatisticsReport: React.FC = () => {
             return;
         }
 
-        const filtered = data.filter(
-            (item) =>
-                (item.importDate && dayjs(item.importDate, 'DD-MM-YYYY').isBetween(fromDate, toDate, null, '[]')) ||
-                (item.exportDate && dayjs(item.exportDate, 'DD-MM-YYYY').isBetween(fromDate, toDate, null, '[]')),
-        );
+        const filtered = data.filter((item) => {
+            const itemDate = dayjs(item.date, 'DD-MM-YYYY');
+            return itemDate.isBetween(fromDate.startOf('day'), toDate.endOf('day'), null, '[]');
+        });
+
         setFilteredData(filtered);
     };
 
     const columns: ColumnsType<MaterialData> = [
         { title: 'Tên vật tư', dataIndex: 'name', key: 'name' },
-        { title: 'Số lượng nhập', dataIndex: 'importQuantity', key: 'importQuantity' },
-        { title: 'Số lượng xuất', dataIndex: 'exportQuantity', key: 'exportQuantity' },
-        { title: 'Vật tư còn lại', dataIndex: 'remaining', key: 'remaining' },
-        { title: 'Ngày nhập cuối', dataIndex: 'importDate', key: 'importDate' },
-        { title: 'Ngày xuất cuối', dataIndex: 'exportDate', key: 'exportDate' },
+        {
+            title: 'Loại giao dịch',
+            dataIndex: 'type',
+            key: 'type',
+            render: (type) => (
+                <Tag color={type === 'import' ? 'green' : 'red'}>{type === 'import' ? 'Nhập' : 'Xuất'}</Tag>
+            ),
+        },
+        { title: 'Số lượng', dataIndex: 'quantity', key: 'quantity' },
+        { title: 'Ngày giao dịch', dataIndex: 'date', key: 'date' },
     ];
 
     return (
@@ -151,39 +170,53 @@ const MaterialStatisticsReport: React.FC = () => {
 
             {isDisplay && (
                 <Tabs defaultActiveKey="1">
-                    <Tabs.TabPane tab="Báo cáo tổng thể" key="1">
+                    <Tabs.TabPane tab="Tất cả" key="1">
+                        <CSVLink data={data} filename="report.csv">
+                            <Button icon={<ExportOutlined />} type="primary">
+                                Tải excel
+                            </Button>
+                        </CSVLink>
                         <Table
+                            style={{ marginTop: '12px' }}
                             columns={columns}
                             dataSource={data}
                             loading={loading}
-                            pagination={{ pageSize: 10 }}
+                            pagination={{ pageSize: 5 }}
                             bordered
+                            rowKey="key"
                         />
                     </Tabs.TabPane>
-                    <Tabs.TabPane tab="Báo cáo theo ngày" key="2">
+                    <Tabs.TabPane tab="Lọc theo ngày tháng" key="2">
                         <div style={{ display: 'flex', gap: 16, marginBottom: 16 }}>
-                            <DatePicker
-                                placeholder="Từ ngày"
-                                onChange={(date) => setFromDate(date ? dayjs(date).format('YYYY-MM-DD') : '')}
-                            />
-                            <DatePicker
-                                placeholder="Đến ngày"
-                                onChange={(date) => setToDate(date ? dayjs(date).format('YYYY-MM-DD') : '')}
-                            />
+                            <DatePicker placeholder="Từ ngày" onChange={(date) => setFromDate(date)} allowClear />
+                            <DatePicker placeholder="Đến ngày" onChange={(date) => setToDate(date)} allowClear />
                             <Button type="primary" onClick={handleFilterByDate}>
                                 Lọc dữ liệu
                             </Button>
+                            {filteredData.length === 0 ? (
+                                <></>
+                            ) : (
+                                <CSVLink data={filteredData} filename="report.csv" style={{ marginLeft: '12px' }}>
+                                    <Button icon={<ExportOutlined />} type="primary">
+                                        Tải excel
+                                    </Button>
+                                </CSVLink>
+                            )}
                         </div>
                         <Table
                             columns={columns}
                             dataSource={filteredData}
                             loading={loading}
-                            pagination={{ pageSize: 10 }}
+                            pagination={{ pageSize: 5 }}
                             bordered
+                            rowKey="key"
                         />
                     </Tabs.TabPane>
-                    <Tabs.TabPane tab="Báo cáo số lượng trong kho" key="5">
+                    <Tabs.TabPane tab="Lọc theo kho" key="3">
                         <StorageReport />
+                    </Tabs.TabPane>
+                    <Tabs.TabPane tab="Lọc theo đợt" key="4">
+                        <MaterialBatchReport />
                     </Tabs.TabPane>
                 </Tabs>
             )}

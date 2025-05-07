@@ -116,19 +116,24 @@ const LayoutAdmin = () => {
                 icon: <MedicineBoxOutlined />,
             },
             {
-                label: <Link to="/admin/storage">Kho</Link>,
-                key: '/admin/storage',
-                icon: <ClusterOutlined />,
-            },
-            {
                 label: <Link to="/admin/medical-supplies-request">Đề nghị cấp vật tư</Link>,
                 key: '/admin/medical-supplies-request',
                 icon: <DeliveredProcedureOutlined />,
             },
             {
-                label: <Link to="/admin/material-export">Cấp phát vật tư</Link>,
-                key: '/admin/material-export',
-                icon: <ExportOutlined />,
+                label: <Link to="/admin/hand-over">Bàn giao vật tư</Link>,
+                key: '/admin/hand-over',
+                icon: <ScheduleOutlined />,
+            },
+            {
+                label: <Link to="/admin/hand-over-list">Đơn bàn giao</Link>,
+                key: '/admin/hand-over-list',
+                icon: <ScheduleOutlined />,
+            },
+            {
+                label: <Link to="/admin/storage-detail">Kho</Link>,
+                key: '/admin/storage-detail',
+                icon: <ClusterOutlined />,
             },
         ];
     } else {
@@ -238,7 +243,7 @@ const LayoutAdmin = () => {
                         icon: <ExportOutlined />,
                     },
                     {
-                        label: <Link to="/admin/hand-over">Bàn giao</Link>,
+                        label: <Link to="/admin/hand-over">Bàn giao vật tư</Link>,
                         key: '/admin/hand-over',
                         icon: <ScheduleOutlined />,
                     },
@@ -323,7 +328,7 @@ const LayoutAdmin = () => {
                         {isAuthenticated === true ? (
                             <Dropdown menu={{ items: itemsDropdown }} trigger={['click']}>
                                 <Space style={{ cursor: 'pointer' }}>
-                                    {user && user.avatar.length > 10 ? (
+                                    {user && user.avatar.length > 50 ? (
                                         <Avatar src={`${user?.avatar}`} />
                                     ) : (
                                         <Avatar src={`http://localhost:5173/src/assets/images/${user?.avatar}`} />

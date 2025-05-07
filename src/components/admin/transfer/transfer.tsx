@@ -1,16 +1,18 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react';
-import { message, Button, Form, Select, Table, InputNumber, Tag, Card, DatePicker, Input } from 'antd';
+import { message, Button, Form, Select, Table, InputNumber, Tag, Card, DatePicker, Input, Spin, Row, Col } from 'antd';
 import {
     checkStorageApi,
     createHandOverApi,
     getBatchWidthQueryApi,
+    getDepartmentByIdApi,
     getStorageApi,
     getStorageByIdApi,
     getUsersApi,
     transferToAnotherStorageApi,
 } from '@/services/api';
+import { useCurrentApp } from '@/components/context/app.context';
 
 interface FieldProps {
     batch: string;
@@ -32,14 +34,21 @@ type MaterialRequestMerge = {
     materialName: string;
     quantity: number;
 };
+type UserStorage = {
+    userId: string;
+    userName: string;
+};
 const TransferToUser = () => {
+    const { user } = useCurrentApp();
     const [selectedMaterials, setSelectedMaterials] = useState<Material[]>([]);
     const [users, setUsers] = useState<IUser[]>([]);
+    const [usersStorage, setUsersStorage] = useState<UserStorage[]>([]);
     const [materialsList, SetMaterialsList] = useState<Material[]>([]);
     const [batches, setBatches] = useState<IBatch[]>([]);
     const [storages, setStorages] = useState<IStorage[]>([]);
     const [selectedStorage, setSelectedStorage] = useState<IStorage>();
     const [loading, setLoading] = useState(false);
+    const [storageIdOfThisUser, setStorageIdUser] = useState<string>('');
     const [form] = Form.useForm();
 
     useEffect(() => {
@@ -48,6 +57,7 @@ const TransferToUser = () => {
                 const userData = await getUsersApi('');
                 const storageData = await getStorageApi('&mainStorage=false');
                 const batchData = await getBatchWidthQueryApi('');
+                const fetchDepartment = await getDepartmentByIdApi(user?.departIdentity ?? '');
                 if (userData && userData.data) {
                     setUsers(userData.data);
                 }
@@ -56,6 +66,12 @@ const TransferToUser = () => {
                 }
                 if (batchData && batchData.data) {
                     setBatches(batchData.data);
+                }
+                if (fetchDepartment && fetchDepartment.data) {
+                    const fetchStorage = await getStorageByIdApi(fetchDepartment.data.storageId);
+                    if (fetchStorage && fetchStorage.data) {
+                        setStorageIdUser(fetchStorage.data.id);
+                    }
                 }
             } catch (error) {
                 console.log(error);
@@ -228,6 +244,7 @@ const TransferToUser = () => {
         const materialData = await getStorageByIdApi(value);
         if (materialData && materialData.data) {
             setSelectedStorage(materialData.data);
+            setUsersStorage(materialData.data.manager);
             const result = materialData.data.materials.map((item) => {
                 return {
                     id: item.supplyId,
@@ -240,117 +257,142 @@ const TransferToUser = () => {
     };
     return (
         <Card title="Bàn giao cho người sử dụng">
-            <Form layout="vertical" form={form} onFinish={onFinish}>
-                <Form.Item<FieldProps>
-                    label="Hãy chọn kho cần bàn giao"
-                    name="storageId"
-                    rules={[{ required: true, message: 'Hãy chọn kho cần bàn giao' }]}
-                >
-                    <Select
-                        onChange={handleStorageChange}
-                        style={{ width: '100%' }}
-                        placeholder="Hãy chọn kho cần bàn giao"
+            {storageIdOfThisUser.trim() ? (
+                <Form layout="vertical" form={form} onFinish={onFinish}>
+                    <Row gutter={[16, 16]}>
+                        <Col span={12}>
+                            <Form.Item<FieldProps>
+                                label="Hãy chọn kho cần bàn giao"
+                                name="storageId"
+                                rules={[{ required: true, message: 'Hãy chọn kho cần bàn giao' }]}
+                            >
+                                <Select
+                                    onChange={handleStorageChange}
+                                    style={{ width: '100%' }}
+                                    placeholder="Hãy chọn kho cần bàn giao"
+                                >
+                                    {user?.role === 'manager' && storages ? (
+                                        <Select.Option key={storageIdOfThisUser} values={storageIdOfThisUser}>
+                                            {storages.find((e) => e.id === storageIdOfThisUser)?.name}
+                                        </Select.Option>
+                                    ) : (
+                                        storages &&
+                                        storages.map((item) => {
+                                            return (
+                                                <Select.Option key={item.id} values={item.id}>
+                                                    {item.name}
+                                                </Select.Option>
+                                            );
+                                        })
+                                    )}
+                                </Select>
+                            </Form.Item>
+                        </Col>
+                        <Col span={12}>
+                            <Form.Item<FieldProps>
+                                label="Điền tên biên bản bàn giao"
+                                name="name"
+                                rules={[{ required: true, message: 'Điền tên biên bản bàn giao' }]}
+                            >
+                                <Input placeholder="Điền tên biên bản bàn giao" />
+                            </Form.Item>
+                        </Col>
+                    </Row>
+
+                    <Form.Item<FieldProps>
+                        label="Hãy chọn đợt cấp"
+                        name="batch"
+                        rules={[{ required: true, message: 'Hãy chọn đợt cấp' }]}
                     >
-                        {storages &&
-                            storages.map((item) => {
-                                return (
-                                    <Select.Option key={item.id} values={item.id}>
-                                        {item.name}
-                                    </Select.Option>
-                                );
-                            })}
-                    </Select>
-                </Form.Item>
-                <Form.Item<FieldProps>
-                    label="Điền tên biên bản bàn giao"
-                    name="name"
-                    rules={[{ required: true, message: 'Điền tên biên bản bàn giao' }]}
-                >
-                    <Input placeholder="Điền tên biên bản bàn giao" />
-                </Form.Item>
-                <Form.Item<FieldProps>
-                    label="Hãy chọn đợt cấp"
-                    name="batch"
-                    rules={[{ required: true, message: 'Hãy chọn đợt cấp' }]}
-                >
-                    <Select style={{ width: '100%' }} placeholder="Hãy chọn đợt cấp">
-                        {batches &&
-                            batches.map((item) => {
-                                return (
-                                    <Select.Option key={item.id} values={item.name}>
-                                        {item.name}
-                                    </Select.Option>
-                                );
-                            })}
-                    </Select>
-                </Form.Item>
-                <Form.Item<FieldProps>
-                    label="Người bàn giao"
-                    name="senderInfo"
-                    rules={[{ required: true, message: 'Vui lòng chọn người bàn giao' }]}
-                >
-                    <Select style={{ width: '100%' }} placeholder="Vui lòng chọn người bàn giao">
-                        {users &&
-                            users.map((item) => {
-                                return (
-                                    <Select.Option key={item.id} values={item.id}>
-                                        {item.fullName}
-                                    </Select.Option>
-                                );
-                            })}
-                    </Select>
-                </Form.Item>
-                <Form.Item<FieldProps>
-                    label="Người nhận"
-                    name="receiveInfo"
-                    rules={[{ required: true, message: 'Vui lòng chọn người nhận' }]}
-                >
-                    <Select style={{ width: '100%' }} placeholder="Vui lòng chọn người nhận">
-                        {users &&
-                            users.map((item) => {
-                                return (
-                                    <Select.Option key={item.id} values={item.id}>
-                                        {item.fullName}
-                                    </Select.Option>
-                                );
-                            })}
-                    </Select>
-                </Form.Item>
-                <Form.Item<FieldProps>
-                    label="Ngày bàn giao"
-                    name="sendDate"
-                    rules={[{ required: true, message: 'Vui lòng chọn ngày bàn giao' }]}
-                >
-                    <DatePicker placeholder="Ngày bàn giao" />
-                </Form.Item>
-                <Form.Item name="materialId" label="Chọn vật tư cần yêu cầu">
-                    <Select
-                        mode="multiple"
-                        style={{ width: '100%' }}
-                        tagRender={customTagRender}
-                        placeholder="Chọn vật tư"
-                        onChange={handleMaterialChange}
-                    >
-                        {materialsList.map((material) => (
-                            <Select.Option key={material.id} value={material.id}>
-                                {material.name}
-                            </Select.Option>
-                        ))}
-                    </Select>
-                </Form.Item>
-                <Table
-                    dataSource={selectedMaterials}
-                    columns={columns}
-                    rowKey="key"
-                    pagination={false}
-                    style={{ marginBottom: 24 }}
-                />
-                <Form.Item>
-                    <Button type="primary" htmlType="submit" loading={loading} style={{ marginTop: 16 }}>
-                        Tiến hành bàn giao
-                    </Button>
-                </Form.Item>
-            </Form>
+                        <Select style={{ width: '100%' }} placeholder="Hãy chọn đợt cấp">
+                            {batches &&
+                                batches.map((item) => {
+                                    return (
+                                        <Select.Option key={item.id} values={item.name}>
+                                            {item.name}
+                                        </Select.Option>
+                                    );
+                                })}
+                        </Select>
+                    </Form.Item>
+                    <Row gutter={[16, 16]}>
+                        <Col span={8}>
+                            <Form.Item<FieldProps>
+                                label="Người bàn giao"
+                                name="senderInfo"
+                                rules={[{ required: true, message: 'Vui lòng chọn người bàn giao' }]}
+                            >
+                                <Select style={{ width: '100%' }} placeholder="Vui lòng chọn người bàn giao">
+                                    {usersStorage &&
+                                        usersStorage.map((item) => {
+                                            return (
+                                                <Select.Option key={item.userId} values={item.userId}>
+                                                    {item.userName}
+                                                </Select.Option>
+                                            );
+                                        })}
+                                </Select>
+                            </Form.Item>
+                        </Col>
+                        <Col span={8}>
+                            <Form.Item<FieldProps>
+                                label="Người nhận"
+                                name="receiveInfo"
+                                rules={[{ required: true, message: 'Vui lòng chọn người nhận' }]}
+                            >
+                                <Select style={{ width: '100%' }} placeholder="Vui lòng chọn người nhận">
+                                    {users &&
+                                        users.map((item) => {
+                                            return (
+                                                <Select.Option key={item.id} values={item.id}>
+                                                    {item.fullName}
+                                                </Select.Option>
+                                            );
+                                        })}
+                                </Select>
+                            </Form.Item>
+                        </Col>
+                        <Col span={8}>
+                            <Form.Item<FieldProps>
+                                label="Ngày bàn giao"
+                                name="sendDate"
+                                rules={[{ required: true, message: 'Vui lòng chọn ngày bàn giao' }]}
+                            >
+                                <DatePicker placeholder="Ngày bàn giao" />
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                    <Form.Item name="materialId" label="Chọn vật tư cần yêu cầu">
+                        <Select
+                            mode="multiple"
+                            style={{ width: '100%' }}
+                            tagRender={customTagRender}
+                            placeholder="Chọn vật tư"
+                            onChange={handleMaterialChange}
+                        >
+                            {materialsList.map((material) => (
+                                <Select.Option key={material.id} value={material.id}>
+                                    {material.name}
+                                </Select.Option>
+                            ))}
+                        </Select>
+                    </Form.Item>
+                    <Table
+                        dataSource={selectedMaterials}
+                        columns={columns}
+                        rowKey="key"
+                        pagination={false}
+                        style={{ marginBottom: 24 }}
+                    />
+                    <Form.Item>
+                        <Button type="primary" htmlType="submit" loading={loading} style={{ marginTop: 16 }}>
+                            Tiến hành bàn giao
+                        </Button>
+                    </Form.Item>
+                </Form>
+            ) : (
+                <Spin fullscreen></Spin>
+            )}
         </Card>
     );
 };

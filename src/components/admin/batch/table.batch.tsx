@@ -185,11 +185,11 @@ const TableBatch = () => {
                 }}
                 headerTitle="Quản lý đợt cấp"
                 toolBarRender={() => [
-                    <Button icon={<ExportOutlined />} type="primary">
-                        <CSVLink data={excelData} filename="export-batch.csv">
-                            Tải excel
-                        </CSVLink>
-                    </Button>,
+                    // <Button icon={<ExportOutlined />} type="primary">
+                    //     <CSVLink data={excelData} filename="export-batch.csv">
+                    //         Tải excel
+                    //     </CSVLink>
+                    // </Button>,
                     // <Button
                     //     icon={<CloudUploadOutlined />}
                     //     type="primary"

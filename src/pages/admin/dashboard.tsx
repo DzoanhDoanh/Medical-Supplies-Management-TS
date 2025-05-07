@@ -119,18 +119,30 @@ const Dashboard: React.FC = () => {
             <Row gutter={[16, 16]}>
                 {/* Thống kê tổng quan */}
                 <Col span={8}>
-                    <Card>
-                        <Statistic title="Tổng số vật tư" value={totalMaterials} />
+                    <Card style={{ backgroundColor: 'red' }}>
+                        <Statistic
+                            title={<span style={{ color: '#fff' }}>Tổng số vật tư</span>}
+                            value={totalMaterials}
+                            valueStyle={{ color: '#fff' }}
+                        />
                     </Card>
                 </Col>
                 <Col span={8}>
-                    <Card>
-                        <Statistic title="Tổng số kho" value={storages.length} />
+                    <Card style={{ backgroundColor: 'green' }}>
+                        <Statistic
+                            title={<span style={{ color: '#fff' }}>Tổng số kho</span>}
+                            value={storages.length}
+                            valueStyle={{ color: '#fff' }}
+                        />
                     </Card>
                 </Col>
                 <Col span={8}>
-                    <Card>
-                        <Statistic title="Tổng số phiếu nhập" value={importRequests.length} />
+                    <Card style={{ backgroundColor: 'blue' }}>
+                        <Statistic
+                            title={<span style={{ color: '#fff' }}>Tổng số phiếu nhập</span>}
+                            value={importRequests.length}
+                            valueStyle={{ color: '#fff' }}
+                        />
                     </Card>
                 </Col>
             </Row>

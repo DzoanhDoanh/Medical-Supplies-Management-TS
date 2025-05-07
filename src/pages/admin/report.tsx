@@ -164,7 +164,7 @@ const MaterialStatisticsReport: React.FC = () => {
         <div style={{ padding: 24 }}>
             <Card style={{ marginBottom: 24 }}>
                 <Button type="primary" onClick={handleReport} loading={loading}>
-                    Xem báo cáo thống kê
+                    Thống kê vật tư
                 </Button>
             </Card>
 

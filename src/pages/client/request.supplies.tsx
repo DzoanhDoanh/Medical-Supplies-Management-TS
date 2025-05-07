@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
-import { Input, message, Button, Form, Select, Table, InputNumber, Tag, Card } from 'antd';
+import { Input, message, Button, Form, Select, Table, InputNumber, Tag, Card, Row, Col } from 'antd';
 import {
     createMaterialRequestsApi,
     getDepartmentsApi,
@@ -187,62 +187,75 @@ const MedicalSuppliesRequest = () => {
     return (
         <Card title="Tạo Phiếu Yêu Cầu Vật Tư">
             <Form layout="vertical" form={form} onFinish={onFinish}>
-                <Form.Item
-                    label="Tên người yêu cầu"
-                    name="requesterName"
-                    rules={[{ required: true, message: 'Vui lòng chọn tên người yêu cầu' }]}
-                >
-                    <Select style={{ width: '100%' }} placeholder="Vui lòng chọn tên người yêu cầu">
-                        {users &&
-                            users.map((item) => {
-                                return (
-                                    <Select.Option key={item.id} values={item.id}>
-                                        {item.fullName}
-                                    </Select.Option>
-                                );
-                            })}
-                    </Select>
-                </Form.Item>
-                <Form.Item
-                    label="Kho nhận vật tư"
-                    name="departmentId"
-                    rules={[{ required: true, message: 'Vui lòng chọn kho nhận vật tư' }]}
-                >
-                    <Select style={{ width: '100%' }} placeholder="Vui lòng chọn kho nhận vật tư">
-                        {storages &&
-                            storages.map((item) => {
-                                return (
-                                    <Select.Option key={item.id} values={item.id}>
-                                        {item.name}
-                                    </Select.Option>
-                                );
-                            })}
-                    </Select>
-                </Form.Item>
-                <Form.Item
-                    label="Tên phiếu yêu cầu"
-                    name="requestName"
-                    rules={[{ required: true, message: 'Vui lòng nhập tên phiếu yêu cầu' }]}
-                >
-                    <Input placeholder="Vui lòng nhập tên phiếu yêu cầu" />
-                </Form.Item>
-                <Form.Item
-                    label="Chọn mức độ ưu tiên"
-                    name="type"
-                    rules={[{ required: true, message: 'Vui lòng chọn mức độ ưu tiên' }]}
-                >
-                    <Select style={{ width: '100%' }} placeholder="Mức độ ưu tiên">
-                        <Select.Option key={0} values={0}>
-                            Cao
-                        </Select.Option>
-                        <Select.Option key={1} values={1}>
-                            Trung bình
-                        </Select.Option>
-                        <Select.Option key={2} values={2}>
-                            Thấp
-                        </Select.Option>
-                    </Select>
-                </Form.Item>
+                <Row gutter={[16, 16]}>
+                    <Col span={12}>
+                        <Form.Item
+                            label="Tên người yêu cầu"
+                            name="requesterName"
+                            rules={[{ required: true, message: 'Vui lòng chọn tên người yêu cầu' }]}
+                        >
+                            <Select style={{ width: '100%' }} placeholder="Vui lòng chọn tên người yêu cầu">
+                                {users &&
+                                    users.map((item) => {
+                                        return (
+                                            <Select.Option key={item.id} values={item.id}>
+                                                {item.fullName}
+                                            </Select.Option>
+                                        );
+                                    })}
+                            </Select>
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item
+                            label="Kho nhận vật tư"
+                            name="departmentId"
+                            rules={[{ required: true, message: 'Vui lòng chọn kho nhận vật tư' }]}
+                        >
+                            <Select style={{ width: '100%' }} placeholder="Vui lòng chọn kho nhận vật tư">
+                                {storages &&
+                                    storages.map((item) => {
+                                        return (
+                                            <Select.Option key={item.id} values={item.id}>
+                                                {item.name}
+                                            </Select.Option>
+                                        );
+                                    })}
+                            </Select>
+                        </Form.Item>
+                    </Col>
+                </Row>
+                <Row gutter={[16, 16]}>
+                    <Col span={12}>
+                        <Form.Item
+                            label="Tên phiếu yêu cầu"
+                            name="requestName"
+                            rules={[{ required: true, message: 'Vui lòng nhập tên phiếu yêu cầu' }]}
+                        >
+                            <Input placeholder="Vui lòng nhập tên phiếu yêu cầu" />
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item
+                            label="Chọn mức độ ưu tiên"
+                            name="type"
+                            rules={[{ required: true, message: 'Vui lòng chọn mức độ ưu tiên' }]}
+                        >
+                            <Select style={{ width: '100%' }} placeholder="Mức độ ưu tiên">
+                                <Select.Option key={0} values={0}>
+                                    Cao
+                                </Select.Option>
+                                <Select.Option key={1} values={1}>
+                                    Trung bình
+                                </Select.Option>
+                                <Select.Option key={2} values={2}>
+                                    Thấp
+                                </Select.Option>
+                            </Select>
+                        </Form.Item>
+                    </Col>
+                </Row>
+
                 <Form.Item name="materialId" label="Chọn vật tư cần yêu cầu">
                     <Select
                         mode="multiple"

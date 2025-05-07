@@ -186,11 +186,11 @@ const TableCategory = () => {
                 }}
                 headerTitle="Danh mục vật tư"
                 toolBarRender={() => [
-                    <Button icon={<ExportOutlined />} type="primary">
-                        <CSVLink data={excelData} filename="export-category.csv">
-                            Tải excel
-                        </CSVLink>
-                    </Button>,
+                    // <Button icon={<ExportOutlined />} type="primary">
+                    //     <CSVLink data={excelData} filename="export-category.csv">
+                    //         Tải excel
+                    //     </CSVLink>
+                    // </Button>,
                     // <Button
                     //     icon={<CloudUploadOutlined />}
                     //     type="primary"

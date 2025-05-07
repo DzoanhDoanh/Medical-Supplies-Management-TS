@@ -14,7 +14,7 @@ import LayoutAdmin from './components/layout/layout.admin';
 import DashBoardPage from './pages/admin/dashboard';
 import ManageUserPage from './pages/admin/manage.user';
 import Login from './pages/client/auth/login';
-import enUS from 'antd/locale/en_US';
+// import enUS from 'antd/locale/en_US';
 import UserProfile from './pages/client/user.profile';
 import ManageSuppliesPage from './pages/admin/manage.supplies';
 import MedicalSuppliesPage from './pages/client/medical.supplies';
@@ -35,7 +35,8 @@ import ManageHandOver from './pages/admin/manage.hand.over';
 import TableMaterialImportApproved from './components/admin/import/import-list/table.material.approved';
 import TableHandOver from './components/admin/transfer/list/table.hand.over';
 import PrintOneHandOver from './components/admin/transfer/list/print';
-// import vie from 'antd/locale/vi_VN';
+import StorageDetail from './pages/admin/storage.detail';
+import vie from 'antd/locale/vi_VN';
 
 const router = createBrowserRouter([
     {
@@ -229,6 +230,14 @@ const router = createBrowserRouter([
                 ),
             },
             {
+                path: 'storage-detail',
+                element: (
+                    <ProtectedRoute>
+                        <StorageDetail />
+                    </ProtectedRoute>
+                ),
+            },
+            {
                 path: 'storage',
                 element: (
                     <ProtectedRoute>
@@ -292,7 +301,7 @@ createRoot(document.getElementById('root')!).render(
     <StrictMode>
         <App>
             <AppProvider>
-                <ConfigProvider locale={enUS}>
+                <ConfigProvider locale={vie}>
                     <RouterProvider router={router} />
                 </ConfigProvider>
             </AppProvider>

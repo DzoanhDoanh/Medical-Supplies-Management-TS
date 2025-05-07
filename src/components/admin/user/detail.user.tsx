@@ -1,6 +1,8 @@
+import { getDepartmentsApi } from '@/services/api';
 import { FORMAT_DATE_VN } from '@/services/helper';
 import { Avatar, Badge, Descriptions, Drawer } from 'antd';
 import dayjs from 'dayjs';
+import { useEffect, useState } from 'react';
 
 interface IProps {
     openViewDetail: boolean;
@@ -11,11 +13,20 @@ interface IProps {
 
 const DetailUser = (props: IProps) => {
     const { openViewDetail, setOpenViewDetail, dataViewDetail, setDataViewDetail } = props;
+    const [departments, setDepartments] = useState<IDepartment[]>([]);
     const onClose = () => {
         setOpenViewDetail(false);
         setDataViewDetail(null);
     };
-    console.log(dataViewDetail?.avatar);
+    useEffect(() => {
+        const fetchData = async () => {
+            const res = await getDepartmentsApi('');
+            if (res && res.data) {
+                setDepartments(res.data);
+            }
+        };
+        fetchData();
+    }, []);
     return (
         <>
             <Drawer title="Thông tin chi tiết nhân viên" width={'50vw'} onClose={onClose} open={openViewDetail}>
@@ -30,7 +41,9 @@ const DetailUser = (props: IProps) => {
                     <Descriptions.Item label="Ngày tạo">
                         {dayjs(dataViewDetail?.createAt).format(FORMAT_DATE_VN)}
                     </Descriptions.Item>
-                    <Descriptions.Item label="Phòng ban">{dataViewDetail?.departIdentity}</Descriptions.Item>
+                    <Descriptions.Item label="Phòng ban">
+                        {departments.find((e) => e.id === dataViewDetail?.departIdentity)?.name}
+                    </Descriptions.Item>
                     <Descriptions.Item label="Chức vụ">{dataViewDetail?.position}</Descriptions.Item>
                     <Descriptions.Item label="Giới tính">{dataViewDetail?.gender}</Descriptions.Item>
                     <Descriptions.Item label="Ngày sinh">
@@ -45,7 +58,10 @@ const DetailUser = (props: IProps) => {
                         </Descriptions.Item>
                     ) : (
                         <Descriptions.Item label="Ảnh đại diện">
-                            <Avatar src={`http://localhost:5173/src/assets/images/avatar.png`} size={100}>
+                            <Avatar
+                                src={`http://localhost:5173/src/assets/images/${dataViewDetail?.avatar}`}
+                                size={100}
+                            >
                                 {dataViewDetail?.avatar}
                             </Avatar>
                         </Descriptions.Item>

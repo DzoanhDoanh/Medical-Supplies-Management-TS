@@ -135,6 +135,11 @@ const LayoutAdmin = () => {
                 key: '/admin/storage-detail',
                 icon: <ClusterOutlined />,
             },
+            {
+                label: <Link to="/admin/statiscal-storage">Thống kê</Link>,
+                key: '/admin/statiscal-storage',
+                icon: <ScheduleOutlined />,
+            },
         ];
     } else {
         items = [

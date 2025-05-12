@@ -37,6 +37,7 @@ import TableHandOver from './components/admin/transfer/list/table.hand.over';
 import PrintOneHandOver from './components/admin/transfer/list/print';
 import StorageDetail from './pages/admin/storage.detail';
 import vie from 'antd/locale/vi_VN';
+import StatisticsByStorage from './components/admin/report/statiscal';
 
 const router = createBrowserRouter([
     {
@@ -234,6 +235,14 @@ const router = createBrowserRouter([
                 element: (
                     <ProtectedRoute>
                         <StorageDetail />
+                    </ProtectedRoute>
+                ),
+            },
+            {
+                path: 'statiscal-storage',
+                element: (
+                    <ProtectedRoute>
+                        <StatisticsByStorage />
                     </ProtectedRoute>
                 ),
             },

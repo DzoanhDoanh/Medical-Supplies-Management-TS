@@ -8,6 +8,7 @@ import StorageReport from '@/components/admin/report/material.report.storage';
 import MaterialBatchReport from '@/components/admin/report/material.report.batch';
 import { CSVLink } from 'react-csv';
 import { ExportOutlined } from '@ant-design/icons';
+import MaterialStatistic from '@/components/admin/report/statiscal';
 dayjs.extend(isBetween);
 
 interface MaterialData {
@@ -186,7 +187,7 @@ const MaterialStatisticsReport: React.FC = () => {
                             rowKey="key"
                         />
                     </Tabs.TabPane>
-                    <Tabs.TabPane tab="Lọc theo ngày tháng" key="2">
+                    <Tabs.TabPane tab="Thống kê vật tư trong kho tổng theo ngày tháng" key="2">
                         <div style={{ display: 'flex', gap: 16, marginBottom: 16 }}>
                             <DatePicker placeholder="Từ ngày" onChange={(date) => setFromDate(date)} allowClear />
                             <DatePicker placeholder="Đến ngày" onChange={(date) => setToDate(date)} allowClear />
@@ -212,11 +213,14 @@ const MaterialStatisticsReport: React.FC = () => {
                             rowKey="key"
                         />
                     </Tabs.TabPane>
-                    <Tabs.TabPane tab="Lọc theo kho" key="3">
+                    <Tabs.TabPane tab="Theo dõi số lượng tại kho đơn vị" key="3">
                         <StorageReport />
                     </Tabs.TabPane>
-                    <Tabs.TabPane tab="Lọc theo đợt" key="4">
+                    <Tabs.TabPane tab="Thống kê tại kho tổng" key="4">
                         <MaterialBatchReport />
+                    </Tabs.TabPane>
+                    <Tabs.TabPane tab="Thống kê theo kho đơn vị" key="5">
+                        <MaterialStatistic />
                     </Tabs.TabPane>
                 </Tabs>
             )}

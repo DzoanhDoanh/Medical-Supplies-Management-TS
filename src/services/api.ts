@@ -533,8 +533,8 @@ export const createHandOverApi = (
         batch,
     });
 };
-export const checkStorageApi = async(id: string, vatTuBanGiao: MaterialStorage[]) => {
-    const vatTuTrongKho: MaterialStorage[] = await (await getStorageByIdApi(id)).data?.materials ?? []
+export const checkStorageApi = async (id: string, vatTuBanGiao: MaterialStorage[]) => {
+    const vatTuTrongKho: MaterialStorage[] = (await (await getStorageByIdApi(id)).data?.materials) ?? [];
     for (const vatTu of vatTuBanGiao) {
         const vatTuKho = vatTuTrongKho.find((item) => item.supplyId === vatTu.supplyId);
 
@@ -545,3 +545,20 @@ export const checkStorageApi = async(id: string, vatTuBanGiao: MaterialStorage[]
 
     return true;
 };
+export const getUserStorage = (query: string) => {
+    const urlBackend = `/user_storage?_page=1&_limit=100&${query}`;
+    return axios.get<IBackendRes<IUSER_STORAGE[]>>(urlBackend);
+};
+export const addUserStorage = (result: userStorageMap[]) => {
+    const urlBackend = `/660/user_storage`;
+    return axios.post<IBackendRes<IUSER_STORAGE>>(urlBackend, {
+        result,
+    });
+};
+export const updateUserStorage = (id: string, result: userStorageMap[]) => {
+    const urlBackend = `/660/user_storage/${id}`;
+    return axios.patch<IBackendRes<IUSER_STORAGE>>(urlBackend, {
+        result,
+    });
+};
+

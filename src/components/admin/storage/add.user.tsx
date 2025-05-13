@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { App, Col, Divider, Form, Modal, Row, Select } from 'antd';
 import type { FormProps } from 'antd';
-import { addUsersToStorageApi, getUsersApi } from '@/services/api';
+import { addUsersToStorageApi, getStorageApi, getUsersApi, updateUserStorage } from '@/services/api';
 
 interface IProps {
     openModalAddUsers: boolean;
@@ -38,7 +38,6 @@ const AddUsers = (props: IProps) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dataAddUsers]);
     const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
-        console.log(values.manager);
         setIsSubmit(true);
         const data: ManageStorage[] = values.manager.map((item) => {
             const currentUser = users.find((e) => e.id === item);
@@ -48,6 +47,20 @@ const AddUsers = (props: IProps) => {
             };
         });
         const res = await addUsersToStorageApi(dataAddUsers?.id ?? '', data ?? []);
+        const storages = (await getStorageApi('')).data ?? [];
+        const result: userStorageMap[] = users
+            .map((user) => {
+                const storageIds = storages
+                    .filter((storage) => storage.manager.some((manager) => manager.userId === user.id))
+                    .map((storage) => storage.id);
+
+                return {
+                    userId: user.id,
+                    storageIds,
+                };
+            })
+            .filter((entry) => entry.storageIds.length > 0);
+        await updateUserStorage('dvd', result);
         setTimeout(() => {
             if (res && res.data && typeof res.data === 'string') {
                 const alertMessage = res.data + '';

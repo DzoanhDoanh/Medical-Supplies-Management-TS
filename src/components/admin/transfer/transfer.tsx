@@ -10,6 +10,7 @@ import {
     getStorageApi,
     getStorageByIdApi,
     getUsersApi,
+    getUserStorage,
     transferToAnotherStorageApi,
 } from '@/services/api';
 import { useCurrentApp } from '@/components/context/app.context';
@@ -49,6 +50,7 @@ const TransferToUser = () => {
     const [selectedStorage, setSelectedStorage] = useState<IStorage>();
     const [loading, setLoading] = useState(false);
     const [storageIdOfThisUser, setStorageIdUser] = useState<string>('');
+    const [userStorage, setUserStorage] = useState<IUSER_STORAGE[]>();
     const [form] = Form.useForm();
 
     useEffect(() => {
@@ -58,6 +60,10 @@ const TransferToUser = () => {
                 const storageData = await getStorageApi('&mainStorage=false');
                 const batchData = await getBatchWidthQueryApi('');
                 const fetchDepartment = await getDepartmentByIdApi(user?.departIdentity ?? '');
+                const fetchUserStorage = await getUserStorage('');
+                if (fetchUserStorage && fetchUserStorage.data) {
+                    setUserStorage(fetchUserStorage.data);
+                }
                 if (userData && userData.data) {
                     setUsers(userData.data);
                 }
@@ -271,20 +277,25 @@ const TransferToUser = () => {
                                     style={{ width: '100%' }}
                                     placeholder="Hãy chọn kho cần bàn giao"
                                 >
-                                    {user?.role === 'manager' && storages ? (
-                                        <Select.Option key={storageIdOfThisUser} values={storageIdOfThisUser}>
-                                            {storages.find((e) => e.id === storageIdOfThisUser)?.name}
-                                        </Select.Option>
-                                    ) : (
-                                        storages &&
-                                        storages.map((item) => {
-                                            return (
-                                                <Select.Option key={item.id} values={item.id}>
-                                                    {item.name}
-                                                </Select.Option>
-                                            );
-                                        })
-                                    )}
+                                    {user?.role === 'manager' && storages
+                                        ? userStorage &&
+                                          userStorage[0].result
+                                              .find((e) => e.userId === user.id)
+                                              ?.storageIds.map((storageId) => {
+                                                  return (
+                                                      <Select.Option key={storageId} value={storageId}>
+                                                          {storages.find((e) => e.id === storageId)?.name}
+                                                      </Select.Option>
+                                                  );
+                                              })
+                                        : storages &&
+                                          storages.map((item) => {
+                                              return (
+                                                  <Select.Option key={item.id} values={item.id}>
+                                                      {item.name}
+                                                  </Select.Option>
+                                              );
+                                          })}
                                 </Select>
                             </Form.Item>
                         </Col>

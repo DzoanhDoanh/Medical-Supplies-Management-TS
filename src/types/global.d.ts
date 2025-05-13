@@ -35,6 +35,7 @@ declare global {
         address: string;
         createAt: string;
         originalPass?: string;
+        store?: string;
     }
 
     interface ICategory {
@@ -154,5 +155,13 @@ declare global {
         storage: string;
         materials: MaterialStorage[];
         batch: string;
+    }
+    interface userStorageMap {
+        userId: string;
+        storageIds: string[];
+    }
+    interface IUSER_STORAGE {
+        id: string;
+        result: userStorageMap[];
     }
 }

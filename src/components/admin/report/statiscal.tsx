@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { Card, Form, Select, Button, Table, Spin, message } from 'antd';
 import {
     getBatchWidthQueryApi,
-    getDepartmentByIdApi,
     getHandOverApi,
     getMaterialRequestsApi,
     getStorageApi,
-    getStorageByIdApi,
+    getUserStorage,
 } from '@/services/api';
 import { useCurrentApp } from '@/components/context/app.context';
+import { CSVLink } from 'react-csv';
+import { ExportOutlined } from '@ant-design/icons';
 
 interface IMaterialStat {
     materialId: string;
@@ -32,15 +33,12 @@ const StatisticsByStorage: React.FC = () => {
     const [statistics, setStatistics] = useState<IMaterialStat[]>([]);
     const [dataTable, setDataTable] = useState<IResult[]>([]);
     const { user } = useCurrentApp();
-    const [userStorage, setUserStorage] = useState<IStorage>();
+    const [userStorage, setUserStorage] = useState<IUSER_STORAGE[]>();
     useEffect(() => {
         const fetchData = async () => {
-            const fetchDepart = await getDepartmentByIdApi(user?.departIdentity ?? '');
-            if (fetchDepart && fetchDepart.data) {
-                const res = await getStorageByIdApi(fetchDepart.data.storageId);
-                if (res && res.data) {
-                    setUserStorage(res.data);
-                }
+            const fetchUserStorage = await getUserStorage('');
+            if (fetchUserStorage && fetchUserStorage.data) {
+                setUserStorage(fetchUserStorage.data);
             }
         };
         fetchData();
@@ -146,11 +144,16 @@ const StatisticsByStorage: React.FC = () => {
                 {user?.role === 'manager' ? (
                     <Form.Item name="storageId" label="Chọn kho" rules={[{ required: true }]}>
                         <Select style={{ width: 200 }} placeholder="Chọn kho">
-                            {userStorage && (
-                                <Select.Option key={userStorage.id} value={userStorage.id}>
-                                    {userStorage.name}
-                                </Select.Option>
-                            )}
+                            {userStorage &&
+                                userStorage[0].result
+                                    .find((e) => e.userId === user.id)
+                                    ?.storageIds.map((storageId) => {
+                                        return (
+                                            <Select.Option key={storageId} value={storageId}>
+                                                {storages.find((e) => e.id === storageId)?.name}
+                                            </Select.Option>
+                                        );
+                                    })}
                         </Select>
                     </Form.Item>
                 ) : (
@@ -179,6 +182,15 @@ const StatisticsByStorage: React.FC = () => {
                     <Button type="primary" htmlType="submit">
                         Thống kê
                     </Button>
+                    {dataTable.length != 0 ? (
+                        <CSVLink data={dataTable} filename="report.csv" style={{ marginLeft: '12px' }}>
+                            <Button icon={<ExportOutlined />} type="primary">
+                                Tải excel
+                            </Button>
+                        </CSVLink>
+                    ) : (
+                        <></>
+                    )}
                 </Form.Item>
             </Form>
 

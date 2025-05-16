@@ -87,7 +87,7 @@ const MaterialTransfer = () => {
             setTableData(
                 request.materialRequests.map((item) => ({
                     ...item,
-                    deliveredQuantity: 0,
+                    deliveredQuantity: 1,
                 })),
             );
         }

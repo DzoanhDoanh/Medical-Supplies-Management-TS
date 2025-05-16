@@ -1,21 +1,24 @@
 import { Button, Card, Space, Table } from 'antd';
 import { PrinterOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
-import { getHandOverApi, getStorageApi, getUsersApi } from '@/services/api';
+import { getDepartmentByIdApi, getHandOverApi, getStorageApi, getUsersApi } from '@/services/api';
 import { Document, Packer, Paragraph, Table as DocxTable, TableCell, TableRow, TextRun, WidthType } from 'docx';
 import { saveAs } from 'file-saver';
 import dayjs from 'dayjs';
+import { useCurrentApp } from '@/components/context/app.context';
 
 const PrintOneHandOver = () => {
     const [data, setData] = useState<IHandOver[]>([]);
     const [selectedId, setSelectedId] = useState<string | null>(null);
     const [users, setUsers] = useState<IUser[]>([]);
     const [storages, setStorages] = useState<IStorage[]>([]);
+    const { user } = useCurrentApp();
 
     useEffect(() => {
         const fetchData = async () => {
+            const fetchDepart = await getDepartmentByIdApi(user?.departIdentity ?? '');
             const [handOverRes, userRes, storageRes] = await Promise.all([
-                getHandOverApi(''),
+                getHandOverApi(`&storage=${fetchDepart.data?.storageId}`),
                 getUsersApi(''),
                 getStorageApi(''),
             ]);

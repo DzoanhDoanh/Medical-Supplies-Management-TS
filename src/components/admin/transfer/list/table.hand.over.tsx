@@ -13,7 +13,7 @@ import { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, Width
 import { saveAs } from 'file-saver';
 
 type TSearch = {
-    requestName: string;
+    name: string;
     createAt: string;
     createAtRange: string;
 };
@@ -24,7 +24,6 @@ const TableHandOver = () => {
     const [excelData, setExcelData] = useState([]);
     const [storages, setStorages] = useState<IStorage[]>([]);
     const [users, setUsers] = useState<IUser[]>([]);
-    const [isDeleteMaterialRequest, setIsDeleteMaterialRequest] = useState<boolean>(false);
     const { message } = App.useApp();
 
     useEffect(() => {
@@ -126,9 +125,20 @@ const TableHandOver = () => {
             },
         },
         {
-            title: 'Tên đơn bàn giao',
-            hideInSearch: true,
+            title: 'Tên đơn',
+            hideInSearch: false,
             dataIndex: 'name',
+        },
+        {
+            title: 'Kho thực hiện bàn giao',
+            hideInSearch: true,
+            render(dom, entity) {
+                try {
+                    return <span>{storages.find((e) => e.id === entity.storage)?.name}</span>;
+                } catch (error) {
+                    console.log(error);
+                }
+            },
         },
         {
             title: 'Tên người bàn giao',
@@ -189,6 +199,7 @@ const TableHandOver = () => {
         {
             title: 'Thao tác',
             key: 'action',
+            hideInSearch: true,
             render: (_, record) => (
                 <Button icon={<PrinterOutlined />} onClick={() => handleExportHandOverToWord(record)}>
                     In biên bản
@@ -212,8 +223,8 @@ const TableHandOver = () => {
 
                     let query = '';
                     if (params) {
-                        if (params.requestName) {
-                            query += `&requestName_like=${params.requestName}`;
+                        if (params.name) {
+                            query += `&name_like=${params.name}`;
                         }
                     }
 
@@ -229,6 +240,11 @@ const TableHandOver = () => {
                                 return {
                                     id: item.id,
                                     name: item.name,
+                                    storage: storages.find((e) => e.id === item.storage)?.name,
+                                    sender: item.senderInfo.userName,
+                                    receiver: item.receiverInfo.userName,
+                                    date: dayjs(item.receiveDate).format('DD/MM/YYYY'),
+                                    materials: item.materials.map((item) => item.materialName + ' - ' + item.quantity),
                                 };
                             });
                             setExcelData(result as []);

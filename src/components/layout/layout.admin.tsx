@@ -55,32 +55,38 @@ const LayoutAdmin = () => {
                 key: '/admin',
                 icon: <AppstoreOutlined />,
             },
-            {
-                label: <Link to="/admin/material-import-list">Duyệt đơn mua</Link>,
-                key: '/admin/material-import-list',
-                icon: <ExceptionOutlined />,
-            },
+
             {
                 label: <span>Duyệt đơn</span>,
                 key: '/admin/material-request',
                 icon: <EditOutlined />,
                 children: [
                     {
-                        label: <Link to="/admin/material-request">Đơn yêu cầu</Link>,
+                        label: <Link to="/admin/material-request">Đơn cấp phát</Link>,
                         key: '/admin/material-request',
                         icon: <EditOutlined />,
                     },
-                    // {
-                    //     label: <Link to="/admin/material-buy-request">Đơn mua</Link>,
-                    //     key: '/admin/material-buy-request',
-                    //     icon: <EditOutlined />,
-                    // },
+                    {
+                        label: <Link to="/admin/material-import-list">Duyệt đơn mua</Link>,
+                        key: '/admin/material-import-list',
+                        icon: <ExceptionOutlined />,
+                    },
                 ],
             },
             {
                 label: <Link to="/admin/supplies">Danh sách vật tư</Link>,
                 key: '/admin/supplies',
                 icon: <MedicineBoxOutlined />,
+            },
+            {
+                label: <Link to="/admin/material-import-list-detail">Danh sách nhập</Link>,
+                key: '/admin/material-import-list-detail',
+                icon: <ExceptionOutlined />,
+            },
+            {
+                label: <Link to="/admin/hand-over-list">Đơn bàn giao</Link>,
+                key: '/admin/hand-over-list',
+                icon: <ScheduleOutlined />,
             },
             {
                 label: <Link to="/admin/material-report">Báo cáo</Link>,

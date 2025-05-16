@@ -184,7 +184,7 @@ const Import = () => {
             key: 'deliveredQuantity',
             render: (text: any, record: any) => (
                 <InputNumber
-                    min={0}
+                    min={1}
                     max={record.quantity}
                     value={record.deliveredQuantity}
                     onChange={(value) => handleQuantityChange(value, record.materialId)}

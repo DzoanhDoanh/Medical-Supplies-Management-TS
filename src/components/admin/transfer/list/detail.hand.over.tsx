@@ -1,6 +1,8 @@
+import { getStorageApi } from '@/services/api';
 import { FORMAT_DATE_VN } from '@/services/helper';
 import { Descriptions, Divider, Drawer } from 'antd';
 import dayjs from 'dayjs';
+import { useEffect, useState } from 'react';
 
 interface IProps {
     openViewDetail: boolean;
@@ -11,7 +13,17 @@ interface IProps {
 
 const DetailHandOver = (props: IProps) => {
     const { openViewDetail, setOpenViewDetail, dataViewDetail, setDataViewDetail } = props;
+    const [storages, setStorages] = useState<IStorage[]>([]);
 
+    useEffect(() => {
+        const fetchData = async () => {
+            const res = await getStorageApi('');
+            if (res && res.data) {
+                setStorages(res.data);
+            }
+        };
+        fetchData();
+    }, []);
     const onClose = () => {
         setOpenViewDetail(false);
         setDataViewDetail(null);
@@ -23,6 +35,9 @@ const DetailHandOver = (props: IProps) => {
                     <Descriptions.Item label="ID">{dataViewDetail?.id}</Descriptions.Item>
                     <Descriptions.Item label="Tên người bàn giao">
                         {dataViewDetail?.senderInfo.userName}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="Kho thực hiện bàn giao">
+                        {storages.find((e) => e.id === dataViewDetail?.storage)?.name}
                     </Descriptions.Item>
                     <Descriptions.Item label="Tên người nhận">
                         {dataViewDetail?.receiverInfo.userName}
@@ -36,7 +51,7 @@ const DetailHandOver = (props: IProps) => {
                     </Descriptions.Item>
                 </Descriptions>
                 <Divider>Thông tin chi tiết vật tư bàn giao</Divider>
-                <Descriptions bordered column={3}>
+                <Descriptions bordered column={2}>
                     {dataViewDetail?.materials.map((item) => {
                         return (
                             <>

@@ -561,4 +561,3 @@ export const updateUserStorage = (id: string, result: userStorageMap[]) => {
         result,
     });
 };
-

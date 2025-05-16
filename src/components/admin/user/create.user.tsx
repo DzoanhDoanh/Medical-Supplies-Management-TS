@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { getDepartmentsApi, registerApi } from '@/services/api';
+import { getDepartmentsApi, getUsersApi, registerApi } from '@/services/api';
 import { App, Divider, Form, Modal, Input, Select, DatePicker, Upload, Row, Col } from 'antd';
 import type { FormProps } from 'antd';
 import { useEffect, useState } from 'react';
@@ -62,9 +62,26 @@ const CreateUser = (props: IProps) => {
         }
         return e?.fileList || [];
     };
+    const checkPhoneNumber = async (phoneNumber: string) => {
+        const res = await getUsersApi('');
+        if (res && res.data) {
+            const users = res.data;
+            const result = users.find((e) => e.phone === phoneNumber);
+            if (result) {
+                return false;
+            }
+        }
+        return true;
+    };
     const [form] = Form.useForm();
     const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
         setIsSubmit(true);
+        const checkPhone = await checkPhoneNumber(values.phone);
+        if (!checkPhone) {
+            message.error('Số điện thoại đã được sử dụng vui lòng thử lại');
+            setIsSubmit(false);
+            return;
+        }
         if (fileListAvatar.length === 0) {
             const res = await registerApi(
                 values.fullName,

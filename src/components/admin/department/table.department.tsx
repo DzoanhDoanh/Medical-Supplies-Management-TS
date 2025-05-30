@@ -202,7 +202,7 @@ const TableDepartment = () => {
                                     id: item.id,
                                     name: item.name,
                                     affiliatedUnit: item.affiliatedUnit,
-                                    userId: item.userId,
+                                    user: item.userName,
                                     createAt: item.createAt,
                                 };
                             });
@@ -228,15 +228,15 @@ const TableDepartment = () => {
                             Tải excel
                         </CSVLink>
                     </Button>,
-                    <Button
-                        icon={<CloudUploadOutlined />}
-                        type="primary"
-                        onClick={() => {
-                            setOpenModalImport(true);
-                        }}
-                    >
-                        Import Department
-                    </Button>,
+                    // <Button
+                    //     icon={<CloudUploadOutlined />}
+                    //     type="primary"
+                    //     onClick={() => {
+                    //         setOpenModalImport(true);
+                    //     }}
+                    // >
+                    //     Import Department
+                    // </Button>,
                     <Button
                         key="button"
                         icon={<PlusOutlined />}

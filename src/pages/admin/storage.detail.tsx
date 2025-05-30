@@ -61,7 +61,7 @@ const StorageDetail = () => {
                         <Descriptions.Item label="ID">{dataViewDetail?.id}</Descriptions.Item>
                         <Descriptions.Item label="Tên kho">{dataViewDetail?.name}</Descriptions.Item>
                         <Descriptions.Item label="Mô tả">{dataViewDetail?.desc}</Descriptions.Item>
-                        <Descriptions.Item label="Đơn vị trực thuộc">{depart?.name}</Descriptions.Item>
+                        <Descriptions.Item label="Đơn vị quản lý trực tiếp">{depart?.name}</Descriptions.Item>
                         <Descriptions.Item label="Là kho tổng">
                             <Checkbox checked={dataViewDetail?.mainStorage} />
                         </Descriptions.Item>

@@ -13,7 +13,7 @@ const MedicalSuppliesList: React.FC = () => {
     const [materials, setMaterials] = useState<ISupplies[]>([]);
     const [categories, setCategories] = useState<ICategory[]>([]);
     const navigate = useNavigate();
-    const pageSize = 4;
+    const pageSize = 8;
 
     useEffect(() => {
         const fetchData = async () => {
@@ -45,7 +45,7 @@ const MedicalSuppliesList: React.FC = () => {
     return (
         <div style={{ padding: '30px', backgroundColor: '#fff' }}>
             <Title level={2} style={{ textAlign: 'center', color: '#61dafb' }}>
-                Quản lý vật tư y tế
+                Danh sách vật tư
             </Title>
             <Row gutter={[16, 16]}>
                 {/* Cột 1: Danh mục */}

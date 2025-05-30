@@ -106,7 +106,7 @@ const CreateUser = (props: IProps) => {
                     setIsSubmit(false);
                     return;
                 } else {
-                    message.success('Create user success!');
+                    message.success('Tạo mới người dùng thành công!');
                     form.resetFields();
                     setOpenModalCreate(false);
                     setIsSubmit(false);
@@ -146,7 +146,7 @@ const CreateUser = (props: IProps) => {
                 setIsSubmit(false);
                 return;
             } else {
-                message.success('Create user success!');
+                message.success('Tạo mới người dùng thành công!');
                 form.resetFields();
                 setOpenModalCreate(false);
                 setIsSubmit(false);

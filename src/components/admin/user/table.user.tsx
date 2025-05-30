@@ -222,16 +222,16 @@ const TableUser = () => {
                             Tải excel
                         </CSVLink>
                     </Button>,
-                    <Button
-                        icon={<CloudUploadOutlined />}
-                        type="primary"
-                        onClick={() => {
-                            // setOpenModalImport(true);
-                            message.warning('Chức năng đang phát triển');
-                        }}
-                    >
-                        Import nhân viên
-                    </Button>,
+                    // <Button
+                    //     icon={<CloudUploadOutlined />}
+                    //     type="primary"
+                    //     onClick={() => {
+                    //         // setOpenModalImport(true);
+                    //         message.warning('Chức năng đang phát triển');
+                    //     }}
+                    // >
+                    //     Import nhân viên
+                    // </Button>,
                     <Button
                         key="button"
                         icon={<PlusOutlined />}

@@ -20,7 +20,7 @@ const AddUsers = (props: IProps) => {
     const [isSubmit, setIsSubmit] = useState<boolean>(false);
     const [users, setUsers] = useState<IUser[]>([]);
     const { message, notification } = App.useApp();
-
+    console.log('check data', dataAddUsers);
     const [form] = Form.useForm();
     useEffect(() => {
         const fetchData = async () => {

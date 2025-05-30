@@ -252,11 +252,8 @@ const TableSupplies = () => {
                                     desc: item.desc,
                                     unit: item.unit, //don vi tinh
                                     manufacturer: item.manufacturer,
-                                    batchNumber: item.batchNumber,
                                     expirationDate: item.expirationDate,
                                     costPrice: item.costPrice,
-                                    quantity: item.quantity,
-                                    status: item.status,
                                     createAt: item.createAt,
                                     updateAt: item.updateAt,
                                 };

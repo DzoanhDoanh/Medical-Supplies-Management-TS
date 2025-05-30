@@ -7,7 +7,7 @@ import {
     updateStatusMaterialRequestApi,
 } from '@/services/api';
 // import { dateRangeValidate } from '@/services/helper';
-import { EditTwoTone, ExportOutlined, PrinterOutlined } from '@ant-design/icons';
+import { EditTwoTone, ExportOutlined, MinusCircleOutlined, PrinterOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
 import { App, Badge, Button, Divider, Popconfirm } from 'antd';
@@ -15,6 +15,8 @@ import { useEffect, useRef, useState } from 'react';
 import { CSVLink } from 'react-csv';
 import dayjs from 'dayjs';
 import DetailDepartment from './detail.material.import';
+import { Document, Packer, Paragraph, Table, TableCell, TableRow, TextRun, WidthType } from 'docx';
+import { saveAs } from 'file-saver';
 
 type TSearch = {
     requestName: string;
@@ -53,6 +55,79 @@ const TableMaterialImport = () => {
             message.error('Có lỗi xảy ra vui lòng thử lại');
         }
     };
+    const handlePrint = async (entity: IImportRequest) => {
+        const requestData = {
+            requestNumber: entity.id,
+            requestName: entity.requestName,
+            requestDate: dayjs(entity.createAt).format('DD/MM/YYYY'),
+            senderInfo: entity.senderInfo?.userName || 'N/A',
+            state: entity.receiverInfo?.userName,
+            items: entity.materialRequests.map((item, index) => ({
+                stt: index + 1,
+                name: item.materialName,
+                quantity: item.quantity,
+            })),
+        };
+
+        // Tiêu đề phiếu yêu cầu
+        const title = new Paragraph({
+            children: [new TextRun({ text: 'PHIẾU NHẬP VẬT TƯ', bold: true, size: 28 })],
+            alignment: 'center',
+        });
+
+        // Thông tin chung (xuống dòng mỗi dòng riêng biệt)
+        const info = [
+            new Paragraph({ children: [new TextRun(`Số phiếu: ${requestData.requestNumber}`)] }),
+            new Paragraph({ children: [new TextRun(`Nhập vào: Kho tổng`)] }),
+            new Paragraph({ children: [new TextRun(`Ngày yêu cầu: ${requestData.requestDate}`)] }),
+            new Paragraph({ children: [new TextRun(`Người nhập: ${requestData.senderInfo}`)] }),
+            new Paragraph({ children: [new TextRun(`Đợt nhập: ${requestData.state}`)] }),
+        ];
+
+        // Tạo bảng danh sách vật tư
+        const table = new Table({
+            width: { size: 100, type: WidthType.PERCENTAGE },
+            rows: [
+                // Header của bảng
+                new TableRow({
+                    children: ['STT', 'Tên vật tư', 'Số lượng'].map(
+                        (text) =>
+                            new TableCell({
+                                children: [new Paragraph({ children: [new TextRun({ text, bold: true })] })],
+                            }),
+                    ),
+                }),
+                // Dữ liệu vật tư
+                ...requestData.items.map(
+                    (item) =>
+                        new TableRow({
+                            children: [
+                                new TableCell({ children: [new Paragraph(item.stt.toString())] }),
+                                new TableCell({ children: [new Paragraph(item.name)] }),
+                                new TableCell({ children: [new Paragraph(item.quantity.toString())] }),
+                            ],
+                        }),
+                ),
+            ],
+        });
+
+        // Chữ ký
+        const signature = new Paragraph({
+            children: [new TextRun('\n\nNgười nhập\n(Ký và ghi rõ họ tên)')],
+            alignment: 'right',
+        });
+
+        // Tạo file Word
+        const doc = new Document({
+            sections: [{ properties: {}, children: [title, ...info, table, signature] }],
+        });
+
+        // Chuyển thành file Blob
+        const blob = await Packer.toBlob(doc);
+
+        // Tải file xuống mà không hiển thị hộp thoại in
+        saveAs(blob, 'Phieu_Nhap_Vat_Tu.docx');
+    };
     const handleReject = async (entity: IImportRequest) => {
         try {
             const res = await updateStatusMateriaImportApi(entity.id, 2);
@@ -66,6 +141,7 @@ const TableMaterialImport = () => {
             message.error('Có lỗi xảy ra vui lòng thử lại');
         }
     };
+
     const columns: ProColumns<IImportRequest>[] = [
         {
             dataIndex: 'index',
@@ -181,13 +257,12 @@ const TableMaterialImport = () => {
                         ) : (
                             <></>
                         )}
-
+                        <span style={{ cursor: 'pointer', marginLeft: '20px' }}>
+                            <MinusCircleOutlined />
+                        </span>
                         {/* <span style={{ cursor: 'pointer', marginLeft: '20px' }} onClick={() => handlePrint(entity)}>
                             <PrinterOutlined twoToneColor={'#ff4d4f'} style={{ cursor: 'pointer' }} />
                         </span> */}
-                        <span style={{ cursor: 'pointer', marginLeft: '20px' }}>
-                            <PrinterOutlined twoToneColor={'#ff4d4f'} style={{ cursor: 'pointer' }} />
-                        </span>
                     </>
                 );
             },
@@ -225,6 +300,11 @@ const TableMaterialImport = () => {
                             const result = data.map((item) => {
                                 return {
                                     id: item.id,
+                                    name: item.requestName,
+                                    requester: users.find((e) => e.id === item.requesterName)?.fullName,
+                                    materials: item.materialRequests.map(
+                                        (item) => item.materialName + '(' + item.quantity + '),',
+                                    ),
                                     createAt: item.createAt,
                                 };
                             });

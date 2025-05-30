@@ -107,7 +107,7 @@ const TableStorage = () => {
             },
         },
         {
-            title: 'Đơn vị trực thuộc',
+            title: 'Đơn vị quản lý trực tiếp',
             dataIndex: 'departmentId',
             hideInSearch: true,
             render(dom, entity) {
@@ -229,6 +229,10 @@ const TableStorage = () => {
                                 return {
                                     id: item.id,
                                     name: item.name,
+                                    manager:
+                                        item.manager.length === 0
+                                            ? 'Trống'
+                                            : item.manager.map((item) => item.userName + ', '),
                                     createAt: item.createAt,
                                 };
                             });

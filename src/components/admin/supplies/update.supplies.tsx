@@ -106,7 +106,7 @@ const UpdateSupply = (props: IProps) => {
                     values.unit,
                     values.manufacturer,
                     0,
-                    values.expirationDate,
+                    values.expirationDate ? values.expirationDate : '2003-12-16T17:00:00.000Z',
                     values.costPrice,
                     Number(values.quantity),
                     dataUpdate?.status ?? 0,

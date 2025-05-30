@@ -116,6 +116,16 @@ const Import = () => {
             message.error('Hãy chọn đợt nhập vật tư');
             return;
         }
+        let check = true;
+        tableData.forEach((item) => {
+            if (item.deliveredQuantity === 0) {
+                check = false;
+            }
+        });
+        if (!check) {
+            message.error('Số lượng vật tư không được nhở hơn hoặc bằng 0');
+            return;
+        }
         try {
             setLoading(true);
             const baseData = await getMainStorageApi();
@@ -157,7 +167,7 @@ const Import = () => {
                 setTableData([]);
                 form.resetFields();
                 setLoading(false);
-                message.success('Nhập vật tư thành công thông tin chi tiết hãy xem ở chi tiết đơn yêu cầu');
+                message.success('Nhập vật tư thành công');
             }
             setLoading(false);
         } catch (error) {

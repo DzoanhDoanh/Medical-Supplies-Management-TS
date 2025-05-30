@@ -68,6 +68,7 @@ const TableMaterialImportApproved = () => {
             requestName: entity.requestName || 'N/A',
             requester: users.find((e) => e.id === entity.requesterName)?.fullName || 'N/A',
             senderInfo: entity.senderInfo?.userName,
+            state: entity.receiverInfo?.userName,
             requestDate: dayjs(entity.createAt).format('DD/MM/YYYY'),
             items: entity.materialRequests.map((item, index) => ({
                 stt: index + 1,
@@ -87,6 +88,7 @@ const TableMaterialImportApproved = () => {
             new Paragraph({ children: [new TextRun(`Số phiếu: ${requestData.requestNumber}`)] }),
             new Paragraph({ children: [new TextRun(`Người nhập: ${requestData.senderInfo}`)] }),
             new Paragraph({ children: [new TextRun(`Ngày nhập: ${requestData.requestDate}`)] }),
+            new Paragraph({ children: [new TextRun(`Đợt nhập: ${requestData.state}`)] }),
         ];
 
         // Tạo bảng danh sách vật tư
@@ -303,7 +305,12 @@ const TableMaterialImportApproved = () => {
                             const result = data.map((item) => {
                                 return {
                                     id: item.id,
-                                    name: item.requestName,
+                                    requestName: item.requestName,
+                                    executer: item.senderInfo?.userName,
+                                    materials: item.materialRequests.map(
+                                        (item) => item.materialName + '(' + item.deliveredQuantity + '),',
+                                    ),
+                                    createAt: item.createAt,
                                 };
                             });
                             setExcelData(result as []);

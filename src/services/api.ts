@@ -534,7 +534,7 @@ export const createHandOverApi = (
     });
 };
 export const checkStorageApi = async (id: string, vatTuBanGiao: MaterialStorage[]) => {
-    const vatTuTrongKho: MaterialStorage[] = (await (await getStorageByIdApi(id)).data?.materials) ?? [];
+    const vatTuTrongKho: MaterialStorage[] = (await getStorageByIdApi(id)).data?.materials ?? [];
     for (const vatTu of vatTuBanGiao) {
         const vatTuKho = vatTuTrongKho.find((item) => item.supplyId === vatTu.supplyId);
 

@@ -149,7 +149,7 @@ const MaterialTransfer = () => {
     };
     const handleSubmit = async () => {
         if (senderInfo.userId === '') {
-            message.error('Hãy chọn người nhận');
+            message.error('Hãy chọn nhân viên');
             return;
         }
         if (batchValue === '') {
@@ -163,6 +163,16 @@ const MaterialTransfer = () => {
                 quantity: item.deliveredQuantity ?? 0,
             };
         });
+        let checkQuantity = true;
+        test.forEach((item) => {
+            if (item.quantity <= 0) {
+                checkQuantity = false;
+            }
+        });
+        if (!checkQuantity) {
+            message.error('Số lượng vật tư không được nhỏ hơn hoặc bằng 0');
+            return;
+        }
         const check = await checkStorageApi('5Hqqg5d33', test);
         if (!check) {
             message.error(

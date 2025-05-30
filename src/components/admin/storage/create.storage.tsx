@@ -90,7 +90,7 @@ const CreateStorage = (props: IProps) => {
                             </Form.Item>
                             <Form.Item<FieldType>
                                 labelCol={{ span: 24 }}
-                                label="Đơn vị trực thuộc"
+                                label="Đơn vị quản lý trực tiếp"
                                 name="departmentId"
                                 rules={[{ required: true, message: 'Vui lòng điền đơn vị trực thuộc' }]}
                             >

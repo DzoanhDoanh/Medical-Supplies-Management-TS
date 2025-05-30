@@ -294,6 +294,10 @@ const TableMaterialRequest = () => {
                             const result = data.map((item) => {
                                 return {
                                     id: item.id,
+                                    name: item.requestName,
+                                    materials: item.materialRequests.map(
+                                        (item) => item.materialName + '(' + item.quantity + '),',
+                                    ),
                                     createAt: item.createAt,
                                 };
                             });

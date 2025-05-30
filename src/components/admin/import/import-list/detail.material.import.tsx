@@ -18,7 +18,7 @@ const DetailMaterialImport = (props: IProps) => {
     };
     return (
         <>
-            <Drawer title="Thông tin chi tiết phiếu nhập" width={'50vw'} onClose={onClose} open={openViewDetail}>
+            <Drawer title="Thông tin chi tiết phiếu nhập" width={'70vw'} onClose={onClose} open={openViewDetail}>
                 <Descriptions title="Chi tiết phiếu nhập" bordered column={2}>
                     <Descriptions.Item label="ID">{dataViewDetail?.id}</Descriptions.Item>
                     <Descriptions.Item label="Tên phiếu nhập">{dataViewDetail?.requestName}</Descriptions.Item>

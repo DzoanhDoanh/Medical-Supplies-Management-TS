@@ -21,7 +21,12 @@ const DetailBatch = (props: IProps) => {
                 <Descriptions title="Chi tiết danh mục" bordered column={2}>
                     <Descriptions.Item label="ID">{dataViewDetail?.id}</Descriptions.Item>
                     <Descriptions.Item label="Tên đợt cấp">{dataViewDetail?.name}</Descriptions.Item>
-
+                    <Descriptions.Item label="Ngày bắt đầu">
+                        {dayjs(dataViewDetail?.startDate).format(FORMAT_DATE_VN)}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="Ngày kết thúc">
+                        {dayjs(dataViewDetail?.endDate).format(FORMAT_DATE_VN)}
+                    </Descriptions.Item>
                     <Descriptions.Item label="Ngày tạo">
                         {dayjs(dataViewDetail?.createAt).format(FORMAT_DATE_VN)}
                     </Descriptions.Item>

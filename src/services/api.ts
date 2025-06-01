@@ -286,6 +286,7 @@ export const updateMaterialRequestApi = (
     status: number,
     materialRequests: MaterialRequests[],
     batch: string,
+    exportDate: string,
 ) => {
     const urlBackend = `/660/requests/${id}`;
     return axios.patch<IBackendRes<IMaterialRequest>>(urlBackend, {
@@ -293,6 +294,7 @@ export const updateMaterialRequestApi = (
         materialRequests,
         senderInfo,
         batch,
+        createAt: exportDate,
         updateAt: new Date(),
     });
 };
@@ -327,6 +329,7 @@ export const updateImportRequestApi = (
     receiverInfo: SenderInfo,
     status: number,
     materialRequests: MaterialRequests[],
+    importDate: string,
 ) => {
     const urlBackend = `/660/importRequests/${id}`;
     return axios.patch<IBackendRes<IMaterialRequest>>(urlBackend, {
@@ -334,6 +337,7 @@ export const updateImportRequestApi = (
         materialRequests,
         senderInfo,
         receiverInfo,
+        createAt: importDate,
         updateAt: new Date(),
     });
 };
@@ -487,18 +491,22 @@ export const getBatchByIdApi = (id: string) => {
     const urlBackend = `/batches/${id}`;
     return axios.get<IBackendRes<IBatch>>(urlBackend);
 };
-export const createBatchApi = (name: string) => {
+export const createBatchApi = (name: string, startDate: string, endDate: string) => {
     const urlBackend = `/660/batches`;
     return axios.post<IBackendRes<IBatch>>(urlBackend, {
         name,
+        startDate,
+        endDate,
         createAt: new Date(),
         updateAt: new Date(),
     });
 };
-export const updateBatchApi = (id: string, name: string, createAt: string) => {
+export const updateBatchApi = (id: string, name: string, startDate: string, endDate: string, createAt: string) => {
     const urlBackend = `/660/batches/${id}`;
     return axios.put<IBackendRes<IBatch>>(urlBackend, {
         name,
+        startDate,
+        endDate,
         createAt,
         updateAt: new Date(),
     });

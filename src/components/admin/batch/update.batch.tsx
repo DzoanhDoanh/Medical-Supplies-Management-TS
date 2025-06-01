@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react';
-import { App, Col, Divider, Form, Input, Modal, Row, Select } from 'antd';
+import { App, Col, DatePicker, Divider, Form, Input, Modal, Row, Select } from 'antd';
 import type { FormProps } from 'antd';
 import { updateBatchApi } from '@/services/api';
+import dayjs from 'dayjs';
 
 interface IProps {
     openModalUpdate: boolean;
@@ -15,6 +16,8 @@ interface IProps {
 
 type FieldType = {
     name: string;
+    startDate: string;
+    endDate: string;
 };
 const { Option } = Select;
 const UpdateBatch = (props: IProps) => {
@@ -29,13 +32,21 @@ const UpdateBatch = (props: IProps) => {
             form.setFieldsValue({
                 id: dataUpdate.id,
                 name: dataUpdate.name,
+                startDate: dayjs(dataUpdate.startDate),
+                endDate: dayjs(dataUpdate.endDate),
             });
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dataUpdate]);
     const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
         setIsSubmit(true);
-        const res = await updateBatchApi(dataUpdate?.id ?? '', values.name, dataUpdate?.createAt ?? '');
+        const res = await updateBatchApi(
+            dataUpdate?.id ?? '',
+            values.name,
+            values.startDate,
+            values.endDate,
+            dataUpdate?.createAt ?? '',
+        );
         setTimeout(() => {
             if (res && res.data && typeof res.data === 'string') {
                 const alertMessage = res.data + '';
@@ -84,6 +95,26 @@ const UpdateBatch = (props: IProps) => {
                                 rules={[{ required: true, message: 'Vui lòng điền tên đợt cấp' }]}
                             >
                                 <Input placeholder="Vui lòng điền tên đợt cấp" />
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                    <Row gutter={[16, 16]}>
+                        <Col span={12} md={12} xs={12}>
+                            <Form.Item<FieldType>
+                                label="Ngày bắt đầu"
+                                name="startDate"
+                                rules={[{ required: true, message: 'Không được để trống' }]}
+                            >
+                                <DatePicker placeholder="Nhập ngày bắt đầu" />
+                            </Form.Item>
+                        </Col>
+                        <Col span={12} md={12} xs={12}>
+                            <Form.Item<FieldType>
+                                label="Ngày kết thúc"
+                                name="endDate"
+                                rules={[{ required: true, message: 'Không được để trống' }]}
+                            >
+                                <DatePicker placeholder="Nhập ngày kết thúc" />
                             </Form.Item>
                         </Col>
                     </Row>

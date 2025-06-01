@@ -1,6 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
-import { Form, Button, Select, Table, InputNumber, Card, Typography, Spin, message, Descriptions } from 'antd';
+import {
+    Form,
+    Button,
+    Select,
+    Table,
+    InputNumber,
+    Card,
+    Typography,
+    Spin,
+    message,
+    Descriptions,
+    DatePicker,
+} from 'antd';
 import {
     checkStorageApi,
     getBatchWidthQueryApi,
@@ -53,6 +65,7 @@ const MaterialTransfer = () => {
     const [batchValue, setBatchValue] = useState<string>('');
     const [batches, setBatches] = useState<IBatch[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
+    const [exportDate, setExportDate] = useState<string>();
     const [form] = Form.useForm();
 
     useEffect(() => {
@@ -92,7 +105,9 @@ const MaterialTransfer = () => {
             );
         }
     };
-
+    const handleDateChange = (value: string) => {
+        setExportDate(value);
+    };
     const handleQuantityChange = (value: number, materialId: string) => {
         setTableData((prev) =>
             prev.map((item) => {
@@ -154,6 +169,10 @@ const MaterialTransfer = () => {
         }
         if (batchValue === '') {
             message.error('Hãy chọn đợt cấp');
+            return;
+        }
+        if (!exportDate) {
+            message.error('Hãy chọn ngày cấp');
             return;
         }
         const test = tableData.map((item) => {
@@ -241,6 +260,7 @@ const MaterialTransfer = () => {
                 3,
                 tableData,
                 batchValue,
+                exportDate,
             );
             if (
                 updateMainStorage &&
@@ -352,6 +372,9 @@ const MaterialTransfer = () => {
                                         </Select.Option>
                                     ))}
                                 </Select>
+                            </Form.Item>
+                            <Form.Item name={'exportDate'} label="Chọn ngày cấp">
+                                <DatePicker onChange={handleDateChange} />
                             </Form.Item>
                         </Form>
                         {selectedRequest && (

@@ -1,6 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
-import { Form, Button, Select, Table, InputNumber, Card, Typography, Spin, Descriptions, message } from 'antd';
+import {
+    Form,
+    Button,
+    Select,
+    Table,
+    InputNumber,
+    Card,
+    Typography,
+    Spin,
+    Descriptions,
+    message,
+    DatePicker,
+} from 'antd';
 import {
     getBatchWidthQueryApi,
     getImportRequestsApi,
@@ -34,6 +46,7 @@ const Import = () => {
     const [batches, setBatches] = useState<IBatch[]>([]);
     const [receiverInfo, setReceiverInfo] = useState<SenderInfo>({ userId: '', userName: '' });
     const [loading, setLoading] = useState<boolean>(false);
+    const [importDate, setImportDate] = useState<string>();
     const [form] = Form.useForm();
 
     useEffect(() => {
@@ -69,7 +82,9 @@ const Import = () => {
             );
         }
     };
-
+    const handleDateChange = (value: string) => {
+        setImportDate(value);
+    };
     const handleQuantityChange = (value: number, materialId: string) => {
         setTableData((prev) =>
             prev.map((item) => {
@@ -114,6 +129,10 @@ const Import = () => {
         }
         if (receiverInfo.userId === '') {
             message.error('Hãy chọn đợt nhập vật tư');
+            return;
+        }
+        if (!importDate) {
+            message.error('Hãy chọn ngày nhập');
             return;
         }
         let check = true;
@@ -161,6 +180,7 @@ const Import = () => {
                 receiverInfo,
                 3,
                 tableData,
+                importDate,
             );
             if (updateMainStorage && updateMainStorage.data && updateStatus && updateStatus.data) {
                 setSelectedRequest(null);
@@ -257,6 +277,9 @@ const Import = () => {
                                         </Select.Option>
                                     ))}
                                 </Select>
+                            </Form.Item>
+                            <Form.Item name={'importDate'} label="Hãy chọn ngày nhập">
+                                <DatePicker onChange={handleDateChange} />
                             </Form.Item>
                         </Form>
                         {selectedRequest && (

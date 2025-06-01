@@ -141,6 +141,8 @@ declare global {
     interface IBatch {
         id: string;
         name: string;
+        startDate: string;
+        endDate: string;
         createAt: string;
         updateAt: string;
     }

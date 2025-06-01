@@ -47,104 +47,108 @@ const MaterialBatchReport: React.FC = () => {
     const fetchData = async (batchId: string, batchName: string) => {
         setLoading(true);
         try {
-            const [importRes, exportRes, materialRes, mainStorage] = await Promise.all([
+            // 1. Lấy tất cả import, export, materials (danh sách vật tư)
+            const [importRes, exportRes, materialRes] = await Promise.all([
                 getImportRequestsApi('&status_like=3'),
                 getMaterialRequestsApi('&status_like=3'),
                 getSuppliesApi(''),
-                getMainStorageApi(),
             ]);
-
             const importRequests: IImportRequest[] = importRes.data || [];
             const exportRequests: IMaterialRequest[] = exportRes.data || [];
             const materials: ISupplies[] = materialRes.data || [];
-            const quantityDetail = mainStorage.data?.materials;
 
+            // 2. Tìm thông tin batch (để xác định ngày bắt đầu)
             const batch = batches.find((b) => b.id === batchId);
             if (!batch) {
                 message.error('Không tìm thấy thông tin đợt.');
                 setLoading(false);
                 return;
             }
+            const batchStartDate = dayjs(batch.startDate);
+            const batchEndDate = dayjs(batch.endDate);
 
-            const batchStartDate = dayjs(batch.createAt);
-
-            // Tính tồn đầu kỳ
+            // === Tính TỒN ĐẦU KỲ ===
+            // Mục đích: tính tổng nhập trước ngày batchStartDate, rồi trừ tổng xuất trước ngày đó.
             const openingStockMap = new Map<string, { name: string; quantity: number }>();
 
-            // Tính tổng nhập trước đợt
+            // --- Tổng NHẬP trước đợt ---
             importRequests
                 .filter((req) => dayjs(req.createAt).isBefore(batchStartDate))
                 .forEach((req) => {
                     req.materialRequests.forEach((item) => {
-                        const current = openingStockMap.get(item.materialId) || {
+                        const prev = openingStockMap.get(item.materialId) || {
                             name: item.materialName,
                             quantity: 0,
                         };
                         openingStockMap.set(item.materialId, {
                             name: item.materialName,
-                            quantity: current.quantity + (item.deliveredQuantity ?? item.quantity),
+                            quantity: prev.quantity + (item.deliveredQuantity ?? item.quantity),
                         });
                     });
                 });
 
-            // Trừ tổng xuất trước đợt
+            // --- Trừ tổng XUẤT trước đợt ---
             exportRequests
                 .filter((req) => dayjs(req.createAt).isBefore(batchStartDate))
                 .forEach((req) => {
                     req.materialRequests.forEach((item) => {
-                        const current = openingStockMap.get(item.materialId) || {
+                        const prev = openingStockMap.get(item.materialId) || {
                             name: item.materialName,
                             quantity: 0,
                         };
                         openingStockMap.set(item.materialId, {
                             name: item.materialName,
-                            quantity: current.quantity - (item.deliveredQuantity ?? item.quantity),
+                            quantity: prev.quantity - (item.deliveredQuantity ?? item.quantity),
                         });
                     });
                 });
 
-            // Tính nhập trong kỳ
+            // === Tính NHẬP TRONG KỲ ===
+            // Lọc các importRequests “thuộc batch” (theo nghiệp vụ hiện tại: receiverInfo.userId === batchId)
             const importInBatchMap = new Map<string, number>();
             importRequests
                 .filter((req) => req.receiverInfo?.userId === batchId)
                 .forEach((req) => {
                     req.materialRequests.forEach((item) => {
-                        const current = importInBatchMap.get(item.materialId) || 0;
-                        importInBatchMap.set(item.materialId, current + (item.deliveredQuantity ?? item.quantity));
+                        const curr = importInBatchMap.get(item.materialId) || 0;
+                        importInBatchMap.set(item.materialId, curr + (item.deliveredQuantity ?? item.quantity));
                     });
                 });
 
-            // Tính xuất trong kỳ
+            // === Tính XUẤT TRONG KỲ ===
+            // Lọc các exportRequests “thuộc batch” (theo nghiệp vụ hiện tại: req.batch === batchName)
             const exportInBatchMap = new Map<string, number>();
             exportRequests
                 .filter((req) => req.batch === batchName)
                 .forEach((req) => {
                     req.materialRequests.forEach((item) => {
-                        const current = exportInBatchMap.get(item.materialId) || 0;
-                        exportInBatchMap.set(item.materialId, current + (item.deliveredQuantity ?? item.quantity));
+                        const curr = exportInBatchMap.get(item.materialId) || 0;
+                        exportInBatchMap.set(item.materialId, curr + (item.deliveredQuantity ?? item.quantity));
                     });
                 });
 
-            // Gom dữ liệu để render
-            const materialIds = new Set([
+            // === Gom tất cả materialId xuất hiện ở một trong ba phép tính ===
+            const allMaterialIds = new Set<string>([
                 ...openingStockMap.keys(),
                 ...importInBatchMap.keys(),
                 ...exportInBatchMap.keys(),
             ]);
 
-            const finalData: MaterialData[] = Array.from(materialIds).map((id) => {
-                const name = materials.find((e) => e.id === id)?.name || '';
-                const importQty = importInBatchMap.get(id) || 0;
-                const exportQty = exportInBatchMap.get(id) || 0;
-                const closing = quantityDetail?.find((e) => e.supplyId === id)?.quantity || 0;
-                const opening = closing - importQty + exportQty;
+            // === Tạo mảng cuối cùng ===
+            const finalData: MaterialData[] = Array.from(allMaterialIds).map((id) => {
+                const name = materials.find((e) => e.id === id)?.name || openingStockMap.get(id)?.name || '';
+                const opening = openingStockMap.get(id)?.quantity || 0;
+                const imported = importInBatchMap.get(id) || 0;
+                const exported = exportInBatchMap.get(id) || 0;
+                const closing = opening + imported - exported;
+
                 return {
                     key: id,
                     name,
-                    batch: selectedBatchName,
+                    batch: batchName,
                     openingStock: opening,
-                    importQuantity: importQty,
-                    exportQuantity: exportQty,
+                    importQuantity: imported,
+                    exportQuantity: exported,
                     closingStock: closing,
                 };
             });
@@ -185,12 +189,10 @@ const MaterialBatchReport: React.FC = () => {
                         value: batch.id,
                     }))}
                 />
-                {data.length === 0 ? (
-                    <></>
-                ) : (
-                    <CSVLink data={data} filename="report.csv" style={{ marginLeft: '12px' }}>
+                {data.length > 0 && (
+                    <CSVLink data={data} filename="report.csv" style={{ marginLeft: 12 }}>
                         <Button icon={<ExportOutlined />} type="primary">
-                            Tải excel
+                            Tải Excel
                         </Button>
                     </CSVLink>
                 )}

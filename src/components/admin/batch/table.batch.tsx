@@ -83,6 +83,24 @@ const TableBatch = () => {
             dataIndex: 'name',
         },
         {
+            title: 'Ngày bắt đầu',
+            dataIndex: 'startDate',
+            valueType: 'date',
+            hideInSearch: true,
+            render(dom, entity) {
+                return <>{dayjs(entity.startDate).format('DD-MM-YYYY')}</>;
+            },
+        },
+        {
+            title: 'Ngày kết thúc',
+            dataIndex: 'endDate',
+            valueType: 'date',
+            hideInSearch: true,
+            render(dom, entity) {
+                return <>{dayjs(entity.endDate).format('DD-MM-YYYY')}</>;
+            },
+        },
+        {
             title: 'Tạo ngày',
             dataIndex: 'createAt',
             valueType: 'date',

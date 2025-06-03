@@ -53,7 +53,7 @@ const CreateDepartment = (props: IProps) => {
                 if (res && res.data && typeof res.data === 'string') {
                     const alertMessage = res.data + '';
                     notification.error({
-                        message: 'Has an error!',
+                        message: 'Có lỗi xảy ra vui lòng thử lại!!',
                         description: alertMessage,
                     });
                     setIsSubmit(false);

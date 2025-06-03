@@ -172,15 +172,6 @@ const TableHandOver = () => {
             },
         },
         {
-            title: 'Ngày nhận',
-            dataIndex: 'createAt',
-            valueType: 'date',
-            hideInSearch: true,
-            render(dom, entity) {
-                return <>{dayjs(entity.receiveDate).format('DD-MM-YYYY')}</>;
-            },
-        },
-        {
             title: 'Vật tư bàn giao',
             hideInSearch: true,
             render(dom, entity) {
@@ -201,9 +192,7 @@ const TableHandOver = () => {
             key: 'action',
             hideInSearch: true,
             render: (_, record) => (
-                <Button icon={<PrinterOutlined />} onClick={() => handleExportHandOverToWord(record)}>
-                    In biên bản
-                </Button>
+                <Button icon={<PrinterOutlined />} onClick={() => handleExportHandOverToWord(record)}></Button>
             ),
         },
     ];

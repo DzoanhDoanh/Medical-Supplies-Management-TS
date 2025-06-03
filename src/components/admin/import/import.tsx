@@ -142,7 +142,7 @@ const Import = () => {
             }
         });
         if (!check) {
-            message.error('Số lượng vật tư không được nhở hơn hoặc bằng 0');
+            message.error('Số lượng vật tư không được nhỏ hơn hoặc bằng 0');
             return;
         }
         try {

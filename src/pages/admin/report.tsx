@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState } from 'react';
 import { Button, Table, Card, message, Tabs, DatePicker, Tag } from 'antd';
 import dayjs from 'dayjs';
@@ -171,7 +172,7 @@ const MaterialStatisticsReport: React.FC = () => {
 
             {isDisplay && (
                 <Tabs defaultActiveKey="1">
-                    <Tabs.TabPane tab="Tất cả" key="1">
+                    {/* <Tabs.TabPane tab="Tất cả" key="1">
                         <CSVLink data={data} filename="report.csv">
                             <Button icon={<ExportOutlined />} type="primary">
                                 Tải excel
@@ -186,8 +187,8 @@ const MaterialStatisticsReport: React.FC = () => {
                             bordered
                             rowKey="key"
                         />
-                    </Tabs.TabPane>
-                    <Tabs.TabPane tab="Thống kê vật tư trong kho tổng theo ngày tháng" key="2">
+                    </Tabs.TabPane> */}
+                    <Tabs.TabPane tab="Tất cả" key="2">
                         <div style={{ display: 'flex', gap: 16, marginBottom: 16 }}>
                             <DatePicker placeholder="Từ ngày" onChange={(date) => setFromDate(date)} allowClear />
                             <DatePicker placeholder="Đến ngày" onChange={(date) => setToDate(date)} allowClear />
@@ -213,9 +214,9 @@ const MaterialStatisticsReport: React.FC = () => {
                             rowKey="key"
                         />
                     </Tabs.TabPane>
-                    <Tabs.TabPane tab="Theo dõi số lượng tại kho đơn vị" key="3">
+                    {/* <Tabs.TabPane tab="Theo dõi số lượng tại kho đơn vị" key="3">
                         <StorageReport />
-                    </Tabs.TabPane>
+                    </Tabs.TabPane> */}
                     <Tabs.TabPane tab="Thống kê tại kho tổng" key="4">
                         <MaterialBatchReport />
                     </Tabs.TabPane>

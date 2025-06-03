@@ -38,6 +38,7 @@ import PrintOneHandOver from './components/admin/transfer/list/print';
 import StorageDetail from './pages/admin/storage.detail';
 import vie from 'antd/locale/vi_VN';
 import StatisticsByStorage from './components/admin/report/statiscal';
+// import ReturnMaterials from './pages/client/return.materials';
 
 const router = createBrowserRouter([
     {
@@ -80,6 +81,14 @@ const router = createBrowserRouter([
                     </ProtectedRoute>
                 ),
             },
+            // {
+            //     path: '/return-materials',
+            //     element: (
+            //         <ProtectedRoute>
+            //             <ReturnMaterials />
+            //         </ProtectedRoute>
+            //     ),
+            // },
             {
                 path: '/print',
                 element: (

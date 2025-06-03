@@ -92,7 +92,7 @@ const ImportCategory = (props: IProps) => {
             //     // message.success(`Import user ${item.fullName} success!`);
             // }
         });
-        message.success('Import success');
+        message.success('Thao tác thành công');
         setOpenModalImport(false);
     };
     return (

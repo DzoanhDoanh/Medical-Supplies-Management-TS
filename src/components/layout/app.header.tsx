@@ -11,7 +11,6 @@ import {
     ApartmentOutlined,
     LoginOutlined,
     LogoutOutlined,
-    // PayCircleOutlined,
     SnippetsOutlined,
 } from '@ant-design/icons';
 import ChangeInfo from '@/pages/admin/info.change';
@@ -187,7 +186,7 @@ const AppHeader = () => {
                                 <Link to="/required-buy-supplies">Đề nghị mua vật tư</Link>
                             </Menu.Item> */}
                             {/* <Menu.Item key="3" icon={<AppstoreAddOutlined />}>
-                                <Link to="/medical-supplies-request">Đề nghị cung cấp vật tư</Link>
+                                <Link to="/return-materials">Tạo phiếu trả vật tư</Link>
                             </Menu.Item> */}
                             <Menu.Item key="2" icon={<ApartmentOutlined />}>
                                 <Link to="/print">In biên bản giao nhận vật tư</Link>

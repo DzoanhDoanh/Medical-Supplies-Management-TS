@@ -30,8 +30,8 @@ const DetailHandOver = (props: IProps) => {
     };
     return (
         <>
-            <Drawer title="Thông tin chi tiết phiếu nhập" width={'50vw'} onClose={onClose} open={openViewDetail}>
-                <Descriptions title="Chi tiết phiếu nhập" bordered column={2}>
+            <Drawer title="Thông tin chi tiết phiếu bàn giao" width={'50vw'} onClose={onClose} open={openViewDetail}>
+                <Descriptions title="Chi tiết phiếu bàn giao" bordered column={2}>
                     <Descriptions.Item label="ID">{dataViewDetail?.id}</Descriptions.Item>
                     <Descriptions.Item label="Tên người bàn giao">
                         {dataViewDetail?.senderInfo.userName}

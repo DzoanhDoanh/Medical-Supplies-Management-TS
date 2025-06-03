@@ -44,11 +44,11 @@ const MaterialDetail = ({ currentMaterial }: IProps) => {
                                 src={
                                     currentMaterial &&
                                     currentMaterial.thumbnail &&
-                                    currentMaterial.thumbnail?.length > 50
-                                        ? currentMaterial.thumbnail
+                                    currentMaterial.thumbnail != 'user.png'
+                                        ? `http://localhost:5173/src/assets/images/${currentMaterial?.thumbnail}`
                                         : image
                                 }
-                                alt="Book Cover"
+                                alt="Vat tu"
                                 style={{ width: '100%', borderRadius: 8, objectFit: 'cover' }}
                             />
                         </Col>

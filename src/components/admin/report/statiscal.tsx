@@ -205,12 +205,12 @@ const StatisticsByStorage: React.FC = () => {
                             dataIndex: 'materialName',
                         },
                         {
-                            title: 'Số lượng nhập',
+                            title: 'Số lượng vật tư đã được nhận',
                             dataIndex: 'importQuantity',
                             align: 'center',
                         },
                         {
-                            title: 'Số lượng xuất',
+                            title: 'Số lượng bàn giao',
                             dataIndex: 'exportQuantity',
                             align: 'center',
                         },

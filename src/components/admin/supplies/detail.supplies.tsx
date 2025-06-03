@@ -2,7 +2,6 @@ import CurrencyFormatter from '@/components/currencyFormatter/currency.formatter
 import { FORMAT_DATE_VN } from '@/services/helper';
 import { Avatar, Descriptions, Drawer } from 'antd';
 import dayjs from 'dayjs';
-import image from '../../../assets/images/thumbnailMaterial.png';
 import { useEffect, useState } from 'react';
 import { getCategoryApi } from '@/services/api';
 
@@ -58,11 +57,22 @@ const DetailSupply = (props: IProps) => {
                     <Descriptions.Item label="Ngày cập nhật">
                         {dayjs(dataViewDetail?.updateAt).format(FORMAT_DATE_VN)}
                     </Descriptions.Item>
-                    <Descriptions.Item label="Thumbnail">
-                        <Avatar src={`${image}`} size={100}>
-                            {dataViewDetail?.thumbnail}
-                        </Avatar>
-                    </Descriptions.Item>
+                    {dataViewDetail && dataViewDetail.thumbnail && dataViewDetail?.thumbnail?.length > 50 ? (
+                        <Descriptions.Item label="Thumbnail">
+                            <Avatar src={`${dataViewDetail?.thumbnail}`} size={100}>
+                                {dataViewDetail?.thumbnail}
+                            </Avatar>
+                        </Descriptions.Item>
+                    ) : (
+                        <Descriptions.Item label="Thumbnail">
+                            <Avatar
+                                src={`http://localhost:5173/src/assets/images/${dataViewDetail?.thumbnail}`}
+                                size={100}
+                            >
+                                {dataViewDetail?.thumbnail}
+                            </Avatar>
+                        </Descriptions.Item>
+                    )}
                 </Descriptions>
             </Drawer>
         </>

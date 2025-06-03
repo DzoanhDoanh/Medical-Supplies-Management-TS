@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Row, Col, Typography, Tag, Button, Pagination, Empty, Select } from 'antd';
-import image from 'assets/images/thumbnailMaterial.png';
+import { Card, Row, Col, Typography, Tag, Button, Pagination, Empty, Select, Avatar } from 'antd';
 import { getCategoryApi, getSuppliesApi } from '@/services/api';
 import { useNavigate } from 'react-router-dom';
 
@@ -41,7 +40,6 @@ const MedicalSuppliesList: React.FC = () => {
     const filteredData =
         activeCategory === 'all' ? materials : materials.filter((item) => item.categoryId === activeCategory);
     const paginatedData = filteredData.slice((currentPage - 1) * pageSize, currentPage * pageSize);
-
     return (
         <div style={{ padding: '30px', backgroundColor: '#fff' }}>
             <Title level={2} style={{ textAlign: 'center', color: '#61dafb' }}>
@@ -91,12 +89,12 @@ const MedicalSuppliesList: React.FC = () => {
                                             fontSize: '12px',
                                         }}
                                         cover={
-                                            <img
+                                            <Avatar
+                                                shape="square"
                                                 alt={item.name}
-                                                src={image}
+                                                src={`http://localhost:5173/src/assets/images/${item?.thumbnail}`}
                                                 style={{
-                                                    height: 120,
-                                                    objectFit: 'contain',
+                                                    height: 150,
                                                     borderTopLeftRadius: '10px',
                                                     borderTopRightRadius: '10px',
                                                 }}
